@@ -14,10 +14,10 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts">
-/**
+<script setup lang="ts">/**
  * Thread Weaver masthead: kicker, wordmark, and the template tagline.
  */
+
 </script>
 
 <template>

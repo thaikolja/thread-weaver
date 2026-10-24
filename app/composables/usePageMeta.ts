@@ -15,36 +15,32 @@
  */
 
 /**
- * Tab title and social tags for the one-page tool.
- * The title template is just the string itself, so the site name is not appended twice.
+ * Tab title and icons for the one-page tool.
+ * Description, canonical, and Open Graph come from the SEO module.
  */
 export function usePageMeta(): void {
-  /** Browser title, icon, and language. */
-  const title = 'Thread Weaver — Attention Span Reducer'
+  /** Already names the site, so the module must not append " | Thread Weaver". */
+  const title = 'Thread Weaver — split posts for X, Bluesky, Threads, and Mastodon'
 
-  /** Same sentence as the masthead. */
-  const description = 'Because nobody on the timeline reads more than three sentences without suffering dopamine withdrawal.'
-
-  /** Keep the title as written. Nuxt SEO would otherwise add " | Thread Weaver". */
+  /** Keep the title as written. The module would otherwise add the site name again. */
   useHead({
     titleTemplate: '%s',
-    meta:          [
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-    ],
     link:          [
       { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', sizes: '48x48' }
-    ],
-    htmlAttrs:     {
-      lang: 'en'
-    }
+    ]
   })
 
-  /** Search and share cards use the same title and description. */
+  /**
+   * Search title, and the share image as an absolute URL.
+   * A relative image is expanded with the request host in dev.
+   */
   useSeoMeta({
     title,
-    description,
-    ogTitle:       title,
-    ogDescription: description
+    ogImage:       'https://weaver.yanawa.io/og-image.png',
+    ogImageWidth:  1200,
+    ogImageHeight: 630,
+    ogImageType:   'image/png',
+    ogImageAlt:    'Thread Weaver. Split a long post into posts for X, Bluesky, Threads, and Mastodon.'
   })
 }

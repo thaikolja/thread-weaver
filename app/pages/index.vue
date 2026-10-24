@@ -20,6 +20,9 @@
 >
 /** One editor, shared with every section below. */
 provideWeaver()
+
+/** Search engines read this from the server HTML. */
+useToolSchema()
 </script>
 
 <template>

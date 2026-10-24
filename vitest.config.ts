@@ -1,5 +1,21 @@
-import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitest/config'
+/*
+ * Thread Weaver
+ *
+ * @description     Online tool to split long messages into parts for character-limited platforms
+ * @author          Kolja Nolte <kolja.nolte@gmail.com>
+ * @copyright       2026 (C) Kolja Nolte
+ * @see             https://www.kolja-nolte.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @package Thread Weaver
+ */
+
+import { fileURLToPath }       from 'node:url'
+import { defineConfig }        from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig({
@@ -7,28 +23,28 @@ export default defineConfig({
     projects: [
       {
         test: {
-          name: 'unit',
-          include: ['test/unit/*.{test,spec}.ts'],
-          environment: 'node',
-        },
+          name:        'unit',
+          include:     [ 'test/unit/*.{test,spec}.ts' ],
+          environment: 'node'
+        }
       },
       await defineVitestProject({
         test: {
-          name: 'nuxt',
-          include: ['test/nuxt/*.{test,spec}.ts'],
-          environment: 'nuxt',
+          name:               'nuxt',
+          include:            [ 'test/nuxt/*.{test,spec}.ts' ],
+          environment:        'nuxt',
           environmentOptions: {
             nuxt: {
-              rootDir: fileURLToPath(new URL('.', import.meta.url)),
-              domEnvironment: 'happy-dom',
-            },
-          },
-        },
-      }),
+              rootDir:        fileURLToPath(new URL('.', import.meta.url)),
+              domEnvironment: 'happy-dom'
+            }
+          }
+        }
+      })
     ],
     coverage: {
-      enabled: true,
-      provider: 'v8',
-    },
-  },
+      enabled:  true,
+      provider: 'v8'
+    }
+  }
 })
