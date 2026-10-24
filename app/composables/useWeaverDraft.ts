@@ -136,6 +136,9 @@ export function useWeaverDraft(onChange: () => void) {
   /** Cards, already with counters and the bridge. */
   const posts = computed(() => compileThread(weaver.value))
 
+  /** A blank box still packs b-0. The page does not show that empty card. */
+  const shownPosts = computed(() => weaver.value.source.trim() ? posts.value : [])
+
   /** Published length of every card added together. */
   const totalCharacterCount = computed(() => totalChars(posts.value))
 
@@ -174,6 +177,7 @@ export function useWeaverDraft(onChange: () => void) {
     platform,
     limit,
     posts,
+    shownPosts,
     totalCharacterCount,
     wordCount,
     readMinutes,

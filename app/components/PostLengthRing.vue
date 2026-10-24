@@ -1,3 +1,19 @@
+<!--
+  - Thread Weaver
+  -
+  - @description     Online tool to split long messages into parts for character-limited platforms
+  - @author          Kolja Nolte <kolja.nolte@gmail.com>
+  - @copyright       2026 (C) Kolja Nolte
+  - @see             https://www.kolja-nolte.com
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Affero General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - @package Thread Weaver
+  -->
+
 <script setup lang="ts">
 /** Ring color and how full the circle is. */
 
@@ -21,7 +37,7 @@ const dash = computed(() => ringDashOffset(props.length, props.limit))
 
 <template>
   <div class="flex items-center gap-1.5 sm:gap-2">
-    <div class="relative flex size-5 shrink-0 items-center justify-center">
+    <div class="c-ring">
       <svg
         class="size-full -rotate-90"
         viewBox="0 0 36 36"
@@ -53,3 +69,11 @@ const dash = computed(() => ringDashOffset(props.length, props.limit))
     </span>
   </div>
 </template>
+
+<style scoped>
+@reference "../assets/css/main.css";
+
+.c-ring {
+  @apply relative flex size-5 shrink-0 items-center justify-center;
+}
+</style>

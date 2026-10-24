@@ -1,50 +1,83 @@
+<!--
+  - Thread Weaver
+  -
+  - @description     Online tool to split long messages into parts for character-limited platforms
+  - @author          Kolja Nolte <kolja.nolte@gmail.com>
+  - @copyright       2026 (C) Kolja Nolte
+  - @see             https://www.kolja-nolte.com
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Affero General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - @package Thread Weaver
+  -->
+
 <script
   setup
   lang="ts"
 >
 /** Shared editor. Totals and the download live on it. */
 
-const weaver = useWeaver()
+const weaver = await useWeaver()
 </script>
 
 <template>
-  <div class="mt-14 border-t-2 border-dashed border-slate-200 pt-8">
-    <div class="mx-auto max-w-2xl space-y-6 rounded-3xl border border-slate-200/90 bg-linear-to-b from-white to-slate-50/80 p-6 text-center shadow-sm sm:p-10">
-      <div class="inline-flex size-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-md">
-        <UIcon
-          name="i-lucide-check"
+  <ScriptPayPalButtons
+    :client-id="`thaikolja`"
+    :clientToken="`123`"
+  />
+  <div class="c-ship">
+    <div class="c-ship-panel">
+      <div
+        class="c-ship-mark"
+        :class="{
+          'c-mark-x': weaver.platform === 'x',
+          'c-mark-bsky': weaver.platform === 'bsky',
+          'c-mark-threads': weaver.platform === 'threads',
+          'c-mark-masto': weaver.platform === 'masto'
+        }"
+      >
+        <PlatformIcon
+          :platform="weaver.platform"
           class="size-6"
         />
       </div>
       <div class="space-y-1.5">
-        <h3 class="text-2xl font-extrabold tracking-tight text-slate-950">
+        <h3 class="c-ship-title">
           Sequence Ready to Ship
         </h3>
-        <p class="text-xs text-slate-500 sm:text-sm">
-          Partitioned into <span class="font-bold text-slate-900">{{
-          weaver.posts.length
-        }} post{{ weaver.posts.length === 1 ? '' : 's' }}</span>. Estimated read time:
-          <span class="font-bold text-slate-900">{{ weaver.readMinutes }} min</span>.
+        <p class="c-ship-lead">
+          Partitioned into <span class="c-ship-strong">{{
+          weaver.shownPosts.length
+        }} post{{ weaver.shownPosts.length === 1 ? '' : 's' }}</span>. Estimated read time: <span class="c-ship-strong">{{
+          weaver.shownPosts.length ? weaver.readMinutes : 0
+        }} min</span>.
         </p>
       </div>
-      <div class="grid grid-cols-3 gap-2 border-y border-slate-100 py-2 text-xs sm:gap-4">
-        <div class="rounded-xl border border-slate-100 bg-white p-2 shadow-[0_2px_8px_rgba(0,0,0,0.02)] sm:p-3">
-          <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Length</span>
-          <span class="font-mono text-sm font-semibold text-slate-900">{{ weaver.totalCharacterCount }} chars</span>
+      <div class="c-ship-stats">
+        <div class="c-ship-stat">
+          <span class="c-ship-kicker">Total Length</span>
+          <span class="c-ship-mono">{{ weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }} chars</span>
         </div>
-        <div class="rounded-xl border border-slate-100 bg-white p-2 shadow-[0_2px_8px_rgba(0,0,0,0.02)] sm:p-3">
-          <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Words</span>
-          <span class="font-mono text-sm font-semibold text-slate-900">{{ weaver.wordCount }}</span>
+        <div class="c-ship-stat">
+          <span class="c-ship-kicker">Total Words</span> <span class="c-ship-mono">{{ weaver.wordCount }}</span>
         </div>
-        <div class="rounded-xl border border-slate-100 bg-white p-2 shadow-[0_2px_8px_rgba(0,0,0,0.02)] sm:p-3">
-          <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Format Target</span>
-          <span class="text-sm font-semibold text-slate-900">{{ weaver.platformName }}</span>
+        <div class="c-ship-stat">
+          <span class="c-ship-kicker">Format Target</span> <span class="c-ship-target">
+            <PlatformIcon
+              :platform="weaver.platform"
+              class="size-3.5 shrink-0"
+            />
+            <span>{{ weaver.platformName }}</span>
+          </span>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
+      <div class="c-ship-actions">
         <button
           type="button"
-          class="btn-tactile flex w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-950 px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-slate-800 hover:shadow-lg sm:w-auto"
+          class="c-ship-copy"
           @click="weaver.copyAll()"
         >
           <UIcon
@@ -55,18 +88,18 @@ const weaver = useWeaver()
           <UIcon
             v-else
             name="i-lucide-check"
-            class="size-4 text-emerald-400"
+            class="size-4 text-emerald-600"
           />
           <span>{{ weaver.allCopied ? 'All Posts Stored to Clipboard!' : 'Copy Entire Sequence' }}</span>
         </button>
         <button
           type="button"
-          class="btn-tactile flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 sm:w-auto"
+          class="c-ship-download"
           @click="weaver.download()"
         >
           <UIcon
             name="i-lucide-download"
-            class="size-4 text-slate-500"
+            class="size-4 text-zinc-400"
           />
           <span>Download .md</span>
         </button>
@@ -74,3 +107,79 @@ const weaver = useWeaver()
     </div>
   </div>
 </template>
+
+<style scoped>
+@reference "../assets/css/main.css";
+
+.c-ship {
+  @apply mt-14 border-t-2 border-dashed border-zinc-300 pt-8 text-zinc-100;
+}
+
+.c-ship-panel {
+  @apply mx-auto max-w-4xl space-y-6 rounded-3xl border border-white/10 bg-zinc-950 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-10;
+}
+
+.c-ship-mark {
+  @apply inline-flex size-12 items-center justify-center rounded-2xl text-white;
+}
+
+.c-mark-x {
+  @apply bg-white text-black;
+}
+
+.c-mark-bsky {
+  @apply bg-[#0085ff];
+}
+
+.c-mark-threads {
+  @apply bg-gradient-to-r from-pink-500 to-amber-500;
+}
+
+.c-mark-masto {
+  @apply bg-[#6364ff];
+}
+
+.c-ship-title {
+  @apply text-2xl font-extrabold tracking-tight text-white;
+}
+
+.c-ship-lead {
+  @apply text-xs text-zinc-400 sm:text-sm;
+}
+
+.c-ship-strong {
+  @apply font-bold text-white;
+}
+
+.c-ship-stats {
+  @apply grid grid-cols-3 gap-2 border-y border-white/10 py-2 text-xs sm:gap-4;
+}
+
+.c-ship-stat {
+  @apply rounded-xl border border-white/10 bg-zinc-900 p-2 sm:p-3;
+}
+
+.c-ship-kicker {
+  @apply block text-[10px] font-bold tracking-wider text-zinc-500 uppercase;
+}
+
+.c-ship-mono {
+  @apply font-mono text-sm font-semibold text-zinc-100;
+}
+
+.c-ship-target {
+  @apply inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-zinc-100;
+}
+
+.c-ship-actions {
+  @apply flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row;
+}
+
+.c-ship-copy {
+  @apply btn-tactile flex w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-zinc-950 shadow-md transition hover:bg-zinc-200 hover:shadow-lg sm:w-auto;
+}
+
+.c-ship-download {
+  @apply btn-tactile flex w-full items-center justify-center gap-2 rounded-2xl border border-white/15 bg-zinc-900 px-5 py-3.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-800 sm:w-auto;
+}
+</style>

@@ -23,6 +23,12 @@ export default withNuxt(
           ['^v-bind:ui$', [{ match: 'objectValues' }]]
         ]
       }
+    },
+    rules: {
+      /** `c-*` names are component classes in Vue `<style>` blocks. */
+      'better-tailwindcss/no-unknown-classes': ['error', {
+        ignore: ['^c-']
+      }]
     }
   }
 )

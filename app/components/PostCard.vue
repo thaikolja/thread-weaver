@@ -1,3 +1,19 @@
+<!--
+  - Thread Weaver
+  -
+  - @description     Online tool to split long messages into parts for character-limited platforms
+  - @author          Kolja Nolte <kolja.nolte@gmail.com>
+  - @copyright       2026 (C) Kolja Nolte
+  - @see             https://www.kolja-nolte.com
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Affero General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - @package Thread Weaver
+  -->
+
 <script setup lang="ts">
 /** This card's compiled post and where it sits in the list. */
 
@@ -15,16 +31,16 @@ const weaver = useWeaver()
 
 <template>
   <div
-    class="relative z-10 space-y-4 rounded-2xl border p-4 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-colors hover:border-slate-300 sm:rounded-3xl sm:p-6 md:p-8"
-    :class="index % 2 === 0 ? 'border-slate-200/90 bg-white' : 'border-[#edebe6] bg-[#faf9f6]'"
+    class="c-post"
+    :class="index % 2 === 0 ? 'c-post-even' : 'c-post-odd'"
   >
-    <div class="flex items-center justify-between gap-2 border-b border-slate-100/80 pb-3">
+    <div class="c-post-head">
       <div class="flex items-center gap-2 sm:gap-3">
         <PostMoveButtons
           :index="index"
           :total="weaver.posts.length"
         />
-        <span class="text-xs font-semibold tracking-wider text-slate-500 uppercase tabular-nums">
+        <span class="c-post-index">
           Post {{ index + 1 }} of {{ weaver.posts.length }}
         </span>
       </div>
@@ -35,8 +51,8 @@ const weaver = useWeaver()
         />
         <button
           type="button"
-          class="btn-tactile flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition"
-          :class="weaver.copiedPosts[post.id] ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-transparent bg-slate-50 text-slate-700 hover:bg-slate-900 hover:text-white'"
+          class="c-copy"
+          :class="weaver.copiedPosts[post.id] ? 'c-copy-done' : 'c-copy-idle'"
           @click="weaver.copyPost(post.compiled, post.id)"
         >
           <UIcon
@@ -55,11 +71,11 @@ const weaver = useWeaver()
     </div>
 
     <div
-      class="group relative cursor-copy rounded-2xl border border-slate-200/90 bg-white p-4 transition-colors hover:border-slate-300"
+      class="group c-post-body"
       title="Click anywhere to copy this chunk"
       @click="weaver.copyPost(post.compiled, post.id)"
     >
-      <div class="text-[15px] leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-none sm:text-base">
+      <div class="c-post-text">
         {{ post.compiled }}
       </div>
     </div>
@@ -70,3 +86,47 @@ const weaver = useWeaver()
     />
   </div>
 </template>
+
+<style scoped>
+@reference "../assets/css/main.css";
+
+.c-post {
+  @apply relative z-10 space-y-4 rounded-2xl border p-4 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-colors hover:border-slate-300 sm:rounded-3xl sm:p-6 md:p-8;
+}
+
+.c-post-even {
+  @apply border-slate-200/90 bg-white;
+}
+
+.c-post-odd {
+  @apply border-[#edebe6] bg-[#faf9f6];
+}
+
+.c-post-head {
+  @apply flex items-center justify-between gap-2 border-b border-slate-100/80 pb-3;
+}
+
+.c-post-index {
+  @apply text-xs font-semibold tracking-wider text-slate-500 uppercase tabular-nums;
+}
+
+.c-copy {
+  @apply btn-tactile flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition;
+}
+
+.c-copy-done {
+  @apply border-emerald-200 bg-emerald-50 text-emerald-700;
+}
+
+.c-copy-idle {
+  @apply border-transparent bg-slate-50 text-slate-700 hover:bg-slate-900 hover:text-white;
+}
+
+.c-post-body {
+  @apply relative cursor-copy rounded-2xl border border-slate-200/90 bg-white p-4 transition-colors hover:border-slate-300;
+}
+
+.c-post-text {
+  @apply text-[15px] leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-none sm:text-base;
+}
+</style>

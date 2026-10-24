@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 
   i18n: {
     defaultLocale: 'en',
-    locales: [
+    locales:       [
       {
         code: 'en',
         file: 'en.json'
@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   },
 
   /** Tailwind and the small motion rules that utilities cannot express. */
-  css: [ '~/assets/css/main.css' ],
+  css: [ '/assets/css/main.css' ],
 
   /** Public site name. The page title does not get this appended again. */
   site: {
