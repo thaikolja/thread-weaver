@@ -14,7 +14,7 @@ import { compileThread } from '../app/utils/weaver/compile.ts'
 import { COPY_ALL_RESET_MS, SAMPLE_SOURCE, SPEECH_RATE } from '../app/utils/weaver/limits.ts'
 
 /** Totals, read time, and the ring color. */
-import { readTimeMinutes, ringColor, totalChars, totalWords } from '../app/utils/weaver/metrics.ts'
+import { readTimeMinutes, ringColor, ringTextColor, totalChars, totalWords } from '../app/utils/weaver/metrics.ts'
 
 /** Copy-all, markdown, intents, and the QR address. */
 import { copyAllBody, intentUrl, markdownBody, markdownFilename, qrImageUrl } from '../app/utils/weaver/publish.ts'
@@ -333,6 +333,9 @@ test('copy-all, markdown, filenames, intents, QR, ring color, read time, and spe
   const ratio = Math.min(1, Math.max(0, 100 / 280))
   expect(ringColor(100, 280)).toBe(`hsl(${(1 - ratio) * 140}, 80%, 42%)`)
   expect(ringColor(280, 280)).toBe('hsl(0, 80%, 42%)')
+  expect(ringTextColor(281, 280)).toBe('hsl(0, 90%, 45%)')
+  expect(ringTextColor(0, 280)).toBe('hsl(140, 80%, 26%)')
+  expect(ringTextColor(100, 280)).toBe(`hsl(${(1 - ratio) * 140}, 80%, 26%)`)
 
   expect(readTimeMinutes(0)).toBe(1)
   expect(readTimeMinutes(100)).toBe(1)

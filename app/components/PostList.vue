@@ -86,7 +86,7 @@ const weaver = useWeaver()
 }
 
 .c-list-meta {
-  @apply text-xs leading-none text-slate-400 tabular-nums;
+  @apply text-xs leading-none text-slate-600 tabular-nums;
 }
 
 .c-list-copy {

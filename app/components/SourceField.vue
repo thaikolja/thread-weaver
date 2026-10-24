@@ -22,7 +22,14 @@ const weaver = useWeaver()
 
 <template>
   <div class="c-source">
+    <label
+      class="sr-only"
+      for="weaver-source"
+    >
+      Draft
+    </label>
     <textarea
+      id="weaver-source"
       v-model="weaver.source"
       rows="6"
       placeholder="Paste your unhinged monologue here..."

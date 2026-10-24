@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vueuse/nuxt/module',
     'nuxt-authorization',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    'nuxt-qrcode'
   ],
 
   i18n: {
@@ -35,8 +36,13 @@ export default defineNuxtConfig({
     enabled: false
   },
 
-  /** Tailwind and the small motion rules that utilities cannot express. */
-  css: [ '/assets/css/main.css' ],
+  /** `~/` keeps Vite on app/assets. A root path made the Tailwind imports 404. */
+  css: [ '~/assets/css/main.css' ],
+
+  /** Open Graph only. Unhead warns on every twitter:* tag. */
+  seo: {
+    automaticTwitterTags: false
+  },
 
   /** Public site name. The page title does not get this appended again. */
   site: {

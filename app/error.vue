@@ -58,7 +58,7 @@ function goHome(): void {
 }
 
 .c-error-kicker {
-  @apply text-xs font-bold tracking-wider text-slate-400 uppercase;
+  @apply text-xs font-bold tracking-wider text-slate-600 uppercase;
 }
 
 .c-error-code {
@@ -66,7 +66,7 @@ function goHome(): void {
 }
 
 .c-error-message {
-  @apply mt-2 max-w-md text-sm text-slate-500;
+  @apply mt-2 max-w-md text-sm text-slate-600;
 }
 
 .c-error-home {

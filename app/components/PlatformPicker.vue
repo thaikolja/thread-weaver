@@ -88,7 +88,7 @@ const weaver = useWeaver()
 }
 
 .c-kicker {
-  @apply text-xs font-bold tracking-wider text-slate-400 uppercase;
+  @apply text-xs font-bold tracking-wider text-slate-600 uppercase;
 }
 
 .c-platform {

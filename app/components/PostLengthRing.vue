@@ -17,7 +17,7 @@
 <script setup lang="ts">
 /** Ring color and how full the circle is. */
 
-import { ringColor, ringDashOffset } from '~/utils/weaver/metrics'
+import { ringColor, ringDashOffset, ringTextColor } from '~/utils/weaver/metrics'
 
 /** Compiled length against the active platform limit. */
 
@@ -29,6 +29,10 @@ const props = defineProps<{
 /** Green when short, red when the post is over the limit. */
 
 const stroke = computed(() => ringColor(props.length, props.limit))
+
+/** Darker than the stroke so the digits meet contrast on white. */
+
+const labelColor = computed(() => ringTextColor(props.length, props.limit))
 
 /** How much of the ring is still empty. */
 
@@ -63,7 +67,7 @@ const dash = computed(() => ringDashOffset(props.length, props.limit))
     </div>
     <span
       class="font-mono text-xs font-semibold tabular-nums"
-      :style="{ color: stroke }"
+      :style="{ color: labelColor }"
     >
       {{ length }}/{{ limit }}
     </span>

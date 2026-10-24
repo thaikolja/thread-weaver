@@ -20,14 +20,10 @@
 >
 /** Shared editor. Totals and the download live on it. */
 
-const weaver = await useWeaver()
+const weaver = useWeaver()
 </script>
 
 <template>
-  <ScriptPayPalButtons
-    :client-id="`thaikolja`"
-    :clientToken="`123`"
-  />
   <div class="c-ship">
     <div class="c-ship-panel">
       <div
@@ -112,7 +108,7 @@ const weaver = await useWeaver()
 @reference "../assets/css/main.css";
 
 .c-ship {
-  @apply mt-14 border-t-2 border-dashed border-zinc-300 pt-8 text-zinc-100;
+  @apply mt-14 border-t-2 border-dashed border-zinc-300 pt-14 text-zinc-100;
 }
 
 .c-ship-panel {
@@ -160,7 +156,7 @@ const weaver = await useWeaver()
 }
 
 .c-ship-kicker {
-  @apply block text-[10px] font-bold tracking-wider text-zinc-500 uppercase;
+  @apply block text-[10px] font-bold tracking-wider text-zinc-400 uppercase;
 }
 
 .c-ship-mono {

@@ -43,6 +43,25 @@ export function ringColor(currentLen: number, maxLimit: number): string {
   return `hsl(${hue}, 80%, 42%)`
 }
 
+/**
+ * Count beside the ring.
+ * Same hue as the stroke, at 26% so yellow-green still clears on white.
+ */
+export function ringTextColor(currentLen: number, maxLimit: number): string {
+  /** Keep the ratio between 0 and 1 so the hue stays in range. */
+  const ratio = Math.min(1, Math.max(0, currentLen / maxLimit))
+
+  /** The over-limit red already clears. */
+  if (currentLen > maxLimit) {
+    return 'hsl(0, 90%, 45%)'
+  }
+
+  /** 140 is green. 0 is red. */
+  const hue = (1 - ratio) * 140
+
+  return `hsl(${hue}, 80%, 26%)`
+}
+
 /** How far around the ring the stroke should stop. 0 is a full circle. */
 export function ringDashOffset(length: number, limit: number): number {
   return 100 - Math.min(100, (length / limit) * 100)

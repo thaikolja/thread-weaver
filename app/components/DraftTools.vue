@@ -60,7 +60,7 @@ const weaver = useWeaver()
       </label>
     </div>
     <div class="ml-auto flex items-center gap-4">
-      <span class="font-mono text-slate-400">{{ weaver.source.length }} characters</span>
+      <span class="font-mono text-slate-600">{{ weaver.source.length }} characters</span>
       <button
         v-if="weaver.source"
         type="button"
@@ -101,6 +101,6 @@ const weaver = useWeaver()
 }
 
 .c-clear {
-  @apply btn-tactile flex items-center gap-1 font-semibold text-slate-400 hover:text-red-500;
+  @apply btn-tactile flex items-center gap-1 font-semibold text-slate-600 hover:text-red-500;
 }
 </style>

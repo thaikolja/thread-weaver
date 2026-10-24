@@ -45,7 +45,7 @@
 @reference "../assets/css/main.css";
 
 .c-kicker {
-  @apply flex items-center gap-2 text-xs font-bold tracking-wider text-slate-400 uppercase;
+  @apply flex items-center gap-2 text-xs font-bold tracking-wider text-slate-600 uppercase;
 }
 
 .c-wordmark {
@@ -53,6 +53,6 @@
 }
 
 .c-tagline {
-  @apply max-w-xl pt-1 text-sm font-medium text-slate-500 sm:text-base md:text-lg;
+  @apply max-w-xl pt-1 text-sm font-medium text-slate-600 sm:text-base md:text-lg;
 }
 </style>

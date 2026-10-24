@@ -116,6 +116,6 @@ const weaver = useWeaver()
 }
 
 .c-drop {
-  @apply btn-tactile flex items-center gap-1 p-1 font-semibold text-slate-400 hover:text-red-500;
+  @apply btn-tactile flex items-center gap-1 p-1 font-semibold text-slate-600 hover:text-red-500;
 }
 </style>

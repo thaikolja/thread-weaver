@@ -14,7 +14,10 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 /** Shared editor. The modal opens when a post asks for a QR. */
 
 const weaver = useWeaver()
@@ -34,13 +37,9 @@ const weaver = useWeaver()
         Scan to Transfer Segment
       </h4>
       <div class="c-qr-frame">
-        <img
-          :src="weaver.activeQrUrl"
-          alt="QR Code"
-          class="size-44 rounded-lg"
-        >
+        <Qrcode value="httpsd;asdf" />
       </div>
-      <p class="text-[11px] text-slate-400">
+      <p class="text-[11px] text-slate-600">
         Scan with camera to open text directly on your device.
       </p>
       <button

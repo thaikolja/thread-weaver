@@ -123,7 +123,8 @@ const weaver = useWeaver()
 }
 
 .c-post-body {
-  @apply relative cursor-copy rounded-2xl border border-slate-200/90 bg-white p-4 transition-colors hover:border-slate-300;
+  @apply relative  rounded-2xl border border-slate-200/90 bg-slate-900/5 p-4 transition-colors
+  hover:border-slate-300;
 }
 
 .c-post-text {

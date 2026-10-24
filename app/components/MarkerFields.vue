@@ -23,7 +23,10 @@ const weaver = useWeaver()
 <template>
   <div class="c-markers">
     <div class="space-y-1.5">
-      <label class="c-field-label">
+      <label
+        class="c-field-label"
+        for="weaver-marker"
+      >
         <UIcon
           name="i-lucide-hash"
           class="size-3.5"
@@ -31,6 +34,7 @@ const weaver = useWeaver()
         Marker Style
       </label>
       <select
+        id="weaver-marker"
         v-model="weaver.marker"
         class="c-field-select"
       >
@@ -52,7 +56,10 @@ const weaver = useWeaver()
       </select>
     </div>
     <div class="space-y-1.5">
-      <label class="c-field-label">
+      <label
+        class="c-field-label"
+        for="weaver-placement"
+      >
         <UIcon
           name="i-lucide-align-justify"
           class="size-3.5"
@@ -60,6 +67,7 @@ const weaver = useWeaver()
         Placement
       </label>
       <select
+        id="weaver-placement"
         v-model="weaver.placement"
         class="c-field-select"
       >
@@ -78,7 +86,10 @@ const weaver = useWeaver()
       </select>
     </div>
     <div class="space-y-1.5">
-      <label class="c-field-label">
+      <label
+        class="c-field-label"
+        for="weaver-bridge"
+      >
         <UIcon
           name="i-lucide-ellipsis"
           class="size-3.5"
@@ -86,6 +97,7 @@ const weaver = useWeaver()
         Custom Bridge
       </label>
       <input
+        id="weaver-bridge"
         v-model="weaver.bridge"
         type="text"
         placeholder="e.g. ..., //, ››"
@@ -103,7 +115,7 @@ const weaver = useWeaver()
 }
 
 .c-field-label {
-  @apply flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase;
+  @apply flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-600 uppercase;
 }
 
 .c-field-select {
