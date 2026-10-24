@@ -17,8 +17,13 @@ logs
 .DS_Store
 .fleet
 .idea
+!.idea/copyright
 
 # Local env files
 .env
 .env.*
 !.env.example
+
+# AI
+.serena
+AGENTS.md

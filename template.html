@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thread Weaver — Attention Span Reducer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    
+    textarea, input, select {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    }
+
+    /* Entschleunigte, butterweiche Reorder- & Layout-Animation */
+    .thread-chain-move {
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+    .thread-chain-enter-active {
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+    .thread-chain-leave-active {
+      transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+      position: absolute;
+      width: 100%;
+      will-change: transform, opacity;
+    }
+    .thread-chain-enter-from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0) scale(0.99);
+    }
+    .thread-chain-leave-to {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0) scale(0.99);
+    }
+
+    .btn-tactile {
+      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, border-color 0.15s ease;
+      will-change: transform;
+    }
+    .btn-tactile:hover {
+      transform: translateY(-1px);
+    }
+    .btn-tactile:active {
+      transform: translateY(0.5px) scale(0.97);
+    }
+  </style>
+</head>
+<body class="bg-[#f4f5f7] text-slate-900 min-h-screen flex flex-col selection:bg-slate-900 selection:text-white antialiased">
+  <div id="app" class="flex-1 flex flex-col justify-between max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+
+    <!-- Header Section -->
+    <header class="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <svg class="w-4 h-4 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        <span>Attention Span Reducer</span>
+      </div>
+      <h1 class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-slate-950 leading-[0.9]">
+        THREAD<br>WEAVER.
+      </h1>
+      <p class="text-sm sm:text-base md:text-lg text-slate-500 max-w-xl font-medium pt-1">
+        Because nobody on the timeline reads more than three sentences without suffering dopamine withdrawal.
+      </p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="space-y-8 sm:space-y-10">
+      <!-- Input Workbench Card -->
+      <section class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_12px_36px_rgba(0,0,0,0.03)] space-y-5">
+        
+        <!-- Platform Selector -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Platform Corset</span>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- X -->
+            <button 
+              @click="setPlatform('x', 280)"
+              :class="platform === 'x' 
+                ? 'bg-black text-white border-black shadow-sm font-semibold' 
+                : 'bg-white text-slate-600 border-slate-200/90 hover:border-slate-300 hover:text-slate-900'"
+              class="btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border"
+            >
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span>X (280)</span>
+            </button>
+
+            <!-- Bluesky -->
+            <button 
+              @click="setPlatform('bsky', 300)"
+              :class="platform === 'bsky' 
+                ? 'bg-[#0085ff] text-white border-[#0085ff] shadow-sm font-semibold' 
+                : 'bg-white text-slate-600 border-slate-200/90 hover:border-slate-300 hover:text-slate-900'"
+              class="btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.01 0 1.88 0 4.99c0 1.025.544 8.657.87 9.878.966 3.633 4.49 4.847 7.712 4.29-5.617 2.05-2.023 6.842 2.378 2.842 1.488-1.353 1.04-1.2 1.04-1.2s-.448-.153 1.04 1.2c4.401 4 7.995-.792 2.378-2.842 3.222.557 6.746-.657 7.712-4.29.326-1.22.87-8.853.87-9.878 0-3.11-2.566-3.98-5.202-2.185-2.752 1.942-5.711 5.881-6.798 7.995z"/>
+              </svg>
+              <span>Bluesky (300)</span>
+            </button>
+
+            <!-- Threads -->
+            <button 
+              @click="setPlatform('threads', 500)"
+              :class="platform === 'threads' 
+                ? 'bg-gradient-to-r from-pink-500 to-amber-500 text-white border-transparent shadow-sm font-semibold' 
+                : 'bg-white text-slate-600 border-slate-200/90 hover:border-slate-300 hover:text-slate-900'"
+              class="btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M10 9a2 2 0 1 1 3.5 1.5c-.8.8-1.5 1.5-1.5 2.5"/>
+              </svg>
+              <span>Threads (500)</span>
+            </button>
+
+            <!-- Mastodon -->
+            <button 
+              @click="setPlatform('masto', 500)"
+              :class="platform === 'masto' 
+                ? 'bg-[#6364ff] text-white border-[#6364ff] shadow-sm font-semibold' 
+                : 'bg-white text-slate-600 border-slate-200/90 hover:border-slate-300 hover:text-slate-900'"
+              class="btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.327 8.566c0-4.339-2.843-5.61-2.843-5.61C17.157 2.378 14.593 2 12.016 2h-.032c-2.577 0-5.141.378-6.468.956 0 0-2.843 1.271-2.843 5.61 0 .993-.015 2.186.012 3.393.101 4.549.806 9.006 5.215 10.158 2.052.535 3.82.593 5.263.475 2.617-.215 4.093-1.375 4.093-1.375l-.057-1.246s-1.851.583-3.924.524c-2.058-.058-4.22-.19-4.526-2.618a5.1 5.1 0 0 1-.035-.615c4.013 1.05 8.271.614 9.45-.195 2.47-.945 3.12-4.143 3.175-7.501z"/>
+              </svg>
+              <span>Mastodon (500)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Master Input -->
+        <div class="border border-slate-200/90 rounded-2xl bg-white focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-100 transition-all p-3.5">
+          <textarea
+            v-model="rawContent"
+            rows="6"
+            placeholder="Paste your unhinged monologue here..."
+            class="w-full bg-transparent resize-y outline-none text-[16px] sm:text-[18px] font-medium leading-relaxed text-slate-800 placeholder:text-slate-300"
+          ></textarea>
+        </div>
+
+        <!-- Marker Settings -->
+        <div class="pt-2 border-t border-slate-100 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs">
+            
+            <div class="space-y-1.5">
+              <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                Marker Style
+              </label>
+              <select v-model="markerFormat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 outline-none cursor-pointer hover:border-slate-300">
+                <option value="parens">(1/n) Parentheses</option>
+                <option value="brackets">[1/n] Brackets</option>
+                <option value="slash">1/n Raw Fraction</option>
+                <option value="hash">#1 Number Tag</option>
+                <option value="none">None (Live Dangerously)</option>
+              </select>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10H3"/><path d="M21 6H3"/><path d="M21 14H3"/><path d="M21 18H3"/></svg>
+                Placement
+              </label>
+              <select v-model="markerPlacement" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 outline-none cursor-pointer hover:border-slate-300">
+                <option value="newline">New Line (Bottom)</option>
+                <option value="inline-after">Inline (After text)</option>
+                <option value="inline-before">Inline (Before text)</option>
+                <option value="start">Header (Top of segment)</option>
+              </select>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                Custom Bridge
+              </label>
+              <input 
+                type="text" 
+                v-model="customDelimiter" 
+                placeholder="e.g. ..., //, ››" 
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 outline-none placeholder:text-slate-300 hover:border-slate-300 focus:border-slate-400"
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-slate-900 select-none">
+              <input type="checkbox" v-model="collapseBreaks" class="w-4 h-4 rounded accent-slate-950">
+              <span>Flatten blank lines</span>
+            </label>
+
+            <div class="flex items-center gap-4 ml-auto">
+              <span class="mono text-slate-400">{{ rawContent.length }} characters</span>
+              <button 
+                v-if="rawContent" 
+                @click="rawContent = ''" 
+                class="btn-tactile flex items-center gap-1 text-slate-400 hover:text-red-500 font-semibold"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <span>Clear</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Thread Visualization Feed -->
+      <section class="space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 px-1 min-h-[44px]">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm tabular-nums shrink-0">
+              {{ renderedThread.length }}
+            </div>
+            <div class="h-9 flex flex-col justify-center">
+              <h2 class="text-base font-bold text-slate-900 leading-none mb-1">Bite-Sized Payload</h2>
+              <p class="text-xs text-slate-400 leading-none tabular-nums">
+                Fixed sequence overview: {{ renderedThread.length }} total post{{ renderedThread.length === 1 ? '' : 's' }}
+              </p>
+            </div>
+          </div>
+
+          <button 
+            @click="copyAll" 
+            class="btn-tactile flex items-center gap-2 px-4 py-2 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold shadow-sm ml-auto"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+            <span>{{ allCopied ? 'All Copied!' : 'Copy Entire Sequence' }}</span>
+          </button>
+        </div>
+
+        <!-- Stable Animated List -->
+        <div class="relative">
+          <div class="hidden sm:block absolute left-6 top-8 bottom-8 w-0.5 bg-slate-200 -z-0"></div>
+
+          <transition-group name="thread-chain" tag="div" class="space-y-4 sm:space-y-6 relative">
+            <div 
+              v-for="(post, index) in renderedThread" 
+              :key="post.id"
+              :class="index % 2 === 0 ? 'bg-white border-slate-200/90' : 'bg-[#faf9f6] border-[#edebe6]'"
+              class="relative z-10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-colors hover:border-slate-300 space-y-4"
+            >
+              <!-- Card Header with Reordering Controls -->
+              <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100/80">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <!-- Reorder buttons -->
+                  <div class="flex items-center bg-slate-100 rounded-lg p-0.5 border border-slate-200/60">
+                    <button 
+                      @click="moveSegment(index, -1)" 
+                      :disabled="index === 0"
+                      :class="index === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white text-slate-700'"
+                      class="btn-tactile p-1 rounded-md transition"
+                      title="Move Up"
+                    >
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="18 15 12 9 6 15"/>
+                      </svg>
+                    </button>
+                    <button 
+                      @click="moveSegment(index, 1)" 
+                      :disabled="index === renderedThread.length - 1"
+                      :class="index === renderedThread.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white text-slate-700'"
+                      class="btn-tactile p-1 rounded-md transition"
+                      title="Move Down"
+                    >
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 tabular-nums">
+                    Post {{ index + 1 }} of {{ renderedThread.length }}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-4">
+                  <!-- Color Circle -->
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <div class="w-5 h-5 relative flex items-center justify-center shrink-0">
+                      <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <path
+                          class="text-slate-100"
+                          stroke-width="3.5"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          :stroke="getCircleColor(post.compiled.length, limit)"
+                          stroke-dasharray="100, 100"
+                          :stroke-dashoffset="100 - Math.min(100, (post.compiled.length / limit) * 100)"
+                          stroke-width="3.5"
+                          stroke-linecap="round"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                    </div>
+                    <span 
+                      class="mono text-xs font-semibold tabular-nums"
+                      :style="{ color: getCircleColor(post.compiled.length, limit) }"
+                    >
+                      {{ post.compiled.length }}/{{ limit }}
+                    </span>
+                  </div>
+
+                  <!-- Persistent Copy Button -->
+                  <button 
+                    @click="copyPost(post.compiled, post.id)"
+                    :class="copiedPosts[post.id] ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-700 border-transparent'"
+                    class="btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition"
+                  >
+                    <svg v-if="copiedPosts[post.id]" class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                    <span>{{ copiedPosts[post.id] ? 'Copied' : 'Copy' }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Click-to-Copy Readonly Box -->
+              <div 
+                @click="copyPost(post.compiled, post.id)"
+                class="border border-slate-200/90 rounded-2xl bg-white p-4 cursor-copy hover:border-slate-300 transition-colors group relative"
+                title="Click anywhere to copy this chunk"
+              >
+                <div class="text-[15px] sm:text-base leading-relaxed text-slate-800 whitespace-pre-wrap select-none break-words">
+                  {{ post.compiled }}
+                </div>
+              </div>
+
+              <!-- Pure Non-Destructive Utility Bar -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                <div class="flex flex-wrap items-center gap-2">
+                  <!-- 1. Send to platform intent -->
+                  <button 
+                    @click="dispatchPost(post.compiled)"
+                    class="btn-tactile flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium"
+                    title="Send directly to current platform intent"
+                  >
+                    <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    <span>Send to {{ platformName }}</span>
+                  </button>
+
+                  <!-- 2. Speech synthesis / Auditory Rhythm Check -->
+                  <button 
+                    @click="readAloud(post.compiled, post.id)"
+                    :class="speakingId === post.id ? 'bg-amber-100 text-amber-900 border-amber-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                    class="btn-tactile flex items-center gap-1.5 px-2.5 py-1 rounded-xl font-medium transition"
+                    title="Listen to this post to verify cadence and pacing"
+                  >
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                    </svg>
+                    <span>{{ speakingId === post.id ? 'Speaking...' : 'Listen' }}</span>
+                  </button>
+
+                  <!-- 3. Mobile QR Transfer -->
+                  <button 
+                    @click="openQr(post.compiled)"
+                    class="btn-tactile flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium"
+                    title="Generate QR code to scan directly onto phone"
+                  >
+                    <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="5" height="5" x="3" y="3" rx="1"/>
+                      <rect width="5" height="5" x="16" y="3" rx="1"/>
+                      <rect width="5" height="5" x="3" y="16" rx="1"/>
+                      <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                      <path d="M21 21v.01"/>
+                      <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                      <path d="M3 12h.01"/>
+                      <path d="M12 3h.01"/>
+                      <path d="M12 16v.01"/>
+                      <path d="M16 12h1"/>
+                      <path d="M21 12v.01"/>
+                      <path d="M12 21v-1"/>
+                    </svg>
+                    <span>Send to Phone</span>
+                  </button>
+                </div>
+
+                <!-- Drop Segment -->
+                <button 
+                  @click="removeSegment(index)"
+                  class="btn-tactile flex items-center gap-1 text-slate-400 hover:text-red-500 font-semibold p-1"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                  <span>Drop</span>
+                </button>
+              </div>
+            </div>
+          </transition-group>
+        </div>
+
+        <!-- Prominent End-of-Thread Conclusion Station -->
+        <div class="mt-14 pt-8 border-t-2 border-dashed border-slate-200">
+          <div class="bg-gradient-to-b from-white to-slate-50/80 rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm text-center max-w-2xl mx-auto space-y-6">
+            
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-900 text-white shadow-md">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+
+            <div class="space-y-1.5">
+              <h3 class="text-2xl font-extrabold text-slate-950 tracking-tight">Sequence Ready to Ship</h3>
+              <p class="text-xs sm:text-sm text-slate-500">
+                Partitioned into <span class="font-bold text-slate-900">{{ renderedThread.length }} post{{ renderedThread.length === 1 ? '' : 's' }}</span>. Estimated read time: <span class="font-bold text-slate-900">{{ Math.max(1, Math.round(totalWords / 200)) }} min</span>.
+              </p>
+            </div>
+
+            <!-- Thread Metrics Grid -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 py-2 border-y border-slate-100 text-xs">
+              <div class="p-2 sm:p-3 rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Length</span>
+                <span class="font-mono text-slate-900 font-semibold text-sm">{{ totalChars }} chars</span>
+              </div>
+              <div class="p-2 sm:p-3 rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Words</span>
+                <span class="font-mono text-slate-900 font-semibold text-sm">{{ totalWords }}</span>
+              </div>
+              <div class="p-2 sm:p-3 rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Format Target</span>
+                <span class="font-semibold text-slate-900 text-sm">{{ platformName }}</span>
+              </div>
+            </div>
+
+            <!-- Primary Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button 
+                @click="copyAll" 
+                class="btn-tactile w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-slate-950 text-white hover:bg-slate-800 text-sm font-bold shadow-md hover:shadow-lg transition"
+              >
+                <svg v-if="!allCopied" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                <svg v-else class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>{{ allCopied ? 'All Posts Stored to Clipboard!' : 'Copy Entire Sequence' }}</span>
+              </button>
+
+              <button 
+                @click="downloadMarkdown" 
+                class="btn-tactile w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 text-sm font-semibold transition"
+              >
+                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Download .md</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- QR Modal -->
+    <div 
+      v-if="activeQrUrl" 
+      @click="activeQrUrl = null" 
+      class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div 
+        @click.stop 
+        class="bg-white rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl border border-slate-100"
+      >
+        <h4 class="font-bold text-slate-900 text-sm">Scan to Transfer Segment</h4>
+        <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-center">
+          <img :src="activeQrUrl" alt="QR Code" class="w-44 h-44 rounded-lg">
+        </div>
+        <p class="text-[11px] text-slate-400">Scan with camera to open text directly on your device.</p>
+        <button 
+          @click="activeQrUrl = null" 
+          class="btn-tactile w-full py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-semibold text-slate-700"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 sm:mt-20 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-400 text-center sm:text-left">
+      <span>Zero remote servers. Zero telemetry. No excuses for publishing walls of text.</span>
+      <div class="flex items-center gap-4">
+        <span>Offline Functional</span>
+        <span>•</span>
+        <span>Client-Side Partitioning</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const { createApp, ref, computed, watch } = Vue;
+
+    createApp({
+      setup() {
+        const initialExcerpt = 'Segment 1 of your unhinged monologue sits right here. Start typing or pasting above, and the engine partitions your thoughts along word boundaries before the platform limits humiliate you.';
+
+        const rawContent = ref(initialExcerpt);
+        const platform = ref('x');
+        const limit = ref(280);
+        
+        const markerFormat = ref('parens');
+        const markerPlacement = ref('newline');
+        const customDelimiter = ref('');
+        const collapseBreaks = ref(false);
+
+        const copiedPosts = ref({});
+        const allCopied = ref(false);
+        const speakingId = ref(null);
+        const activeQrUrl = ref(null);
+
+        const rawBlocks = ref([]);
+
+        const platformName = computed(() => {
+          if (platform.value === 'x') return 'X';
+          if (platform.value === 'bsky') return 'Bluesky';
+          if (platform.value === 'threads') return 'Threads';
+          return 'Mastodon';
+        });
+
+        const totalChars = computed(() => {
+          return renderedThread.value.reduce((acc, p) => acc + p.compiled.length, 0);
+        });
+
+        const totalWords = computed(() => {
+          return rawContent.value.trim() ? rawContent.value.trim().split(/\s+/).length : 0;
+        });
+
+        const setPlatform = (p, lim) => {
+          platform.value = p;
+          limit.value = lim;
+          splitContent();
+        };
+
+        const getCircleColor = (currentLen, maxLimit) => {
+          const ratio = Math.min(1, Math.max(0, currentLen / maxLimit));
+          if (currentLen > maxLimit) return 'hsl(0, 90%, 45%)';
+          const hue = (1 - ratio) * 140;
+          return `hsl(${hue}, 80%, 42%)`;
+        };
+
+        const splitContent = () => {
+          if (!rawContent.value.trim()) {
+            rawBlocks.value = [{ id: 'b-0', text: '' }];
+            return;
+          }
+
+          let text = rawContent.value.trim();
+          if (collapseBreaks.value) {
+            text = text.replace(/\n\s*\n/g, '\n').replace(/[ \t]+/g, ' ');
+          }
+
+          const words = text.split(/\s+/);
+          let blocks = [];
+          let current = '';
+          const counterBudget = 16 + (customDelimiter.value ? customDelimiter.value.length : 0);
+
+          words.forEach(word => {
+            const candidate = current ? `${current} ${word}` : word;
+            if (candidate.length > limit.value - counterBudget) {
+              if (current) blocks.push(current);
+              current = word;
+            } else {
+              current = candidate;
+            }
+          });
+          if (current) blocks.push(current);
+
+          rawBlocks.value = blocks.map((b, i) => ({
+            id: `block-${i}`,
+            text: b
+          }));
+        };
+
+        const renderedThread = computed(() => {
+          const total = rawBlocks.value.length;
+
+          return rawBlocks.value.map((block, i) => {
+            const idx = i + 1;
+            let marker = '';
+
+            if (markerFormat.value === 'parens') marker = `(${idx}/${total})`;
+            else if (markerFormat.value === 'brackets') marker = `[${idx}/${total}]`;
+            else if (markerFormat.value === 'slash') marker = `${idx}/${total}`;
+            else if (markerFormat.value === 'hash') marker = `#${idx}`;
+
+            const delimiter = customDelimiter.value ? ` ${customDelimiter.value} ` : ' ';
+            let compiled = block.text;
+
+            if (markerFormat.value !== 'none') {
+              if (markerPlacement.value === 'newline') {
+                compiled = `${block.text}\n\n${marker}`;
+              } else if (markerPlacement.value === 'inline-after') {
+                compiled = `${block.text}${delimiter}${marker}`;
+              } else if (markerPlacement.value === 'inline-before') {
+                compiled = `${marker}${delimiter}${block.text}`;
+              } else if (markerPlacement.value === 'start') {
+                compiled = `${marker}\n\n${block.text}`;
+              }
+            }
+
+            return {
+              id: block.id,
+              raw: block.text,
+              compiled
+            };
+          });
+        });
+
+        splitContent();
+
+        watch([rawContent, collapseBreaks], splitContent);
+
+        const moveSegment = (index, delta) => {
+          const newIndex = index + delta;
+          if (newIndex < 0 || newIndex >= rawBlocks.value.length) return;
+          const item = rawBlocks.value.splice(index, 1)[0];
+          rawBlocks.value.splice(newIndex, 0, item);
+        };
+
+        const removeSegment = (index) => {
+          rawBlocks.value.splice(index, 1);
+        };
+
+        const copyPost = (text, id) => {
+          navigator.clipboard.writeText(text);
+          copiedPosts.value[id] = true;
+        };
+
+        const copyAll = () => {
+          const bulk = renderedThread.value.map(p => p.compiled).join('\n\n---\n\n');
+          navigator.clipboard.writeText(bulk);
+          allCopied.value = true;
+          setTimeout(() => allCopied.value = false, 2500);
+        };
+
+        // 1. Direct Publish Intent
+        const dispatchPost = (compiledText) => {
+          const encoded = encodeURIComponent(compiledText);
+          let targetUrl = '';
+          if (platform.value === 'x') targetUrl = `https://x.com/intent/tweet?text=${encoded}`;
+          else if (platform.value === 'bsky') targetUrl = `https://bsky.app/intent/compose?text=${encoded}`;
+          else if (platform.value === 'threads') targetUrl = `https://www.threads.net/intent/post?text=${encoded}`;
+          else targetUrl = `https://mastodon.social/share?text=${encoded}`;
+          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        };
+
+        // 2. Read Aloud via Web Speech API
+        const readAloud = (text, id) => {
+          if (!('speechSynthesis' in window)) return;
+          if (speechSynthesis.speaking && speakingId.value === id) {
+            speechSynthesis.cancel();
+            speakingId.value = null;
+            return;
+          }
+          speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.05;
+          utterance.onend = () => { speakingId.value = null; };
+          utterance.onerror = () => { speakingId.value = null; };
+          speakingId.value = id;
+          speechSynthesis.speak(utterance);
+        };
+
+        // 3. QR Transfer
+        const openQr = (text) => {
+          activeQrUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(text)}`;
+        };
+
+        // 4. Download Markdown File
+        const downloadMarkdown = () => {
+          const content = renderedThread.value.map((p, i) => `### Post ${i+1}\n\n${p.compiled}`).join('\n\n---\n\n');
+          const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `thread-${platform.value}-${Date.now()}.md`;
+          link.click();
+          URL.revokeObjectURL(url);
+        };
+
+        return {
+          rawContent,
+          platform,
+          platformName,
+          limit,
+          markerFormat,
+          markerPlacement,
+          customDelimiter,
+          collapseBreaks,
+          renderedThread,
+          copiedPosts,
+          allCopied,
+          speakingId,
+          activeQrUrl,
+          totalChars,
+          totalWords,
+          setPlatform,
+          getCircleColor,
+          moveSegment,
+          removeSegment,
+          copyPost,
+          copyAll,
+          dispatchPost,
+          readAloud,
+          openQr,
+          downloadMarkdown
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
