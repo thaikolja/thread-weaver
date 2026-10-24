@@ -26,7 +26,7 @@ const weaver = useWeaver()
 
 <template>
   <div class="c-platforms">
-    <span class="c-kicker">Platform Corset</span>
+    <span class="c-kicker">{{ $t('platform.kicker') }}</span>
     <div class="flex flex-wrap items-center gap-2">
       <button
         type="button"
@@ -38,7 +38,7 @@ const weaver = useWeaver()
           platform="x"
           class="size-3"
         />
-        <span>X (280)</span>
+        <span>{{ $t('platform.x') }}</span>
       </button>
       <button
         type="button"
@@ -50,7 +50,7 @@ const weaver = useWeaver()
           platform="bsky"
           class="size-3.5"
         />
-        <span>Bluesky (300)</span>
+        <span>{{ $t('platform.bsky') }}</span>
       </button>
       <button
         type="button"
@@ -62,7 +62,7 @@ const weaver = useWeaver()
           platform="threads"
           class="size-3.5"
         />
-        <span>Threads (500)</span>
+        <span>{{ $t('platform.threads') }}</span>
       </button>
       <button
         type="button"
@@ -74,7 +74,7 @@ const weaver = useWeaver()
           platform="masto"
           class="size-3.5"
         />
-        <span>Mastodon (500)</span>
+        <span>{{ $t('platform.masto') }}</span>
       </button>
     </div>
   </div>

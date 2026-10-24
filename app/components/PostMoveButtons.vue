@@ -31,8 +31,8 @@ const weaver = useWeaver()
   <div class="c-moves">
     <button
       type="button"
-      title="Move Up"
-      aria-label="Move Up"
+      :title="$t('post.moveUp')"
+      :aria-label="$t('post.moveUp')"
       class="c-move"
       :class="index === 0 ? 'c-move-off' : 'c-move-on'"
       :disabled="index === 0"
@@ -45,8 +45,8 @@ const weaver = useWeaver()
     </button>
     <button
       type="button"
-      title="Move Down"
-      aria-label="Move Down"
+      :title="$t('post.moveDown')"
+      :aria-label="$t('post.moveDown')"
       class="c-move"
       :class="index === total - 1 ? 'c-move-off' : 'c-move-on'"
       :disabled="index === total - 1"

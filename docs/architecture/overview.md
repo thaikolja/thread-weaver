@@ -1,0 +1,32 @@
+---
+title: Overview
+description: Where the rules live, and where the browser calls live.
+---
+
+# Overview
+
+The rules that decide the posts are pure TypeScript. They do not import Vue, and they do not touch `window`. The Vue layer only holds state and calls the browser.
+
+```text
+app/pages/index.vue
+  provideWeaver()
+    useThreadWeaver()
+      useWeaverDraft()      -> app/utils/weaver
+      useWeaverClipboard()
+      useWeaverSpeech()
+      useWeaverPublish()
+  sections call useWeaver()
+```
+
+## Folders
+
+| Path | Role |
+| --- | --- |
+| `app/utils/weaver/` | Split, compile, totals, links, speech decision |
+| `app/composables/` | The editor the page shares |
+| `app/components/` | The screen, one piece per file |
+| `app/pages/index.vue` | Layout only |
+| `tests/thread.test.ts` | The rules, imported from the real modules |
+| `docs/` | These VitePress guides. GitHub Actions rebuilds the site on every push. |
+
+`template.html` at the repository root is the original page. The Nuxt app is the product. Do not load Vue or Tailwind from a CDN.

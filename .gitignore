@@ -30,3 +30,7 @@ AGENTS.md
 
 # Test coverage
 coverage/
+
+# VitePress build
+docs/.vitepress/dist
+docs/.vitepress/cache

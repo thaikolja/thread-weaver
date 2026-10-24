@@ -1,3 +1,115 @@
 {
-  "tree": "baum"
+  "nuxtSiteConfig": {
+    "name":        "Thread Weaver",
+    "description": "Füge einen langen Beitrag ein. Thread Weaver teilt ihn in Beiträge für X, Bluesky, Threads und Mastodon. Marker, Kopieren und der Download laufen im Browser."
+  },
+  "meta":           {
+    "title":      "Thread Weaver — Beiträge für X, Bluesky, Threads und Mastodon teilen",
+    "ogImageAlt": "Thread Weaver. Ein langer Beitrag wird in Beiträge für X, Bluesky, Threads und Mastodon geteilt."
+  },
+  "header":         {
+    "kicker":  "Aufmerksamkeitsspanne-Reduzierer",
+    "line1":   "THREAD",
+    "line2":   "WEAVER.",
+    "tagline": "Weil niemand auf der Timeline mehr als drei Sätze liest, ohne unter Dopaminentzug zu leiden."
+  },
+  "source":         {
+    "label":       "Entwurf",
+    "placeholder": "Füg hier deinen entgleisten Monolog ein...",
+    "sample":      "Segment 1 deines entgleisten Monologs steht genau hier. Tippe oder füge oben Text ein, und die Engine teilt deine Gedanken an Wortgrenzen, bevor die Plattformlimits dich blamieren."
+  },
+  "platform":       {
+    "kicker":  "Plattform-Korsett",
+    "name":    {
+      "x":       "X",
+      "bsky":    "Bluesky",
+      "threads": "Threads",
+      "masto":   "Mastodon"
+    },
+    "x":       "X (280)",
+    "bsky":    "Bluesky (300)",
+    "threads": "Threads (500)",
+    "masto":   "Mastodon (500)"
+  },
+  "marker":         {
+    "style":             "Marker-Stil",
+    "parens":            "(1/n) Klammern",
+    "brackets":          "[1/n] Eckige Klammern",
+    "slash":             "1/n Nackter Bruch",
+    "hash":              "#1 Nummern-Tag",
+    "none":              "Keine (Auf eigene Gefahr)",
+    "placement":         "Platzierung",
+    "newline":           "Neue Zeile (unten)",
+    "inlineAfter":       "Inline (nach dem Text)",
+    "inlineBefore":      "Inline (vor dem Text)",
+    "start":             "Kopfzeile (oben im Segment)",
+    "bridge":            "Eigene Brücke",
+    "bridgePlaceholder": "z. B. ..., //, ››"
+  },
+  "tools":          {
+    "capitalize": "Beiträge großschreiben",
+    "finish":     "Sätze abschließen",
+    "breaks":     "Zeilenumbrüche behalten",
+    "characters": "{count} Zeichen",
+    "clear":      "Leeren"
+  },
+  "list":           {
+    "title":  "Mundgerechte Fracht",
+    "meta":   "Feste Reihenfolge: insgesamt {count} Beitrag | Feste Reihenfolge: insgesamt {count} Beiträge",
+    "copy":   "Ganze Folge kopieren",
+    "copied": "Alles kopiert!"
+  },
+  "post":           {
+    "position":  "Beitrag {index} von {total}",
+    "copy":      "Kopieren",
+    "copied":    "Kopiert",
+    "copyTitle": "Irgendwo klicken, um diesen Abschnitt zu kopieren",
+    "moveUp":    "Nach oben",
+    "moveDown":  "Nach unten"
+  },
+  "actions":        {
+    "sendTitle":   "Direkt an die aktuelle Plattform senden",
+    "send":        "Senden an {platform}",
+    "listenTitle": "Diesen Beitrag anhören, um Rhythmus und Tempo zu prüfen",
+    "listen":      "Anhören",
+    "speaking":    "Spricht...",
+    "qrTitle":     "Diesen Abschnitt als QR-Code zeigen",
+    "qr":          "Abschnitt als QR-Code zeigen",
+    "drop":        "Entfernen"
+  },
+  "ship":           {
+    "title":    "Folge ist versandbereit",
+    "lead":     "Aufgeteilt in {count} Beitrag. Geschätzte Lesezeit: {minutes} Min. | Aufgeteilt in {count} Beiträge. Geschätzte Lesezeit: {minutes} Min.",
+    "length":   "Gesamtlänge",
+    "chars":    "{count} Zeichen",
+    "words":    "Wörter gesamt",
+    "target":   "Zielformat",
+    "copy":     "Ganze Folge kopieren",
+    "copied":   "Alle Beiträge in der Zwischenablage!",
+    "download": ".md herunterladen"
+  },
+  "qr":             {
+    "title": "Segment per Scan übertragen",
+    "help":  "Mit der Kamera scannen, um den Text direkt auf dem Gerät zu öffnen.",
+    "close": "Schließen"
+  },
+  "footer":         {
+    "credit":  "Kolja Nolte",
+    "made":    "erstellt mit ♥️ und {emphasis} KI",
+    "without": "ohne"
+  },
+  "markdown":       {
+    "heading": "Beitrag {index}"
+  },
+  "error":          {
+    "home":     "Zurück zur Werkbank",
+    "notFound": "Seite nicht gefunden"
+  },
+  "schema":         {
+    "featureSplit":    "Teilt einen Beitrag an Wortgrenzen für X, Bluesky, Threads und Mastodon",
+    "featureMarker":   "Setzt einen Thread-Marker und eine optionale Brücke",
+    "featureCopy":     "Kopiert einen Beitrag oder die ganze Folge",
+    "featureDownload": "Lädt den Thread als Markdown herunter",
+    "featureQr":       "Zeigt einen Abschnitt als QR-Code"
+  }
 }

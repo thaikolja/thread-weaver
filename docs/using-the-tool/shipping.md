@@ -1,0 +1,33 @@
+---
+title: Shipping a thread
+description: Copy, download, listen, and send.
+---
+
+# Shipping a thread
+
+The ship station is the summary under the cards.
+
+## Totals
+
+- **Total length** is the sum of the published posts, markers and bridges included.
+- **Total words** counts words in the source box, not in the counters.
+- **Read time** is at least one minute, otherwise `round(words / 200)`.
+- **Format target** is the platform name, such as X or Bluesky.
+
+## Copy
+
+Copy on a card writes that post. Copy Entire Sequence joins every post with a blank line, `---`, and another blank line. The sequence button says it copied, then clears that label after 2.5 seconds.
+
+Editing the draft clears those checkmarks. Segment ids are reused after a fresh pack, and a checkmark must not stick to a different sentence.
+
+## Download
+
+Download .md saves `thread-<platform>-<timestamp>.md`. Each post is a `### Post N` section, joined the same way as copy-all.
+
+## Listen and QR
+
+Listen reads the card without the chunk counter the page attached, such as `(1/3)` or `[1/3]`. A bridge you typed is still read. A counter you wrote inside the post, such as "see [1/2] in the notes", is still read. Copy, download, and send keep the counter.
+
+The voice is one already installed. English text uses a clear English voice, German text a German voice, and Thai text a Thai voice. Joke voices and compact voices are skipped. Nothing is downloaded. The rate is 1.05. Clicking the same card again stops it.
+
+Send to Phone opens a QR for that post. The picture comes from `api.qrserver.com`. Closing the draft, or editing it, closes the QR as well.

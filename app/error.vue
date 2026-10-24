@@ -24,28 +24,32 @@ defineProps<{
   error: NuxtError
 }>()
 
+/** Home link for the locale the reader was on. */
+const localePath = useLocalePath()
+
 function goHome(): void {
-  clearError({ redirect: '/' })
+  /** `/de` and `/th` stay on that language. */
+  clearError({ redirect: localePath('/') })
 }
 </script>
 
 <template>
   <div class="c-error">
     <p class="c-error-kicker">
-      Thread Weaver
+      {{ $t('nuxtSiteConfig.name') }}
     </p>
     <h1 class="c-error-code">
       {{ error.statusCode }}
     </h1>
     <p class="c-error-message">
-      {{ error.message }}
+      {{ error.statusCode === 404 ? $t('error.notFound') : error.message }}
     </p>
     <button
       type="button"
       class="c-error-home"
       @click="goHome"
     >
-      Back to the workbench
+      {{ $t('error.home') }}
     </button>
   </div>
 </template>

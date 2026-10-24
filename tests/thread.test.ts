@@ -19,8 +19,8 @@ import { readTimeMinutes, ringColor, ringTextColor, totalChars, totalWords } fro
 /** Copy-all, markdown, intents, and the QR address. */
 import { copyAllBody, intentUrl, markdownBody, markdownFilename, qrImageUrl } from '../app/utils/weaver/publish.ts'
 
-/** Speech decision and the copy-all timer. */
-import { armCopyAllReset, speechCommand } from '../app/utils/weaver/speech.ts'
+/** Speech decision, voice choice, and the copy-all timer. */
+import { armCopyAllReset, rankVoice, speechBcp, speechCommand, speechLang } from '../app/utils/weaver/speech.ts'
 
 /** Normalize and pack. */
 import { splitSource } from '../app/utils/weaver/split.ts'
@@ -62,6 +62,26 @@ function readMatching(directory: URL, suffix: string): string[] {
   return readdirSync(directory)
     .filter(name => name.endsWith(suffix))
     .map(name => readFileSync(join(directory.pathname, name), 'utf8'))
+}
+
+/** Dot paths of every string in a locale file. */
+function messageKeys(value: unknown, prefix = ''): string[] {
+  /** A leaf is one message. */
+  if (typeof value === 'string') {
+    return [prefix]
+  }
+
+  /** Numbers and null are not copy. */
+  if (!value || typeof value !== 'object') {
+    return []
+  }
+
+  return Object.entries(value as Record<string, unknown>).flatMap(([key, child]) => {
+    /** `header.kicker`, and so on. */
+    const path = prefix ? `${prefix}.${key}` : key
+
+    return messageKeys(child, path)
+  })
 }
 
 /** The page, the components, and the modules they import, as one string. */
@@ -195,6 +215,69 @@ test('marker formats and placements match the compiled strings', () => {
     expect(posts[0]?.compiled).toBe(first)
     expect(posts[1]?.compiled).toBe(second)
   }
+})
+
+/** Listen reads the card, and it skips the chunk counter. */
+test('listen reads the post without the chunk counter', () => {
+  const cases: Array<[MarkerFormat, MarkerPlacement, string, string, string]> = [
+    ['parens', 'newline', '', 'Alpha', 'Beta'],
+    ['parens', 'inline-after', '', 'Alpha', 'Beta'],
+    ['parens', 'inline-before', '', 'Alpha', 'Beta'],
+    ['parens', 'start', '', 'Alpha', 'Beta'],
+    ['brackets', 'newline', '', 'Alpha', 'Beta'],
+    ['brackets', 'inline-after', '', 'Alpha', 'Beta'],
+    ['brackets', 'inline-before', '', 'Alpha', 'Beta'],
+    ['brackets', 'start', '', 'Alpha', 'Beta'],
+    ['slash', 'newline', '', 'Alpha', 'Beta'],
+    ['slash', 'inline-after', '', 'Alpha', 'Beta'],
+    ['slash', 'inline-before', '', 'Alpha', 'Beta'],
+    ['slash', 'start', '', 'Alpha', 'Beta'],
+    ['hash', 'newline', '', 'Alpha', 'Beta'],
+    ['hash', 'inline-after', '', 'Alpha', 'Beta'],
+    ['hash', 'inline-before', '', 'Alpha', 'Beta'],
+    ['hash', 'start', '', 'Alpha', 'Beta'],
+    ['none', 'newline', '', 'Alpha', 'Beta'],
+    ['parens', 'inline-after', '//', 'Alpha //', 'Beta //'],
+    ['parens', 'inline-before', '//', '// Alpha', '// Beta'],
+    ['parens', 'newline', '//', 'Alpha\n\n//', 'Beta\n\n//'],
+    ['parens', 'start', '>>', '>>\n\nAlpha', '>>\n\nBeta'],
+    ['brackets', 'newline', '...', 'Alpha\n\n...', 'Beta\n\n...'],
+    ['none', 'inline-after', '//', 'Alpha', 'Beta']
+  ]
+
+  for (const [marker, placement, bridge, first, second] of cases) {
+    const posts = compilePair(marker, placement, bridge)
+    expect(posts[0]?.spoken).toBe(first)
+    expect(posts[1]?.spoken).toBe(second)
+  }
+
+  /** A counter written inside the post stays. Only the one we attach is dropped. */
+  const quoted = compileThread({
+    blocks: [{ id: 'block-0', text: 'See [1/2] in the notes' }],
+    marker: 'brackets',
+    placement: 'newline',
+    bridge: ''
+  })
+
+  expect(quoted[0]?.compiled).toBe('See [1/2] in the notes\n\n[1/1]')
+  expect(quoted[0]?.spoken).toBe('See [1/2] in the notes')
+
+  /** An empty card has nothing to say once the counter is gone. */
+  const empty = compileThread(setSource(createWeaverState(), ''))
+  expect(empty[0]?.spoken).toBe('')
+
+  /** The button passes that string straight into the speech decision. */
+  const spoken = compilePair('brackets', 'newline')[0]?.spoken ?? ''
+  expect(spoken).toBe('Alpha')
+  expect(speechCommand(true, null, 'block-0', spoken, false)).toEqual({
+    type: 'speak',
+    text: 'Alpha',
+    rate: SPEECH_RATE
+  })
+
+  /** The Listen click uses the spoken string, not the card that still shows the counter. */
+  const actions = readFileSync(new URL('../app/components/PostActions.vue', import.meta.url), 'utf8')
+  expect(actions).toContain('weaver.listen(post.spoken, post.id)')
 })
 
 /** Typing a bridge shows it on the default layout without another control change. */
@@ -366,6 +449,76 @@ test('copy-all, markdown, filenames, intents, QR, ring color, read time, and spe
   expect(SPEECH_RATE).toBe(1.05)
 })
 
+/** Listen uses a voice the machine already has. Compact and joke voices lose. */
+test('listen picks a clear local voice and skips compact and novelty voices', () => {
+  const voices = [
+    { name: 'Samantha (Compact)', lang: 'en-US', localService: true, default: true },
+    { name: 'Fred', lang: 'en-US', localService: true, default: false },
+    { name: 'Samantha', lang: 'en-US', localService: true, default: false },
+    { name: 'Aaron', lang: 'en-US', localService: true, default: false },
+    { name: 'Google US English', lang: 'en-US', localService: false, default: false },
+    { name: 'Anna', lang: 'de-DE', localService: true, default: false }
+  ]
+
+  expect(rankVoice(voices, 'en-US')?.name).toBe('Samantha')
+  expect(rankVoice(voices, 'de-DE')?.name).toBe('Anna')
+  expect(rankVoice([
+    { name: 'Grandma (Deutsch (Deutschland))', lang: 'de-DE', localService: true, default: true },
+    { name: 'Anna (premium)', lang: 'de-DE', localService: true, default: false },
+    { name: 'Samantha', lang: 'en-US', localService: true, default: false },
+    { name: 'Eddy (Englisch (Vereinigte Staaten))', lang: 'en-US', localService: true, default: false }
+  ], 'en')?.name).toBe('Samantha')
+  expect(rankVoice([
+    { name: 'Grandma (Deutsch (Deutschland))', lang: 'de-DE', localService: true, default: true },
+    { name: 'Anna', lang: 'de-DE', localService: true, default: false },
+    { name: 'Anna (premium)', lang: 'de-DE', localService: true, default: false }
+  ], 'de')?.name).toBe('Anna (premium)')
+  expect(rankVoice([
+    { name: 'Samantha (Enhanced)', lang: 'en-US', localService: true, default: false },
+    { name: 'Samantha', lang: 'en-US', localService: true, default: true }
+  ], 'en-US')?.name).toBe('Samantha (Enhanced)')
+  expect(speechLang('Start typing and the engine partitions your thoughts before the limit.', 'de-DE')).toBe('en')
+  expect(speechLang('Der Zug ist nicht pünktlich und die Bahn hat Verspätung.', 'en-US')).toBe('de')
+  expect(speechLang('Hallo zusammen', 'en-US')).toBe('de')
+  expect(speechLang('สวัสดีครับ', 'en-US')).toBe('th')
+  expect(speechBcp('de')).toBe('de-DE')
+  expect(speechBcp('th')).toBe('th-TH')
+  expect(speechBcp('en')).toBe('en-US')
+
+  /** The three sentences the locale files put in the box. */
+  const englishSample = JSON.parse(readFileSync(new URL('../i18n/locales/en-US.json', import.meta.url), 'utf8')) as { source: { sample: string } }
+  const germanSample = JSON.parse(readFileSync(new URL('../i18n/locales/de-DE.json', import.meta.url), 'utf8')) as { source: { sample: string } }
+  const thaiSample = JSON.parse(readFileSync(new URL('../i18n/locales/th-TH.json', import.meta.url), 'utf8')) as { source: { sample: string } }
+
+  expect(speechLang(englishSample.source.sample, 'de-DE')).toBe('en')
+  expect(speechLang(germanSample.source.sample, 'en-US')).toBe('de')
+  expect(speechLang(thaiSample.source.sample, 'en-US')).toBe('th')
+  expect(rankVoice([
+    { name: 'Samantha', lang: 'en-US', localService: true, default: false },
+    { name: 'Anna (premium)', lang: 'de-DE', localService: true, default: false },
+    { name: 'Kanya', lang: 'th-TH', localService: true, default: false }
+  ], speechLang(germanSample.source.sample, 'en-US'))?.name).toBe('Anna (premium)')
+  expect(rankVoice([
+    { name: 'Samantha', lang: 'en-US', localService: true, default: false },
+    { name: 'Anna (premium)', lang: 'de-DE', localService: true, default: false },
+    { name: 'Kanya', lang: 'th-TH', localService: true, default: false }
+  ], speechLang(thaiSample.source.sample, 'de-DE'))?.name).toBe('Kanya')
+  expect(rankVoice([
+    { name: 'Samantha (Compact)', lang: 'en-US', localService: true, default: true },
+    { name: 'Fred', lang: 'en-US', localService: true, default: false }
+  ], 'en-US')).toBeNull()
+  expect(rankVoice([
+    { name: 'Google US English', lang: 'en-US', localService: false, default: false }
+  ], 'en-GB')?.name).toBe('Google US English')
+  expect(rankVoice([], 'en-US')).toBeNull()
+
+  /** The player asks for that ranking. It does not invent a voice object. */
+  const player = readFileSync(new URL('../app/composables/useWeaverSpeech.ts', import.meta.url), 'utf8')
+  expect(player).toContain('rankVoice')
+  expect(player).toContain('utterance.lang')
+  expect(player).not.toContain('new SpeechSynthesisVoice')
+})
+
 /** The page is the workbench, and it uses these modules rather than a second copy of the rules. */
 test('the page imports this module and the starter shell is gone', () => {
   const source = vueSource()
@@ -380,17 +533,40 @@ test('the page imports this module and the starter shell is gone', () => {
   expect(page).not.toContain('<ThreadHeader')
   expect(source).toContain('useThreadWeaver')
   expect(source).toContain('<script setup lang="ts">')
-  expect(source).toContain('Attention Span Reducer')
-  expect(source).toContain('THREAD')
-  expect(source).toContain('WEAVER')
-  expect(source).toContain('X (280)')
-  expect(source).toContain('Bluesky (300)')
-  expect(source).toContain('Threads (500)')
-  expect(source).toContain('Mastodon (500)')
-  expect(source).toContain('Segment 1 of your unhinged monologue sits right here')
+  expect(source).toContain('$t(\'')
+  expect(source).toContain(SAMPLE_SOURCE)
+  expect(source).not.toContain('Attention Span Reducer')
   expect(source).not.toContain('Nuxt Starter Template')
+
+  /** Visible copy lives in the locale files, with the same keys in each language. */
+  const english = readFileSync(new URL('../i18n/locales/en-US.json', import.meta.url), 'utf8')
+  const german = JSON.parse(readFileSync(new URL('../i18n/locales/de-DE.json', import.meta.url), 'utf8')) as unknown
+  const thai = JSON.parse(readFileSync(new URL('../i18n/locales/th-TH.json', import.meta.url), 'utf8')) as unknown
+  const englishMessages = JSON.parse(english) as unknown
+  const keys = messageKeys(englishMessages).sort()
+
+  expect(messageKeys(german).sort()).toEqual(keys)
+  expect(messageKeys(thai).sort()).toEqual(keys)
+  expect(english).toContain('Attention Span Reducer')
+  expect(english).toContain('THREAD')
+  expect(english).toContain('WEAVER')
+  expect(english).toContain('X (280)')
+  expect(english).toContain('Bluesky (300)')
+  expect(english).toContain('Threads (500)')
+  expect(english).toContain('Mastodon (500)')
+  expect(english).toContain('Show Chunk as QR Code')
+  expect(english).toContain(SAMPLE_SOURCE)
+
+  /** The phone QR is the remote image. The placeholder component is gone. */
+  expect(source).toContain(':src="weaver.activeQrUrl"')
+  expect(source).not.toContain('httpsd;asdf')
+  expect(source).not.toContain('<Qrcode')
+
+  /** Plus Jakarta is loaded by Nuxt. The page font token is the system UI stack. */
   const css = readFileSync(new URL('../app/assets/css/main.css', import.meta.url), 'utf8')
-  expect(css).toContain('Plus Jakarta Sans')
+  const config = readFileSync(new URL('../nuxt.config.ts', import.meta.url), 'utf8')
+  expect(config).toContain('Plus Jakarta Sans')
+  expect(css).toContain('system-ui')
   expect(css).toContain('JetBrains Mono')
   expect(css).toContain('@utility btn-tactile')
   expect(css).toContain('.thread-chain-move')

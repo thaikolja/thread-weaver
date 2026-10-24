@@ -19,11 +19,14 @@
  * WebSite, WebPage, and the author already come from the SEO module.
  */
 export function useToolSchema(): void {
+  /** Feature lines follow the active locale. */
+  const { t } = useI18n()
+
   /** Free browser app. No price and no rating, so nothing invents an offer. */
   useSchemaOrg([
     defineSoftwareApp({
       '@type':               'WebApplication',
-      'name':                'Thread Weaver',
+      'name':                t('nuxtSiteConfig.name'),
       'url':                 'https://weaver.yanawa.io/',
       'applicationCategory': 'UtilitiesApplication',
       'operatingSystem':     'Web',
@@ -31,11 +34,11 @@ export function useToolSchema(): void {
       'isAccessibleForFree': true,
       'image':               '/og-image.png',
       'featureList':         [
-        'Splits a post on word boundaries for X, Bluesky, Threads, and Mastodon',
-        'Adds a thread marker and an optional bridge',
-        'Copies one post or the whole sequence',
-        'Downloads the thread as Markdown',
-        'Shows one chunk as a QR code'
+        t('schema.featureSplit'),
+        t('schema.featureMarker'),
+        t('schema.featureCopy'),
+        t('schema.featureDownload'),
+        t('schema.featureQr')
       ]
     })
   ])

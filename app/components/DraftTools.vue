@@ -32,7 +32,7 @@ const weaver = useWeaver()
           type="checkbox"
           class="c-tool-check"
         >
-        <span>Capitalize posts</span>
+        <span>{{ $t('tools.capitalize') }}</span>
       </label>
       <label class="c-tool">
         <UIcon
@@ -44,7 +44,7 @@ const weaver = useWeaver()
           type="checkbox"
           class="c-tool-check"
         >
-        <span>Finish sentences</span>
+        <span>{{ $t('tools.finish') }}</span>
       </label>
       <label class="c-tool">
         <UIcon
@@ -56,11 +56,11 @@ const weaver = useWeaver()
           type="checkbox"
           class="c-tool-check"
         >
-        <span>Keep line breaks</span>
+        <span>{{ $t('tools.breaks') }}</span>
       </label>
     </div>
     <div class="ml-auto flex items-center gap-4">
-      <span class="font-mono text-slate-600">{{ weaver.source.length }} characters</span>
+      <span class="font-mono text-slate-600">{{ $t('tools.characters', { count: weaver.source.length }) }}</span>
       <button
         v-if="weaver.source"
         type="button"
@@ -71,7 +71,7 @@ const weaver = useWeaver()
           name="i-lucide-trash"
           class="size-3.5"
         />
-        <span>Clear</span>
+        <span>{{ $t('tools.clear') }}</span>
       </button>
     </div>
   </div>

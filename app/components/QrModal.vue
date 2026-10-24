@@ -20,7 +20,11 @@
 >
 /** Shared editor. The modal opens when a post asks for a QR. */
 
-const weaver = useWeaver()
+const weaver     = useWeaver()
+const fullCards  = computed(() => weaver.shownPosts.map(post => post.compiled).join('\n\n'))
+const qrCodeData = useQrcode('https://nuxt.com', {
+  toBase64: true,
+})
 </script>
 
 <template>
@@ -33,21 +37,24 @@ const weaver = useWeaver()
       class="c-qr-dialog"
       @click.stop
     >
-      <h4 class="text-sm font-bold text-slate-900">
-        Scan to Transfer Segment
+      <h4 class="text-xl font-bold">
+        {{ $t('qr.title') }}
       </h4>
       <div class="c-qr-frame">
-        <Qrcode value="httpsd;asdf" />
+        <NuxtImg
+          :src="qrCodeData"
+          alt="Image"
+        />
       </div>
-      <p class="text-[11px] text-slate-600">
-        Scan with camera to open text directly on your device.
+      <p class="text-dimmed">
+        {{ $t('qr.help') }}
       </p>
       <button
         type="button"
         class="c-qr-close"
         @click="weaver.closeQr()"
       >
-        Close
+        {{ $t('qr.close') }}
       </button>
     </div>
   </div>
@@ -57,11 +64,11 @@ const weaver = useWeaver()
 @reference "../assets/css/main.css";
 
 .c-qr-backdrop {
-  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm;
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm;
 }
 
 .c-qr-dialog {
-  @apply w-full max-w-xs space-y-4 rounded-3xl border border-slate-100 bg-white p-6 text-center shadow-2xl;
+  @apply w-full max-w-sm space-y-4 rounded-3xl border-slate-100 bg-white p-6 text-center shadow-2xl;
 }
 
 .c-qr-frame {
@@ -69,6 +76,6 @@ const weaver = useWeaver()
 }
 
 .c-qr-close {
-  @apply btn-tactile w-full rounded-xl bg-slate-100 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200;
+  @apply btn-tactile w-full  rounded-xl bg-black py-2 text-sm font-semibold text-white hover:bg-black/80
 }
 </style>

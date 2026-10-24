@@ -14,10 +14,10 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts">/**
+<script setup lang="ts">
+/**
  * Thread Weaver masthead: kicker, wordmark, and the template tagline.
  */
-
 </script>
 
 <template>
@@ -30,13 +30,13 @@
         height="16"
         class="size-4 shrink-0"
       >
-      <span>Attention Span Reducer</span>
+      <span>{{ $t('header.kicker') }}</span>
     </div>
     <h1 class="c-wordmark">
-      THREAD<br>WEAVER.
+      {{ $t('header.line1') }}<br>{{ $t('header.line2') }}
     </h1>
     <p class="c-tagline">
-      Because nobody on the timeline reads more than three sentences without suffering dopamine withdrawal.
+      {{ $t('header.tagline') }}
     </p>
   </header>
 </template>

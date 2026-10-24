@@ -42,26 +42,34 @@ const weaver = useWeaver()
       </div>
       <div class="space-y-1.5">
         <h3 class="c-ship-title">
-          Sequence Ready to Ship
+          {{ $t('ship.title') }}
         </h3>
         <p class="c-ship-lead">
-          Partitioned into <span class="c-ship-strong">{{
-          weaver.shownPosts.length
-        }} post{{ weaver.shownPosts.length === 1 ? '' : 's' }}</span>. Estimated read time: <span class="c-ship-strong">{{
-          weaver.shownPosts.length ? weaver.readMinutes : 0
-        }} min</span>.
+          <i18n-t
+            keypath="ship.lead"
+            tag="span"
+            scope="global"
+            :plural="weaver.shownPosts.length"
+          >
+            <template #count>
+              <span class="c-ship-strong">{{ weaver.shownPosts.length }}</span>
+            </template>
+            <template #minutes>
+              <span class="c-ship-strong">{{ weaver.shownPosts.length ? weaver.readMinutes : 0 }}</span>
+            </template>
+          </i18n-t>
         </p>
       </div>
       <div class="c-ship-stats">
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">Total Length</span>
-          <span class="c-ship-mono">{{ weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }} chars</span>
+          <span class="c-ship-kicker">{{ $t('ship.length') }}</span>
+          <span class="c-ship-mono">{{ $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }) }}</span>
         </div>
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">Total Words</span> <span class="c-ship-mono">{{ weaver.wordCount }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.words') }}</span> <span class="c-ship-mono">{{ weaver.wordCount }}</span>
         </div>
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">Format Target</span> <span class="c-ship-target">
+          <span class="c-ship-kicker">{{ $t('ship.target') }}</span> <span class="c-ship-target">
             <PlatformIcon
               :platform="weaver.platform"
               class="size-3.5 shrink-0"
@@ -86,7 +94,7 @@ const weaver = useWeaver()
             name="i-lucide-check"
             class="size-4 text-emerald-600"
           />
-          <span>{{ weaver.allCopied ? 'All Posts Stored to Clipboard!' : 'Copy Entire Sequence' }}</span>
+          <span>{{ weaver.allCopied ? $t('ship.copied') : $t('ship.copy') }}</span>
         </button>
         <button
           type="button"
@@ -97,7 +105,7 @@ const weaver = useWeaver()
             name="i-lucide-download"
             class="size-4 text-zinc-400"
           />
-          <span>Download .md</span>
+          <span>{{ $t('ship.download') }}</span>
         </button>
       </div>
     </div>

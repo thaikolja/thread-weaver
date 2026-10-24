@@ -34,6 +34,9 @@ export function useWeaverPublish(options: {
   posts: ComputedRef<readonly CompiledPost[]>
   platform: ComputedRef<PlatformId>
 }) {
+  /** Headings in the downloaded file follow the active locale. */
+  const { t } = useI18n()
+
   /** Image URL for the modal. Null hides it. */
   const activeQrUrl = ref<string | null>(null)
 
@@ -64,8 +67,8 @@ export function useWeaverPublish(options: {
       return
     }
 
-    /** The file body. */
-    const content = markdownBody(options.posts.value)
+    /** The file body. English stays `Post 1`. */
+    const content = markdownBody(options.posts.value, index => t('markdown.heading', { index }))
 
     /** A blob the browser can save. */
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })

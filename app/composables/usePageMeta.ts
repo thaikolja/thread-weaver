@@ -19,16 +19,49 @@
  * Description, canonical, and Open Graph come from the SEO module.
  */
 export function usePageMeta(): void {
+  /** Active locale. The title, image alt, and alternates follow it. */
+  const { t, locales } = useI18n()
+
+  /** Path of this page in another language, such as `/de`. */
+  const switchLocalePath = useSwitchLocalePath()
+
   /** Already names the site, so the module must not append " | Thread Weaver". */
-  const title = 'Thread Weaver — split posts for X, Bluesky, Threads, and Mastodon'
+  const title = computed(() => t('meta.title'))
+
+  /** English, German, and Thai, plus `x-default` for the unprefixed page. */
+  const alternates = computed(() => {
+    /** One hreflang for each configured locale. */
+    const links = locales.value.map((locale) => {
+      /** Locale objects carry `code` and `language`. A bare code is only a string. */
+      const code = typeof locale === 'string' ? locale : locale.code
+      const language = typeof locale === 'string' ? locale : locale.language || code
+      const path = switchLocalePath(code) || '/'
+
+      return {
+        rel:      'alternate' as const,
+        hreflang: language,
+        href:     new URL(path, 'https://weaver.yanawa.io').href
+      }
+    })
+
+    return [
+      ...links,
+      {
+        rel:      'alternate' as const,
+        hreflang: 'x-default',
+        href:     'https://weaver.yanawa.io/'
+      }
+    ]
+  })
 
   /** Keep the title as written. The module would otherwise add the site name again. */
   useHead({
     titleTemplate: '%s',
-    link:          [
+    link:          computed(() => [
       { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', sizes: '48x48' }
-    ]
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', sizes: '48x48' },
+      ...alternates.value
+    ])
   })
 
   /**
@@ -41,6 +74,6 @@ export function usePageMeta(): void {
     ogImageWidth:  1200,
     ogImageHeight: 630,
     ogImageType:   'image/png',
-    ogImageAlt:    'Thread Weaver. Split a long post into posts for X, Bluesky, Threads, and Mastodon.'
+    ogImageAlt:    computed(() => t('meta.ogImageAlt'))
   })
 }

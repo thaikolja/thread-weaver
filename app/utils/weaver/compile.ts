@@ -1,3 +1,19 @@
+/*
+ * Thread Weaver
+ *
+ * @description     Online tool to split long messages into parts for character-limited platforms
+ * @author          Kolja Nolte <kolja.nolte@gmail.com>
+ * @copyright       2026 (C) Kolja Nolte
+ * @see             https://www.kolja-nolte.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @package Thread Weaver
+ */
+
 /** Types for markers and finished posts. */
 import type { CompiledPost, MarkerFormat, MarkerPlacement, WeaverState } from './types'
 
@@ -65,6 +81,41 @@ export function compileText(
 }
 
 /**
+ * The words Listen should read.
+ * Same card as `compileText`, with the counter like `[1/2]` left off.
+ * A bridge stays, because that text is part of the card.
+ */
+export function speakableText(
+  text: string,
+  format: MarkerFormat,
+  placement: MarkerPlacement,
+  bridge: string
+): string {
+  /** No counter to drop, or nothing left but the chunk once it is dropped. */
+  if (format === 'none' || !bridge) {
+    return text
+  }
+
+  /** Bridge on the same line, after the chunk. */
+  if (placement === 'inline-after') {
+    return `${text} ${bridge}`
+  }
+
+  /** Bridge on the same line, before the chunk. */
+  if (placement === 'inline-before') {
+    return `${bridge} ${text}`
+  }
+
+  /** Bridge under the chunk. The counter used to follow it. */
+  if (placement === 'newline') {
+    return `${text}\n\n${bridge}`
+  }
+
+  /** Bridge above the chunk. The counter used to lead. */
+  return `${bridge}\n\n${text}`
+}
+
+/**
  * Optional cleanup before the counter is attached.
  * Capitalize lifts the first letter. Finish sentences adds … when the chunk has no ending mark.
  */
@@ -114,9 +165,10 @@ export function compileThread(state: Pick<WeaverState, 'blocks' | 'marker' | 'pl
     const text = polishSegment(block.text, capitalize, finishSentences)
 
     return {
-      id: block.id,
-      raw: text,
-      compiled: compileText(text, state.marker, state.placement, state.bridge, index, total)
+      id:       block.id,
+      raw:      text,
+      compiled: compileText(text, state.marker, state.placement, state.bridge, index, total),
+      spoken:   speakableText(text, state.marker, state.placement, state.bridge)
     }
   })
 }

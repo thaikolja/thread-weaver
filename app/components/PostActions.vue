@@ -14,7 +14,10 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 /** The compiled post these buttons act on. */
 
 import type { CompiledPost } from '~/utils/weaver/types'
@@ -35,39 +38,39 @@ const weaver = useWeaver()
       <button
         type="button"
         class="c-send"
-        title="Send directly to current platform intent"
+        :title="$t('actions.sendTitle')"
         @click="weaver.send(post.compiled)"
       >
         <UIcon
           name="i-lucide-external-link"
           class="c-action-icon"
         />
-        <span>Send to {{ weaver.platformName }}</span>
+        <span>{{ $t('actions.send', { platform: weaver.platformName }) }}</span>
       </button>
       <button
         type="button"
         class="c-listen"
         :class="weaver.speakingId === post.id ? 'c-listen-on' : 'c-listen-off'"
-        title="Listen to this post to verify cadence and pacing"
-        @click="weaver.listen(post.compiled, post.id)"
+        :title="$t('actions.listenTitle')"
+        @click="weaver.listen(post.spoken, post.id)"
       >
         <UIcon
           name="i-lucide-volume-2"
           class="size-3.5"
         />
-        <span>{{ weaver.speakingId === post.id ? 'Speaking...' : 'Listen' }}</span>
+        <span>{{ weaver.speakingId === post.id ? $t('actions.speaking') : $t('actions.listen') }}</span>
       </button>
       <button
         type="button"
         class="c-phone"
-        title="Show this chunk as a QR code"
+        :title="$t('actions.qrTitle')"
         @click="weaver.openQr(post.compiled)"
       >
         <UIcon
           name="i-lucide-qr-code"
           class="c-action-icon"
         />
-        <span>Show Chunk as QR Code</span>
+        <span>{{ $t('actions.qr') }}</span>
       </button>
     </div>
     <button
@@ -79,7 +82,7 @@ const weaver = useWeaver()
         name="i-lucide-trash-2"
         class="size-3.5"
       />
-      <span>Drop</span>
+      <span>{{ $t('actions.drop') }}</span>
     </button>
   </div>
 </template>

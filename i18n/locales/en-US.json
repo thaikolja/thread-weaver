@@ -1,3 +1,115 @@
 {
-  "tree": "tree"
+  "nuxtSiteConfig": {
+    "name":        "Thread Weaver",
+    "description": "Paste a long post. Thread Weaver splits it into posts for X, Bluesky, Threads, and Mastodon. Markers, copy, and the download run in the browser."
+  },
+  "meta":           {
+    "title":      "Thread Weaver — split posts for X, Bluesky, Threads, and Mastodon",
+    "ogImageAlt": "Thread Weaver. Split a long post into posts for X, Bluesky, Threads, and Mastodon."
+  },
+  "header":         {
+    "kicker":  "Attention Span Reducer",
+    "line1":   "THREAD",
+    "line2":   "WEAVER.",
+    "tagline": "Because nobody on the timeline reads more than three sentences without suffering dopamine withdrawal."
+  },
+  "source":         {
+    "label":       "Draft",
+    "placeholder": "Paste your unhinged monologue here...",
+    "sample":      "Segment 1 of your unhinged monologue sits right here. Start typing or pasting above, and the engine partitions your thoughts along word boundaries before the platform limits humiliate you."
+  },
+  "platform":       {
+    "kicker":  "Platform Corset",
+    "name":    {
+      "x":       "X",
+      "bsky":    "Bluesky",
+      "threads": "Threads",
+      "masto":   "Mastodon"
+    },
+    "x":       "X (280)",
+    "bsky":    "Bluesky (300)",
+    "threads": "Threads (500)",
+    "masto":   "Mastodon (500)"
+  },
+  "marker":         {
+    "style":             "Marker Style",
+    "parens":            "(1/n) Parentheses",
+    "brackets":          "[1/n] Brackets",
+    "slash":             "1/n Raw Fraction",
+    "hash":              "#1 Number Tag",
+    "none":              "None (Live Dangerously)",
+    "placement":         "Placement",
+    "newline":           "New Line (Bottom)",
+    "inlineAfter":       "Inline (After text)",
+    "inlineBefore":      "Inline (Before text)",
+    "start":             "Header (Top of segment)",
+    "bridge":            "Custom Bridge",
+    "bridgePlaceholder": "e.g. ..., //, ››"
+  },
+  "tools":          {
+    "capitalize": "Capitalize posts",
+    "finish":     "Finish sentences",
+    "breaks":     "Keep line breaks",
+    "characters": "{count} characters",
+    "clear":      "Clear"
+  },
+  "list":           {
+    "title":  "Bite-Sized Payload",
+    "meta":   "Fixed sequence overview: {count} total post | Fixed sequence overview: {count} total posts",
+    "copy":   "Copy Entire Sequence",
+    "copied": "All Copied!"
+  },
+  "post":           {
+    "position":  "Post {index} of {total}",
+    "copy":      "Copy",
+    "copied":    "Copied",
+    "copyTitle": "Click anywhere to copy this chunk",
+    "moveUp":    "Move Up",
+    "moveDown":  "Move Down"
+  },
+  "actions":        {
+    "sendTitle":   "Send directly to current platform intent",
+    "send":        "Send to {platform}",
+    "listenTitle": "Listen to this post to verify cadence and pacing",
+    "listen":      "Listen",
+    "speaking":    "Speaking...",
+    "qrTitle":     "Show this chunk as a QR code",
+    "qr":          "Show Chunk as QR Code",
+    "drop":        "Drop"
+  },
+  "ship":           {
+    "title":    "Sequence Ready to Ship",
+    "lead":     "Partitioned into {count} post. Estimated read time: {minutes} min. | Partitioned into {count} posts. Estimated read time: {minutes} min.",
+    "length":   "Total Length",
+    "chars":    "{count} chars",
+    "words":    "Total Words",
+    "target":   "Format Target",
+    "copy":     "Copy Entire Sequence",
+    "copied":   "All Posts Stored to Clipboard!",
+    "download": "Download .md"
+  },
+  "qr":             {
+    "title": "Scan to Transfer Segment",
+    "help":  "Scan with camera to open text directly on your device.",
+    "close": "Close"
+  },
+  "footer":         {
+    "credit":  "Kolja Nolte",
+    "made":    "created with ♥️ and {emphasis} AI",
+    "without": "without"
+  },
+  "markdown":       {
+    "heading": "Post {index}"
+  },
+  "error":          {
+    "home":     "Back to the workbench",
+    "notFound": "Page not found"
+  },
+  "schema":         {
+    "featureSplit":    "Splits a post on word boundaries for X, Bluesky, Threads, and Mastodon",
+    "featureMarker":   "Adds a thread marker and an optional bridge",
+    "featureCopy":     "Copies one post or the whole sequence",
+    "featureDownload": "Downloads the thread as Markdown",
+    "featureQr":       "Shows one chunk as a QR code"
+  }
 }

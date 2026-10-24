@@ -29,10 +29,10 @@ const weaver = useWeaver()
         </div>
         <div class="flex h-9 flex-col justify-center">
           <h2 class="c-list-title">
-            Bite-Sized Payload
+            {{ $t('list.title') }}
           </h2>
           <p class="c-list-meta">
-            Fixed sequence overview: {{ weaver.shownPosts.length }} total post{{ weaver.shownPosts.length === 1 ? '' : 's' }}
+            {{ $t('list.meta', { count: weaver.shownPosts.length }) }}
           </p>
         </div>
       </div>
@@ -45,7 +45,7 @@ const weaver = useWeaver()
           name="i-lucide-copy"
           class="size-3.5"
         />
-        <span>{{ weaver.allCopied ? 'All Copied!' : 'Copy Entire Sequence' }}</span>
+        <span>{{ weaver.allCopied ? $t('list.copied') : $t('list.copy') }}</span>
       </button>
     </div>
 

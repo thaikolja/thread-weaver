@@ -26,13 +26,13 @@ const weaver = useWeaver()
       class="sr-only"
       for="weaver-source"
     >
-      Draft
+      {{ $t('source.label') }}
     </label>
     <textarea
       id="weaver-source"
       v-model="weaver.source"
       rows="6"
-      placeholder="Paste your unhinged monologue here..."
+      :placeholder="$t('source.placeholder')"
       class="c-source-input"
     />
   </div>

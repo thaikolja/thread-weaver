@@ -6,11 +6,11 @@ import { fileURLToPath } from 'node:url'
 /** Repository root, one level above this script. */
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** Markdown that Docus reads. */
-const contentDir = join(root, 'documentation', 'content')
+/** VitePress source at the repository root. */
+const contentDir = join(root, 'docs')
 
-/** Static files copied into the docs site. */
-const docsPublic = join(root, 'documentation', 'public')
+/** Logo and other files VitePress copies through as-is. */
+const docsPublic = join(contentDir, 'public')
 
 /** Write one markdown page, creating parent folders as needed. */
 function writePage(relativePath, body) {
@@ -68,12 +68,10 @@ function formatDoc(raw) {
     }
     if (!current) {
       current = line
-    }
-    else if (/[.!?…:]$/.test(current)) {
+    } else if (/[.!?…:]$/.test(current)) {
       paragraphs.push(current)
       current = line
-    }
-    else {
+    } else {
       current = `${current} ${line}`
     }
   }
@@ -126,8 +124,7 @@ function braceDelta(line) {
   for (const character of line) {
     if (character === '{') {
       delta += 1
-    }
-    else if (character === '}') {
+    } else if (character === '}') {
       delta -= 1
     }
   }
@@ -142,8 +139,7 @@ function functionSignatureClosed(text) {
   for (const character of text) {
     if (character === '(') {
       depth += 1
-    }
-    else if (character === ')') {
+    } else if (character === ')') {
       depth -= 1
     }
   }
@@ -273,11 +269,41 @@ ${blocks.join('\n')}
 `
 }
 
-/** Landing page. */
+/** Landing page. The four features are the sidebar categories. */
 function landing() {
   return `---
+layout: home
 title: Thread Weaver
-description: Split a long post into posts that fit X, Bluesky, Threads, and Mastodon.
+titleTemplate: Split a long post
+
+hero:
+  name: Thread Weaver
+  text: Split a long post into posts that fit the platform.
+  tagline: The work happens in the browser. The page does not store the text and it does not post for you.
+  image:
+    src: /logo.svg
+    alt: Thread Weaver
+  actions:
+    - theme: brand
+      text: Introduction
+      link: /getting-started/introduction
+    - theme: alt
+      text: Installation
+      link: /getting-started/installation
+
+features:
+  - title: Getting started
+    details: What the tool is for, and how to run it locally.
+    link: /getting-started/introduction
+  - title: Using the tool
+    details: Platforms, markers, bridges, text tools, and shipping.
+    link: /using-the-tool/workbench
+  - title: Architecture
+    details: Where the split rules live, and where the browser calls live.
+    link: /architecture/overview
+  - title: Reference
+    details: Every public function, taken from the comments in the source.
+    link: /reference/types-and-limits
 ---
 
 # Thread Weaver
@@ -303,7 +329,7 @@ The work happens in the browser. The page does not store the text and it does no
 
 /** Getting started pages. */
 function gettingStarted() {
-  writePage('1.getting-started/1.introduction.md', `---
+  writePage('getting-started/introduction.md', `---
 title: Introduction
 description: What Thread Weaver does, and what it deliberately does not do.
 ---
@@ -318,16 +344,20 @@ Use it when you already have the words and you need them to fit a character limi
 
 ## What stays on your machine
 
-Splitting, markers, totals, and the download file are computed in the page. Copy uses the browser clipboard. Listen uses the browser speech API. Send opens the platform's compose page in a new tab and leaves the actual post to you.
+Splitting, markers, totals, and the download file are computed in the page. Copy uses the browser clipboard. Listen uses a voice already installed on the machine, and it follows the language written on the card: English, German, or Thai. Send opens the platform's compose page in a new tab and leaves the actual post to you.
 
 The only remote call is the QR image. Send to Phone asks \`api.qrserver.com\` for a picture of the current post. Everything else stays local.
 
+## Languages
+
+The buttons are English at \`/\`, German at \`/de\`, and Thai at \`/th\`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
+
 ## Version
 
-The project is version **1.0.0**. That number stays until the maintainer asks for a bump. It is not a production release yet.
+The project is version **1.0.0**. That is the production release. Leave \`package.json\` on that number unless the maintainer asks for a bump.
 `)
 
-  writePage('1.getting-started/2.installation.md', `---
+  writePage('getting-started/installation.md', `---
 title: Installation
 description: Run Thread Weaver locally with Bun.
 ---
@@ -349,22 +379,21 @@ Open the URL Bun prints. The home page is the editor.
 
 | Command | Purpose |
 | --- | --- |
-| \`bun test\` | Run the Vitest suite |
+| \`bun test\` | Run the splitter tests in \`tests/thread.test.ts\` |
 | \`bun run typecheck\` | Check TypeScript |
 | \`bun run lint\` | Run ESLint |
 | \`bun run docs:dev\` | Preview this documentation |
-| \`bun run docs:build\` | Regenerate the markdown and build the static site into \`/docs\` |
+| \`bun run docs:build\` | Regenerate the markdown and build the VitePress site |
 
 ## Documentation site
 
-The docs are a separate [Docus](https://docus.dev) app in \`documentation/\`. A GitHub Action writes the markdown from the source, then runs \`nuxt generate\`. The static files are written to the \`/docs\` folder at the root of the repository.
+The guides are a [VitePress](https://vitepress.dev) site in \`/docs\`. \`scripts/generate-docs.mjs\` writes the categories and the pages. A GitHub Action rebuilds the site on every push to \`main\`.
 `)
-
 }
 
 /** How to use the product. */
 function usingTheTool() {
-  writePage('2.using-the-tool/1.workbench.md', `---
+  writePage('using-the-tool/workbench.md', `---
 title: The workbench
 description: The parts of the page and what each one is for.
 ---
@@ -396,7 +425,7 @@ The page is one screen. The sections share a single editor through \`provideWeav
 Clear empties the box. The page then shows one empty card so the marker still has a place to sit.
 `)
 
-  writePage('2.using-the-tool/2.platforms.md', `---
+  writePage('using-the-tool/platforms.md', `---
 title: Platforms
 description: The four character limits and what changes when you switch.
 ---
@@ -426,7 +455,7 @@ Send opens one of these addresses, with the current post encoded on the end:
 - \`https://mastodon.social/share?text=\`
 `)
 
-  writePage('2.using-the-tool/3.markers-and-bridges.md', `---
+  writePage('using-the-tool/markers-and-bridges.md', `---
 title: Markers and bridges
 description: How counters and the custom bridge are written into each post.
 ---
@@ -461,7 +490,7 @@ An empty bridge is a blank line, or a single space when the marker is inline. A 
 Inline posts join the bridge as a space, the bridge, and a space: \` \${bridge} \`.
 `)
 
-  writePage('2.using-the-tool/4.text-tools.md', `---
+  writePage('using-the-tool/text-tools.md', `---
 title: Text tools
 description: Capitalize posts, finish sentences, and keep line breaks.
 ---
@@ -485,7 +514,7 @@ Off, which is the default, a line break is just another space. \`hello\` and \`w
 On, a line break stays in the post, and a blank line stays a blank line. Turning this on packs the source again and drops a hand-made order, because the shape of the chunks can change.
 `)
 
-  writePage('2.using-the-tool/5.shipping.md', `---
+  writePage('using-the-tool/shipping.md', `---
 title: Shipping a thread
 description: Copy, download, listen, and send.
 ---
@@ -513,14 +542,17 @@ Download .md saves \`thread-<platform>-<timestamp>.md\`. Each post is a \`### Po
 
 ## Listen and QR
 
-Listen speaks the published post at rate 1.05. Clicking the same card again stops it. Send to Phone opens a QR for that post. Closing the draft, or editing it, closes the QR as well.
-`)
+Listen reads the card without the chunk counter the page attached, such as \`(1/3)\` or \`[1/3]\`. A bridge you typed is still read. A counter you wrote inside the post, such as "see [1/2] in the notes", is still read. Copy, download, and send keep the counter.
 
+The voice is one already installed. English text uses a clear English voice, German text a German voice, and Thai text a Thai voice. Joke voices and compact voices are skipped. Nothing is downloaded. The rate is 1.05. Clicking the same card again stops it.
+
+Send to Phone opens a QR for that post. The picture comes from \`api.qrserver.com\`. Closing the draft, or editing it, closes the QR as well.
+`)
 }
 
 /** How the code is put together. */
 function architecture() {
-  writePage('3.architecture/1.overview.md', `---
+  writePage('architecture/overview.md', `---
 title: Overview
 description: Where the rules live, and where the browser calls live.
 ---
@@ -549,13 +581,12 @@ app/pages/index.vue
 | \`app/components/\` | The screen, one piece per file |
 | \`app/pages/index.vue\` | Layout only |
 | \`tests/thread.test.ts\` | The rules, imported from the real modules |
-| \`documentation/\` | This Docus site |
-| \`docs/\` | The static site produced by \`nuxt generate\` |
+| \`docs/\` | These VitePress guides. GitHub Actions rebuilds the site on every push. |
 
 \`template.html\` at the repository root is the original page. The Nuxt app is the product. Do not load Vue or Tailwind from a CDN.
 `)
 
-  writePage('3.architecture/2.page-and-state.md', `---
+  writePage('architecture/page-and-state.md', `---
 title: Page and state
 description: How one editor is shared, and which edits pack the text again.
 ---
@@ -587,7 +618,7 @@ A move that would pass either end returns the same state object. Copy checkmarks
 The workbench is \`PlatformPicker\`, \`SourceField\`, \`MarkerFields\`, and \`DraftTools\`. A card is \`PostMoveButtons\`, \`PostLengthRing\`, and \`PostActions\`. Names are more than one word because the lint rule requires it.
 `)
 
-  writePage('3.architecture/3.splitting.md', `---
+  writePage('architecture/splitting.md', `---
 title: Splitting
 description: How a source string becomes posts that fit a limit.
 ---
@@ -600,11 +631,10 @@ Otherwise the text is words. The budget is \`limit - (16 + bridge.length)\`. The
 
 With **Keep line breaks** off, every line break is whitespace, so the words are joined with single spaces. With it on, the gap between lines is a newline, and a blank line stays blank. The newline counts toward the budget.
 
-\`compileThread\` then polishes each chunk and attaches the marker. Polish can capitalize the first letter and append \`…\`. The \`raw\` field on a post is that polished text. \`compiled\` is the text plus the marker and the bridge.
+\`compileThread\` then polishes each chunk and attaches the marker. Polish can capitalize the first letter and append \`…\`. The \`raw\` field on a post is that polished text. \`compiled\` is the text plus the marker and the bridge. \`spoken\` is that same card with the counter left off. Listen reads \`spoken\`. Copy, download, and send use \`compiled\`.
 
 The tests in \`tests/thread.test.ts\` import these functions directly. They do not reimplement the packer.
 `)
-
 }
 
 /** Reference pages built from the comments above each export. */
@@ -612,7 +642,7 @@ function reference() {
   /** Groups of source files. */
   const groups = [
     {
-      file: '4.reference/1.types-and-limits.md',
+      file: 'reference/types-and-limits.md',
       title: 'Types and limits',
       description: 'Platform caps, shared types, and the constants the editor starts from.',
       paths: [
@@ -622,7 +652,7 @@ function reference() {
       ]
     },
     {
-      file: '4.reference/2.splitting-and-compile.md',
+      file: 'reference/splitting-and-compile.md',
       title: 'Splitting and compile',
       description: 'Packing, markers, bridges, and the text tools.',
       paths: [
@@ -631,7 +661,7 @@ function reference() {
       ]
     },
     {
-      file: '4.reference/3.state-and-metrics.md',
+      file: 'reference/state-and-metrics.md',
       title: 'State and metrics',
       description: 'Edits, totals, the ring, and the files you copy or send.',
       paths: [
@@ -642,7 +672,7 @@ function reference() {
       ]
     },
     {
-      file: '4.reference/4.composables.md',
+      file: 'reference/composables.md',
       title: 'Composables',
       description: 'The Vue layer that holds the editor and talks to the browser.',
       paths: typescriptFiles(join(root, 'app/composables'))
@@ -693,7 +723,7 @@ ${doc}
     })
     .join('\n')
 
-  writePage('4.reference/5.components.md', `---
+  writePage('reference/components.md', `---
 title: Components
 description: The Vue files that draw the workbench.
 ---
@@ -704,16 +734,96 @@ Each file is one part of the screen. Interactive parts call \`useWeaver()\`. A c
 
 ${componentNotes}
 `)
-
 }
 
-/** Remove the previous pages, then write the current set. */
+/** Sidebar and nav. The same four categories as the home page. */
+function writeConfig() {
+  /** VitePress config next to the markdown. */
+  const configPath = join(contentDir, '.vitepress/config.ts')
+
+  mkdirSync(dirname(configPath), { recursive: true })
+
+  writeFileSync(configPath, `import { defineConfig } from 'vitepress'
+
+/** Project Pages site: https://thaikolja.github.io/thread-weaver/ */
+const base = '/thread-weaver/'
+
+export default defineConfig({
+  title: 'Thread Weaver',
+  description: 'Split a long post into posts that fit X, Bluesky, Threads, and Mastodon.',
+  base,
+  lang: 'en-US',
+  cleanUrls: true,
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: \`\${base}logo.svg\` }]
+  ],
+  themeConfig: {
+    logo: '/logo.svg',
+    siteTitle: 'Thread Weaver',
+    nav: [
+      { text: 'Getting started', link: '/getting-started/introduction' },
+      { text: 'Using the tool', link: '/using-the-tool/workbench' },
+      { text: 'Architecture', link: '/architecture/overview' },
+      { text: 'Reference', link: '/reference/types-and-limits' }
+    ],
+    sidebar: [
+      {
+        text: 'Getting started',
+        items: [
+          { text: 'Introduction', link: '/getting-started/introduction' },
+          { text: 'Installation', link: '/getting-started/installation' }
+        ]
+      },
+      {
+        text: 'Using the tool',
+        items: [
+          { text: 'The workbench', link: '/using-the-tool/workbench' },
+          { text: 'Platforms', link: '/using-the-tool/platforms' },
+          { text: 'Markers and bridges', link: '/using-the-tool/markers-and-bridges' },
+          { text: 'Text tools', link: '/using-the-tool/text-tools' },
+          { text: 'Shipping', link: '/using-the-tool/shipping' }
+        ]
+      },
+      {
+        text: 'Architecture',
+        items: [
+          { text: 'Overview', link: '/architecture/overview' },
+          { text: 'Page and state', link: '/architecture/page-and-state' },
+          { text: 'Splitting', link: '/architecture/splitting' }
+        ]
+      },
+      {
+        text: 'Reference',
+        items: [
+          { text: 'Types and limits', link: '/reference/types-and-limits' },
+          { text: 'Splitting and compile', link: '/reference/splitting-and-compile' },
+          { text: 'State and metrics', link: '/reference/state-and-metrics' },
+          { text: 'Composables', link: '/reference/composables' },
+          { text: 'Components', link: '/reference/components' }
+        ]
+      }
+    ],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/thaikolja/thread-weaver' }
+    ],
+    search: {
+      provider: 'local'
+    },
+    outline: [2, 3],
+    footer: {
+      message: 'MIT License'
+    }
+  }
+})
+`)
+}
+
+/** Remove the previous site, then write the current pages and sidebar. */
 function main() {
   rmSync(contentDir, { recursive: true, force: true })
   mkdirSync(docsPublic, { recursive: true })
   copyFileSync(join(root, 'public/logo.svg'), join(docsPublic, 'logo.svg'))
-  writeFileSync(join(docsPublic, '.nojekyll'), '')
-
+  writeConfig()
   writePage('index.md', landing())
   gettingStarted()
   usingTheTool()

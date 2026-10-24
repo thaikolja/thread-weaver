@@ -14,7 +14,10 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 /** This card's compiled post and where it sits in the list. */
 
 import type { CompiledPost } from '~/utils/weaver/types'
@@ -41,7 +44,7 @@ const weaver = useWeaver()
           :total="weaver.posts.length"
         />
         <span class="c-post-index">
-          Post {{ index + 1 }} of {{ weaver.posts.length }}
+          {{ $t('post.position', { index: index + 1, total: weaver.posts.length }) }}
         </span>
       </div>
       <div class="flex items-center gap-2 sm:gap-4">
@@ -65,14 +68,14 @@ const weaver = useWeaver()
             name="i-lucide-copy"
             class="size-3.5"
           />
-          <span>{{ weaver.copiedPosts[post.id] ? 'Copied' : 'Copy' }}</span>
+          <span>{{ weaver.copiedPosts[post.id] ? $t('post.copied') : $t('post.copy') }}</span>
         </button>
       </div>
     </div>
 
     <div
       class="group c-post-body"
-      title="Click anywhere to copy this chunk"
+      :title="$t('post.copyTitle')"
       @click="weaver.copyPost(post.compiled, post.id)"
     >
       <div class="c-post-text">

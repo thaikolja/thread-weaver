@@ -11,10 +11,16 @@ import betterTailwindcss from 'eslint-plugin-better-tailwindcss'
 /** The attributes that plugin already treats as class lists. */
 import { getDefaultAttributes } from 'eslint-plugin-better-tailwindcss/api/defaults'
 
+/** Registered here so aligned object keys stay valid. */
+import stylistic from '@stylistic/eslint-plugin'
+
 /** Project lint rules: Nuxt's, plus a check that Tailwind classes exist. */
 export default withNuxt(
   betterTailwindcss.configs['correctness-error'],
   {
+    plugins: {
+      '@stylistic': stylistic
+    },
     settings: {
       'better-tailwindcss': {
         entryPoint: 'app/assets/css/main.css',
@@ -28,6 +34,13 @@ export default withNuxt(
       /** `c-*` names are component classes in Vue `<style>` blocks. */
       'better-tailwindcss/no-unknown-classes': ['error', {
         ignore: ['^c-']
+      }],
+
+      /** Column alignment is the house style. One space after the colon is still required. */
+      '@stylistic/key-spacing': ['error', {
+        beforeColon: false,
+        afterColon:  true,
+        mode:        'minimum'
       }]
     }
   }

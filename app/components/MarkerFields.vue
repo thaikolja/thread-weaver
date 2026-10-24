@@ -31,7 +31,7 @@ const weaver = useWeaver()
           name="i-lucide-hash"
           class="size-3.5"
         />
-        Marker Style
+        {{ $t('marker.style') }}
       </label>
       <select
         id="weaver-marker"
@@ -39,19 +39,19 @@ const weaver = useWeaver()
         class="c-field-select"
       >
         <option value="parens">
-          (1/n) Parentheses
+          {{ $t('marker.parens') }}
         </option>
         <option value="brackets">
-          [1/n] Brackets
+          {{ $t('marker.brackets') }}
         </option>
         <option value="slash">
-          1/n Raw Fraction
+          {{ $t('marker.slash') }}
         </option>
         <option value="hash">
-          #1 Number Tag
+          {{ $t('marker.hash') }}
         </option>
         <option value="none">
-          None (Live Dangerously)
+          {{ $t('marker.none') }}
         </option>
       </select>
     </div>
@@ -64,7 +64,7 @@ const weaver = useWeaver()
           name="i-lucide-align-justify"
           class="size-3.5"
         />
-        Placement
+        {{ $t('marker.placement') }}
       </label>
       <select
         id="weaver-placement"
@@ -72,16 +72,16 @@ const weaver = useWeaver()
         class="c-field-select"
       >
         <option value="newline">
-          New Line (Bottom)
+          {{ $t('marker.newline') }}
         </option>
         <option value="inline-after">
-          Inline (After text)
+          {{ $t('marker.inlineAfter') }}
         </option>
         <option value="inline-before">
-          Inline (Before text)
+          {{ $t('marker.inlineBefore') }}
         </option>
         <option value="start">
-          Header (Top of segment)
+          {{ $t('marker.start') }}
         </option>
       </select>
     </div>
@@ -94,13 +94,13 @@ const weaver = useWeaver()
           name="i-lucide-ellipsis"
           class="size-3.5"
         />
-        Custom Bridge
+        {{ $t('marker.bridge') }}
       </label>
       <input
         id="weaver-bridge"
         v-model="weaver.bridge"
         type="text"
-        placeholder="e.g. ..., //, ››"
+        :placeholder="$t('marker.bridgePlaceholder')"
         class="c-field-input"
       >
     </div>

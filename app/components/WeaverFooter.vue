@@ -28,10 +28,18 @@ const weaverVersion = import.meta.env.VITE_WEAVER_VERSION || 'v?.?.?'
 <template>
   <footer class="c-footer flex justify-between">
     <div>
-      Kolja Nolte &copy; {{ new Date().getFullYear() }}
+      {{ $t('footer.credit') }} &copy; {{ new Date().getFullYear() }}
     </div>
     <div>
-      created with ♥️ and <strong>without</strong> AI
+      <i18n-t
+        keypath="footer.made"
+        scope="global"
+        tag="span"
+      >
+        <template #emphasis>
+          <strong>{{ $t('footer.without') }}</strong>
+        </template>
+      </i18n-t>
     </div>
     <div>
       v{{ weaverVersion }}

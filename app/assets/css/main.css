@@ -34,6 +34,10 @@
   --color-green-950: #052e16;
 }
 
+:root {
+  --dimmed: #f0f;
+}
+
 html {
   color-scheme: light;
 }
@@ -42,7 +46,7 @@ html,
 body,
 #__nuxt {
   background: #f4f5f7;
-  color:      #0f172a;
+  color:      var(--color-slate-950);
   min-height: 100%;
 }
 

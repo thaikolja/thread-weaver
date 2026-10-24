@@ -17,14 +17,9 @@
 <script setup lang="ts">
 /** Title, icon, and social tags. */
 usePageMeta()
-
-const { locales, setLocale } = useI18n()
-
-setLocale('de')
 </script>
 
 <template>
-  {{ $t('tree') }}
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

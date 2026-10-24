@@ -1,3 +1,19 @@
+/*
+ * Thread Weaver
+ *
+ * @description     Online tool to split long messages into parts for character-limited platforms
+ * @author          Kolja Nolte <kolja.nolte@gmail.com>
+ * @copyright       2026 (C) Kolja Nolte
+ * @see             https://www.kolja-nolte.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @package Thread Weaver
+ */
+
 /** Platform id, so the maps stay typed. */
 import type { PlatformId } from './types'
 
@@ -13,7 +29,7 @@ export const SPEECH_RATE = 1.05
 /** Room we leave for a counter like `(999/999)` before the bridge length is added. */
 export const MARKER_RESERVE = 16
 
-/** Short names shown in the ship station and the Send button. */
+/** Short names. The page shows the same words from the locale files. */
 const PLATFORM_NAMES: Record<PlatformId, string> = {
   x: 'X',
   bsky: 'Bluesky',

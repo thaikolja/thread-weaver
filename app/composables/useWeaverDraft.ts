@@ -20,9 +20,6 @@ import { computed, ref } from 'vue'
 /** Turns chunks into the text on the cards. */
 import { compileThread } from '~/utils/weaver/compile'
 
-/** "X", "Bluesky", and the rest. */
-import { platformLabel } from '~/utils/weaver/limits'
-
 /** Character total, word count, and read time. */
 import { readTimeMinutes, totalChars, totalWords } from '~/utils/weaver/metrics'
 
@@ -51,8 +48,19 @@ import type { MarkerFormat, MarkerPlacement, PlatformId, WeaverState } from '~/u
  * @param onChange Runs after a real edit. Use it to clear copy ticks, stop speech, and close the QR.
  */
 export function useWeaverDraft(onChange: () => void) {
-  /** Starts on the sample sentence. */
+  /** The active locale's copy. */
+  const { t } = useI18n()
+
+  /** Starts on the English sample, then swaps in a translation. */
   const weaver = ref(createWeaverState())
+
+  /** The translated sample. English matches the packer constant, so it stays. */
+  const sample = t('source.sample')
+
+  /** Other locales open on their own sentence. */
+  if (sample !== weaver.value.source) {
+    weaver.value = setSource(weaver.value, sample)
+  }
 
   /**
    * Save the next state and tell the page something changed.
@@ -148,8 +156,8 @@ export function useWeaverDraft(onChange: () => void) {
   /** At least one minute. */
   const readMinutes = computed(() => readTimeMinutes(wordCount.value))
 
-  /** "X" or "Bluesky", for the buttons. */
-  const platformName = computed(() => platformLabel(platform.value))
+  /** "X" or "Bluesky", from the active locale. */
+  const platformName = computed(() => t(`platform.name.${platform.value}`))
 
   /** Pick a platform and pack to its limit. */
   function choosePlatform(next: PlatformId): void {
