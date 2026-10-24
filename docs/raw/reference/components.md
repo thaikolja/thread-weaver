@@ -1,0 +1,83 @@
+---
+title: "Components"
+description: "The Vue files that draw the workbench."
+canonical_url: "https://weaver.yanawa.io/reference/components"
+---
+# Components
+
+Each file is one part of the screen. Interactive parts call `useWeaver()`. A card receives only the post and its index.
+
+## `DraftTools.vue`
+
+Shared editor. Text tools, the raw character count, and Clear.
+
+## `MarkerFields.vue`
+
+Shared editor. Marker, placement, and bridge update the posts as they change.
+
+## `PlatformPicker.vue`
+
+Button colors for the four corsets.
+
+Shared editor. The page calls provideWeaver().
+
+## `PostActions.vue`
+
+The compiled post these buttons act on.
+
+Shared editor.
+
+## `PostCard.vue`
+
+This card's compiled post and where it sits in the list.
+
+Shared editor. Copy, the limit, and the list length live here.
+
+## `PostLengthRing.vue`
+
+Ring color and how full the circle is.
+
+Compiled length against the active platform limit.
+
+Green when short, red when the post is over the limit.
+
+How much of the ring is still empty.
+
+## `PostList.vue`
+
+Shared editor. The list just reads the compiled posts.
+
+## `PostMoveButtons.vue`
+
+Which card this is, so the first and last arrows can disable themselves.
+
+Shared editor. Move does not repack the text.
+
+## `QrModal.vue`
+
+Shared editor. The modal opens when a post asks for a QR.
+
+## `ShipStation.vue`
+
+Shared editor. Totals and the download live on it.
+
+## `SourceField.vue`
+
+Shared editor.
+
+## `WeaverFooter.vue`
+
+Offline footnote from the template. The QR action still calls a remote image service.
+
+## `WeaverHeader.vue`
+
+Thread Weaver masthead: kicker, wordmark, and the template tagline.
+
+## `WeaverWorkbench.vue`
+
+Presentational section of the workbench.
+
+
+## Sitemap
+
+See the full [sitemap](https://weaver.yanawa.io/sitemap.md) for all pages.

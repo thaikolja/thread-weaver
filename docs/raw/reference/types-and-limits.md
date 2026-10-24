@@ -1,0 +1,167 @@
+---
+title: "Types and limits"
+description: "Platform caps, shared types, and the constants the editor starts from."
+canonical_url: "https://weaver.yanawa.io/reference/types-and-limits"
+---
+# Types and limits
+
+Platform caps, shared types, and the constants the editor starts from. The notes below are the comments on the exports, so this page follows the code.
+
+## `app/utils/weaver/types.ts`
+
+### `PLATFORM_LIMITS`
+
+Character caps for the four platforms.
+
+```ts
+export const PLATFORM_LIMITS = {
+  x: 280,
+  bsky: 300,
+  threads: 500,
+  masto: 500
+} as const
+```
+
+### `PlatformId`
+
+Which corset is selected. The numbers live on PLATFORM_LIMITS.
+
+```ts
+export type PlatformId = keyof typeof PLATFORM_LIMITS
+```
+
+### `MarkerFormat`
+
+How the little counter is written. `none` leaves the raw text alone.
+
+```ts
+export type MarkerFormat = 'parens' | 'brackets' | 'slash' | 'hash' | 'none'
+```
+
+### `MarkerPlacement`
+
+Where that counter sits on the post.
+
+```ts
+export type MarkerPlacement = 'newline' | 'inline-after' | 'inline-before' | 'start'
+```
+
+### `ThreadBlock`
+
+One chunk of text before the counter is added.
+
+```ts
+export interface ThreadBlock {
+  id: string
+  text: string
+}
+```
+
+### `CompiledPost`
+
+One post ready to copy, speak, or send.
+
+```ts
+export interface CompiledPost {
+  id: string
+  raw: string
+  compiled: string
+}
+```
+
+### `WeaverState`
+
+Everything the editor is holding onto. `blocks` is the current order.
+
+```ts
+export interface WeaverState {
+  source: string
+  platform: PlatformId
+  limit: number
+  marker: MarkerFormat
+  placement: MarkerPlacement
+  bridge: string
+  capitalize: boolean
+  finishSentences: boolean
+  keepBreaks: boolean
+  blocks: ThreadBlock[]
+}
+```
+
+### `SpeechCommand`
+
+What the Listen button should do for this click.
+
+```ts
+export type SpeechCommand
+  = | { type: 'noop' }
+    | { type: 'cancel' }
+    | { type: 'speak', text: string, rate: number }
+```
+
+## `app/utils/weaver/limits.ts`
+
+### `SAMPLE_SOURCE`
+
+The sentence in the box after a reload.
+
+```ts
+export const SAMPLE_SOURCE = 'Segment 1 of your unhinged monologue sits right here. Start typing or pasting above, and the engine partitions your thoughts along word boundaries before the platform limits humiliate you.'
+```
+
+### `COPY_ALL_RESET_MS`
+
+How long "All Copied!" stays on screen, in milliseconds.
+
+```ts
+export const COPY_ALL_RESET_MS = 2500
+```
+
+### `SPEECH_RATE`
+
+How fast Listen talks. 1 is normal.
+
+```ts
+export const SPEECH_RATE = 1.05
+```
+
+### `MARKER_RESERVE`
+
+Room we leave for a counter like `(999/999)` before the bridge length is added.
+
+```ts
+export const MARKER_RESERVE = 16
+```
+
+### `platformLabel`
+
+The name people see for the active platform.
+
+```ts
+export function platformLabel(platform: PlatformId): string
+```
+
+### `intentPrefix`
+
+The start of the compose link for that platform.
+
+```ts
+export function intentPrefix(platform: PlatformId): string
+```
+
+## `app/utils/weaver/platformClass.ts`
+
+### `platformButtonClass`
+
+Classes for one platform button.
+
+Active buttons use the brand color. The others stay quiet.
+
+```ts
+export function platformButtonClass(platform: PlatformId, active: PlatformId): string
+```
+
+
+## Sitemap
+
+See the full [sitemap](https://weaver.yanawa.io/sitemap.md) for all pages.

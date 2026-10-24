@@ -27,3 +27,6 @@ logs
 # AI
 .serena
 AGENTS.md
+
+# Test coverage
+coverage/

@@ -1,63 +1,91 @@
+/** Bun's test runner. */
 import { expect, test } from 'bun:test'
+
+/** Read the files the page is built from. */
 import { readFileSync, readdirSync } from 'node:fs'
+
+/** Join a directory and a file name. */
 import { join } from 'node:path'
+
+/** Turn chunks into posts. */
+import { compileThread } from '../app/utils/weaver/compile.ts'
+
+/** Sample text, copy delay, and speech rate. */
+import { COPY_ALL_RESET_MS, SAMPLE_SOURCE, SPEECH_RATE } from '../app/utils/weaver/limits.ts'
+
+/** Totals, read time, and the ring color. */
+import { readTimeMinutes, ringColor, totalChars, totalWords } from '../app/utils/weaver/metrics.ts'
+
+/** Copy-all, markdown, intents, and the QR address. */
+import { copyAllBody, intentUrl, markdownBody, markdownFilename, qrImageUrl } from '../app/utils/weaver/publish.ts'
+
+/** Speech decision and the copy-all timer. */
+import { armCopyAllReset, speechCommand } from '../app/utils/weaver/speech.ts'
+
+/** Normalize and pack. */
+import { splitSource } from '../app/utils/weaver/split.ts'
+
+/** Editor edits we drive directly. */
 import {
-  COPY_ALL_RESET_MS,
-  PLATFORM_LIMITS,
-  SAMPLE_SOURCE,
-  SPEECH_RATE,
-  armCopyAllReset,
-  compileThread,
-  copyAllBody,
   createWeaverState,
   dropSegment,
-  intentUrl,
-  markdownBody,
-  markdownFilename,
   moveSegment,
-  prepareSource,
-  qrImageUrl,
-  readTimeMinutes,
-  ringColor,
   setBridge,
-  setFlatten,
+  setCapitalize,
+  setFinishSentences,
+  setKeepBreaks,
   setMarker,
   setPlacement,
   setPlatform,
-  setSource,
-  speechCommand,
-  splitSource,
-  totalChars,
-  totalWords
-} from '../app/utils/thread.ts'
-import type { MarkerFormat, MarkerPlacement } from '../app/utils/thread.ts'
+  setSource
+} from '../app/utils/weaver/state.ts'
 
+/** The four limits. */
+import { PLATFORM_LIMITS } from '../app/utils/weaver/types.ts'
+
+/** Marker and placement names. */
+import type { MarkerFormat, MarkerPlacement } from '../app/utils/weaver/types.ts'
+
+/** Two short chunks used by the marker table. */
 const BLOCKS = [
   { id: 'block-0', text: 'Alpha' },
   { id: 'block-1', text: 'Beta' }
 ]
 
+/** Compile those two chunks with one marker setup. */
 function compilePair(marker: MarkerFormat, placement: MarkerPlacement, bridge = '') {
   return compileThread({ blocks: BLOCKS, marker, placement, bridge })
 }
 
+/** Read every file in a folder that ends with the given suffix. */
+function readMatching(directory: URL, suffix: string): string[] {
+  return readdirSync(directory)
+    .filter(name => name.endsWith(suffix))
+    .map(name => readFileSync(join(directory.pathname, name), 'utf8'))
+}
+
+/** The page, the components, and the modules they import, as one string. */
 function vueSource(): string {
+  /** Shell files that are not inside the scanned folders. */
   const files = [
     new URL('../app/pages/index.vue', import.meta.url),
     new URL('../app/app.vue', import.meta.url),
-    new URL('../app/layouts/default.vue', import.meta.url),
-    new URL('../app/composables/useThreadWeaver.ts', import.meta.url)
+    new URL('../app/layouts/default.vue', import.meta.url)
   ]
-  const threadDir = new URL('../app/components/thread/', import.meta.url)
-  const componentFiles = readdirSync(threadDir).filter(name => name.endsWith('.vue'))
+
+  /** Start with those, then add the folders. */
   const chunks = files.map(file => readFileSync(file, 'utf8'))
-  for (const name of componentFiles) {
-    chunks.push(readFileSync(join(threadDir.pathname, name), 'utf8'))
-  }
-  chunks.push(readFileSync(new URL('../app/utils/thread.ts', import.meta.url), 'utf8'))
+
+  chunks.push(...readMatching(new URL('../app/components/', import.meta.url), '.vue'))
+
+  chunks.push(...readMatching(new URL('../app/composables/', import.meta.url), '.ts'))
+
+  chunks.push(...readMatching(new URL('../app/utils/weaver/', import.meta.url), '.ts'))
+
   return chunks.join('\n')
 }
 
+/** A fresh editor is X, 280, parentheses, and the sample sentence in one card. */
 test('default state splits the sample on the X budget', () => {
   const state = createWeaverState()
   expect(state.source).toBe(SAMPLE_SOURCE)
@@ -66,7 +94,9 @@ test('default state splits the sample on the X budget', () => {
   expect(state.marker).toBe('parens')
   expect(state.placement).toBe('newline')
   expect(state.bridge).toBe('')
-  expect(state.flatten).toBe(false)
+  expect(state.capitalize).toBe(false)
+  expect(state.finishSentences).toBe(false)
+  expect(state.keepBreaks).toBe(false)
   expect(PLATFORM_LIMITS.x).toBe(280)
   expect(PLATFORM_LIMITS.bsky).toBe(300)
   expect(PLATFORM_LIMITS.threads).toBe(500)
@@ -81,6 +111,7 @@ test('default state splits the sample on the X budget', () => {
   expect(readTimeMinutes(totalWords(SAMPLE_SOURCE))).toBe(1)
 })
 
+/** Words stay whole. One huge token is allowed to stick out past the limit. */
 test('packs on whitespace without cutting a word, except one over-long token', () => {
   const long = Array.from({ length: 80 }, () => 'word').join(' ')
   expect(long.length).toBeGreaterThan(280)
@@ -101,6 +132,7 @@ test('packs on whitespace without cutting a word, except one over-long token', (
   expect(mixed[1]?.text.length ?? 0).toBeGreaterThan(280)
 })
 
+/** Each platform has its own cap, and a long string splits differently under them. */
 test('platforms change the limit and the segment count', () => {
   const letters = Array.from({ length: 400 }, () => 'a').join(' ')
   let state = createWeaverState(letters)
@@ -128,6 +160,7 @@ test('platforms change the limit and the segment count', () => {
   }
 })
 
+/** Every marker and placement produces the exact string we publish. */
 test('marker formats and placements match the compiled strings', () => {
   const cases: Array<[MarkerFormat, MarkerPlacement, string, string, string]> = [
     ['parens', 'newline', '', 'Alpha\n\n(1/2)', 'Beta\n\n(2/2)'],
@@ -152,8 +185,8 @@ test('marker formats and placements match the compiled strings', () => {
     ['none', 'start', '', 'Alpha', 'Beta'],
     ['parens', 'inline-after', '//', 'Alpha // (1/2)', 'Beta // (2/2)'],
     ['parens', 'inline-before', '//', '(1/2) // Alpha', '(2/2) // Beta'],
-    ['parens', 'newline', '//', 'Alpha\n\n(1/2)', 'Beta\n\n(2/2)'],
-    ['parens', 'start', '>>', '(1/2)\n\nAlpha', '(2/2)\n\nBeta'],
+    ['parens', 'newline', '//', 'Alpha\n\n//\n\n(1/2)', 'Beta\n\n//\n\n(2/2)'],
+    ['parens', 'start', '>>', '(1/2)\n\n>>\n\nAlpha', '(2/2)\n\n>>\n\nBeta'],
     ['none', 'inline-after', '//', 'Alpha', 'Beta']
   ]
 
@@ -164,6 +197,21 @@ test('marker formats and placements match the compiled strings', () => {
   }
 })
 
+/** Typing a bridge shows it on the default layout without another control change. */
+test('typing a bridge updates the default newline preview immediately', () => {
+  const fresh = createWeaverState()
+  const withDots = setBridge(fresh, '...')
+  expect(withDots.placement).toBe('newline')
+  expect(withDots.blocks.map(block => block.text)).toEqual(fresh.blocks.map(block => block.text))
+  expect(compileThread(withDots)[0]?.compiled).toBe(`${SAMPLE_SOURCE}\n\n...\n\n(1/1)`)
+
+  const swapped = setBridge(withDots, '???')
+  expect(swapped.blocks.map(block => block.id)).toEqual(withDots.blocks.map(block => block.id))
+  expect(compileThread(swapped)[0]?.compiled).toBe(`${SAMPLE_SOURCE}\n\n???\n\n(1/1)`)
+  expect(compileThread(swapped)[0]?.compiled.includes('...')).toBe(false)
+})
+
+/** A longer bridge leaves less room in each chunk and changes the inline gap. */
 test('a longer bridge shrinks the packing budget and changes the inline joiner', () => {
   const hi = Array.from({ length: 83 }, () => 'hi').join(' ')
   expect(hi.length).toBe(248)
@@ -177,14 +225,25 @@ test('a longer bridge shrinks the packing budget and changes the inline joiner',
   expect(posts[0]?.compiled).toBe('Alpha >> (1/2)')
 })
 
-test('flatten collapses a blank line before packing', () => {
-  expect(prepareSource('a\n\n\nb\t\tc', true)).toBe('a\nb c')
-  expect(prepareSource('  a\n\n\nb\t\tc  ', true)).toBe('a\nb c')
-  expect(prepareSource('a  b', false)).toBe('a  b')
-  expect(prepareSource('a  b', true)).toBe('a b')
-  expect(splitSource('keep\n\n\nthis   together', 280, '', true)[0]?.text).toBe('keep this together')
+/** Capitalize, finish sentences, and keep line breaks change the published text. */
+test('text tools capitalize, close a sentence, and keep a line break', () => {
+  const plain = setSource(createWeaverState(), 'alpha beta')
+  const capitalized = setCapitalize(plain, true)
+  expect(capitalized.blocks[0]?.text).toBe('alpha beta')
+  expect(compileThread(capitalized)[0]?.compiled.startsWith('Alpha beta')).toBe(true)
+
+  const closed = setFinishSentences(setSource(createWeaverState(), 'Hello'), true)
+  expect(compileThread(closed)[0]?.raw).toBe('Hello…')
+  const already = setFinishSentences(setSource(createWeaverState(), 'Hello.'), true)
+  expect(compileThread(already)[0]?.raw).toBe('Hello.')
+
+  expect(splitSource('hello\n\nworld', 280, '', false)[0]?.text).toBe('hello world')
+  expect(splitSource('hello\n\nworld', 280, '', true)[0]?.text).toBe('hello\n\nworld')
+  const kept = setKeepBreaks(setSource(createWeaverState(), 'hello\nworld'), true)
+  expect(kept.blocks[0]?.text).toBe('hello\nworld')
 })
 
+/** A blank box is one empty card, not zero cards. */
 test('empty input yields one empty segment', () => {
   expect(splitSource('', 280, '', false)).toEqual([{ id: 'b-0', text: '' }])
   expect(splitSource('  \n\t ', 280, '', true)).toEqual([{ id: 'b-0', text: '' }])
@@ -195,7 +254,8 @@ test('empty input yields one empty segment', () => {
   expect(compileThread(state)[0]?.compiled).toBe('\n\n(1/1)')
 })
 
-test('move and drop keep segment text until source, flatten, platform, or bridge length changes', () => {
+/** Reorder and drop stick until a pack-again edit throws that order away. */
+test('move and drop keep segment text until source, line breaks, platform, or bridge length changes', () => {
   const numbered = Array.from({ length: 80 }, (_, index) => `w${String(index).padStart(2, '0')}`).join(' ')
   const original = createWeaverState(numbered)
   expect(original.blocks.length).toBeGreaterThan(1)
@@ -215,7 +275,7 @@ test('move and drop keep segment text until source, flatten, platform, or bridge
   expect(state.blocks.map(block => block.text)).toEqual(originalText)
 
   state = moveSegment(createWeaverState(numbered), 0, 1)
-  state = setFlatten(state, true)
+  state = setKeepBreaks(state, true)
   expect(state.blocks.map(block => block.text)).toEqual(originalText)
 
   state = moveSegment(createWeaverState(numbered), 0, 1)
@@ -249,6 +309,7 @@ test('move and drop keep segment text until source, flatten, platform, or bridge
   expect(dropped.blocks.some(block => block.text === beforeDrop[1])).toBe(false)
 })
 
+/** Copy, download, send, QR, the ring, read time, and Listen all use the published text. */
 test('copy-all, markdown, filenames, intents, QR, ring color, read time, and speech payloads', () => {
   const posts = compilePair('parens', 'newline')
   expect(copyAllBody(posts)).toBe('Alpha\n\n(1/2)\n\n---\n\nBeta\n\n(2/2)')
@@ -302,10 +363,18 @@ test('copy-all, markdown, filenames, intents, QR, ring color, read time, and spe
   expect(SPEECH_RATE).toBe(1.05)
 })
 
+/** The page is the workbench, and it uses these modules rather than a second copy of the rules. */
 test('the page imports this module and the starter shell is gone', () => {
   const source = vueSource()
-  const composable = readFileSync(new URL('../app/composables/useThreadWeaver.ts', import.meta.url), 'utf8')
-  expect(composable).toContain('from \'~/utils/thread\'')
+  const draft = readFileSync(new URL('../app/composables/useWeaverDraft.ts', import.meta.url), 'utf8')
+  const page = readFileSync(new URL('../app/pages/index.vue', import.meta.url), 'utf8')
+  expect(draft).toContain('from \'~/utils/weaver/state\'')
+  expect(draft).toContain('from \'~/utils/weaver/compile\'')
+  expect(page).toContain('<WeaverHeader')
+  expect(page).toContain('<WeaverWorkbench')
+  expect(page).toContain('<PostList')
+  expect(page).not.toContain('components/thread')
+  expect(page).not.toContain('<ThreadHeader')
   expect(source).toContain('useThreadWeaver')
   expect(source).toContain('<script setup lang="ts">')
   expect(source).toContain('Attention Span Reducer')
