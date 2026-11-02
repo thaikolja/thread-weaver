@@ -532,6 +532,8 @@ test('the page imports this module and the starter shell is gone', () => {
   expect(source).toContain('ไทย')
   expect(source).toContain('i-ph-hash')
   expect(source).toContain('i-ph-butterfly-fill')
+  expect(source).toContain('c-chunk-nudge-up')
+  expect(source).not.toContain('pageDimmed')
   expect(source).not.toContain('i-lucide-')
   expect(page).toContain('<WeaverWorkbench')
   expect(page).toContain('<PostList')

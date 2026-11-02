@@ -1,4 +1,4 @@
-/** Upload a static preview of the app. The VitePress docs are not part of this build. */
+/** Upload a static preview. The Docus build is mounted at /docs first. */
 import { spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -26,8 +26,8 @@ function run(command, args) {
   }
 }
 
-/** Prerender `/`, `/de`, and `/th`. `nuxt generate` leaves `/docs` alone. */
-run('bun', ['run', 'generate'])
+/** Editor plus the Docus pages at `/docs`. */
+run('bun', ['run', 'build:site'])
 
 /** Home page of the static build Wrangler is about to upload. */
 const home = join(root, '.output', 'public', 'index.html')

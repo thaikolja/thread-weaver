@@ -45,7 +45,7 @@ The browser will start the development server and display the page. The home pag
 
 For the curious ones, there is an automatically-generated documentation site at the path [/docs](/docs) build off [Nuxt's Docus](https://content.nuxt.com/templates/docus).
 
-On GitLab, where the project's primary repository is hosted, uses CI/CD via `gitlab-ci.yaml`. On GitHub, where the project is mirrored to, it uses GitHub Actions to achieve the same result.
+On GitLab, where the project's primary repository is hosted, CI/CD is `.gitlab-ci.yml`. On GitHub, where the project is mirrored, GitHub Actions does the same job.
 
 Both configuration files are told to create the documentation site when pushing or merging Thread Weaver to the `main` branch. `bun run docs:dev` previews them. `bun run docs:build` writes the markdown and builds the site.
 

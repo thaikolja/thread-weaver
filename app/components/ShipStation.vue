@@ -68,11 +68,14 @@ const { dimmed } = useDisplayFade()
       </div>
       <div class="c-ship-stats">
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">{{ $t('ship.length') }}</span>
-          <span class="c-ship-mono">{{ $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }) }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.length') }}</span> <span class="c-ship-mono">{{
+          $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 })
+        }}</span>
         </div>
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">{{ $t('ship.words') }}</span> <span class="c-ship-mono">{{ weaver.wordCount }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.words') }}</span> <span class="c-ship-mono">{{
+          weaver.wordCount
+        }}</span>
         </div>
         <div class="c-ship-stat">
           <span class="c-ship-kicker">{{ $t('ship.target') }}</span> <span class="c-ship-target">
@@ -142,7 +145,7 @@ const { dimmed } = useDisplayFade()
 }
 
 .c-mark-threads {
-  @apply bg-gradient-to-r from-pink-500 to-amber-500;
+  @apply bg-linear-to-r from-pink-500 to-amber-500;
 }
 
 .c-mark-masto {
@@ -162,7 +165,7 @@ const { dimmed } = useDisplayFade()
 }
 
 .c-ship-stats {
-  @apply grid grid-cols-3 gap-2 border-y border-white/10 py-2 text-xs sm:gap-4;
+  @apply grid grid-cols-3 gap-2 border-y border-white/10 py-4 text-xs sm:gap-4;
 }
 
 .c-ship-stat {

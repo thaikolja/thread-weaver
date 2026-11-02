@@ -14,44 +14,35 @@
  * @package Thread Weaver
  */
 
-/** One timer per scope, so a second dip replaces the first. */
-const fadeTimers: Record<'content' | 'page', ReturnType<typeof setTimeout> | undefined> = {
-  content: undefined,
-  page: undefined
-}
+/** One timer, so a second dip replaces the first. */
+let fadeTimer: ReturnType<typeof setTimeout> | undefined
 
-/** Brief opacity dip when the posts change, or when the language changes. */
+/** Brief opacity dip for the posts below the editor. */
 export function useDisplayFade() {
-  /** Cards and the ship totals. A checkbox does not dim the controls around them. */
+  /** Cards and the ship totals. The header and the editor stay solid. */
   const dimmed = useState('weaver-display-dim', () => false)
 
-  /** The whole canvas, only for a locale change. */
-  const pageDimmed = useState('weaver-page-dim', () => false)
-
   /** Dip, then come back. Typing in the source does not call this. */
-  function pulse(scope: 'content' | 'page' = 'content'): void {
+  function pulse(): void {
     if (!import.meta.client) {
       return
     }
 
-    /** Leave the page still when the reader asked for less motion. */
+    /** Leave the posts still when the reader asked for less motion. */
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (reduce) {
       return
     }
 
-    /** The flag this call is driving. */
-    const flag = scope === 'page' ? pageDimmed : dimmed
+    dimmed.value = true
 
-    flag.value = true
+    clearTimeout(fadeTimer)
 
-    clearTimeout(fadeTimers[scope])
-
-    fadeTimers[scope] = setTimeout(() => {
-      flag.value = false
+    fadeTimer = setTimeout(() => {
+      dimmed.value = false
     }, 220)
   }
 
-  return { dimmed, pageDimmed, pulse }
+  return { dimmed, pulse }
 }

@@ -14,15 +14,14 @@
   - @package Thread Weaver
   -->
 
-<script
-  setup
-  lang="ts"
+<script setup lang="ts"
 >
 /**
  * Offline footnote from the template. The QR action still calls a remote image service.
  */
 
-const weaverVersion = import.meta.env.VITE_WEAVER_VERSION || 'v?.?.?'
+const runtimeConfig = useRuntimeConfig()
+const appVersion    = <String> runtimeConfig.public.version
 </script>
 
 <template>
@@ -42,7 +41,7 @@ const weaverVersion = import.meta.env.VITE_WEAVER_VERSION || 'v?.?.?'
       </i18n-t>
     </div>
     <div>
-      v{{ weaverVersion }}
+      v{{ appVersion }}
     </div>
   </footer>
 </template>

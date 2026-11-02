@@ -4,6 +4,10 @@ New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v
 
 ## Unreleased
 
+- fix(dev): pin the dev server host so `nuxt dev` can start
+- ci(docs): build the Docus site on main and serve it at /docs
+- feat(ui): slide a chunk when it moves up or down
+- fix(ui): keep the page above the editor from fading
 - feat(ui): fade the posts when a control changes what they show
 - feat(i18n): show ไทย on the Thai language link
 - fix(ui): inset the select carets and keep the tool checks bright

@@ -15,22 +15,13 @@
   -->
 
 <script setup lang="ts">
-/** Active locale. Switching language swaps the visible copy. */
-const { locale } = useI18n()
-
-/** Dip the page when that copy changes. */
-const { pageDimmed, pulse } = useDisplayFade()
-
-watch(locale, () => {
-  pulse('page')
-})
+/**
+ * Light canvas for the one-page tool. No starter header or footer.
+ */
 </script>
 
 <template>
-  <div
-    class="c-canvas transition-opacity duration-200 ease-out motion-reduce:transition-none motion-reduce:opacity-100"
-    :class="{ 'opacity-50': pageDimmed }"
-  >
+  <div class="c-canvas">
     <slot />
   </div>
 </template>

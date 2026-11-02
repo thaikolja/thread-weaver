@@ -14,6 +14,8 @@
  * @package Thread Weaver
  */
 
+const THREAD_WEAVER_VERSION: string = '1.0.0'
+
 /** Nuxt config for the one-page thread splitter. */
 export default defineNuxtConfig({
   /** Lint, UI (Tailwind, icons, fonts), SEO, and images. */
@@ -33,6 +35,11 @@ export default defineNuxtConfig({
   /** The in-app devtools panel stays off. */
   devtools: {
     enabled: false
+  },
+
+  /** Pin the host. An unset host is saved as `{}` and the next dev start crashes. */
+  devServer: {
+    host: 'localhost'
   },
 
   /** `~/` keeps Vite on app/assets. A root path made the Tailwind imports 404. */
@@ -150,6 +157,12 @@ export default defineNuxtConfig({
    */
   ogImage: {
     zeroRuntime: true
+  },
+
+  runtimeConfig: {
+    public: {
+      version: THREAD_WEAVER_VERSION ?? '1.0.0'
+    }
   },
 
   /** The author. WebSite.publisher points here. */

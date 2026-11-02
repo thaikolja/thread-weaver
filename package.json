@@ -14,9 +14,10 @@
     "test":           "bun test",
     "typecheck":      "nuxt typecheck",
     "docs:generate":  "bun scripts/generate-docs.mjs",
-    "docs:dev":       "bun scripts/generate-docs.mjs && vitepress dev docs",
-    "docs:preview":   "vitepress preview docs",
-    "docs:build":     "bun scripts/generate-docs.mjs && vitepress build docs"
+    "docs:dev":       "bun scripts/generate-docs.mjs && bun --cwd docs dev",
+    "docs:preview":   "bun --cwd docs preview",
+    "docs:build":     "bun scripts/generate-docs.mjs && bun --cwd docs generate",
+    "build:site":     "bun run docs:build && bun run generate && bun scripts/mount-docs.mjs"
   },
   "dependencies":    {
     "@iconify-json/ph":           "^1.2.2",
@@ -42,7 +43,6 @@
     "eslint-plugin-better-tailwindcss": "^4.10.0",
     "latest":                           "^0.2.0",
     "typescript":                       "^5.9.3",
-    "vitepress":                        "^1.6.4",
     "vue-tsc":                          "3.3.13",
     "wrangler":                         "^4.156.2"
   },

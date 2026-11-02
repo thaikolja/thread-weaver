@@ -22,6 +22,12 @@ const weaver = useWeaver()
 /** Dip when a control changes the cards. Typing in the source does not. */
 const { dimmed, pulse } = useDisplayFade()
 
+/** Which way each chunk should step while the list slides. */
+const nudges = ref<Record<string, 'up' | 'down'>>({})
+
+/** Clears the step once the slide has finished. */
+let nudgeTimer: ReturnType<typeof setTimeout> | undefined
+
 watch(
   () => [
     weaver.platform,
@@ -36,6 +42,68 @@ watch(
     pulse()
   }
 )
+
+watch(
+  () => weaver.shownPosts.map(post => post.id),
+  (next, prev) => {
+    /** A move swaps two neighbors. A repack or a drop does not. */
+    const swapped = prev.length === next.length && prev.filter((id, index) => id !== next[index]).length === 2
+
+    if (!swapped) {
+      return
+    }
+
+    if (import.meta.client && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
+    /** Direction comes from the index change, not from which button was clicked. */
+    const nextNudges: Record<string, 'up' | 'down'> = {}
+
+    for (const id of next) {
+      const before = prev.indexOf(id)
+      const after = next.indexOf(id)
+
+      if (before !== after) {
+        nextNudges[id] = after < before ? 'up' : 'down'
+      }
+    }
+
+    nudges.value = nextNudges
+
+    clearTimeout(nudgeTimer)
+
+    nudgeTimer = setTimeout(() => {
+      nudges.value = {}
+    }, 520)
+  }
+)
+
+/** The slot paints above its neighbor while it slides up. */
+function slotClass(id: string): string {
+  if (nudges.value[id] === 'up') {
+    return 'c-chunk-up'
+  }
+
+  if (nudges.value[id] === 'down') {
+    return 'c-chunk-down'
+  }
+
+  return ''
+}
+
+/** Side step so the two chunks pass instead of stacking flat. */
+function nudgeClass(id: string): string {
+  if (nudges.value[id] === 'up') {
+    return 'c-chunk-nudge-up'
+  }
+
+  if (nudges.value[id] === 'down') {
+    return 'c-chunk-nudge-down'
+  }
+
+  return ''
+}
 </script>
 
 <template>
@@ -78,12 +146,18 @@ watch(
         tag="div"
         class="relative space-y-4 sm:space-y-6"
       >
-        <PostCard
+        <div
           v-for="(post, index) in weaver.shownPosts"
           :key="post.id"
-          :post="post"
-          :index="index"
-        />
+          class="c-chunk-slot"
+          :class="slotClass(post.id)"
+        >
+          <PostCard
+            :post="post"
+            :index="index"
+            :class="nudgeClass(post.id)"
+          />
+        </div>
       </TransitionGroup>
     </div>
   </div>
@@ -114,5 +188,17 @@ watch(
 
 .c-list-spine {
   @apply absolute top-8 bottom-8 left-6 -z-0 hidden w-0.5 bg-slate-200 sm:block;
+}
+
+.c-chunk-slot {
+  @apply relative;
+}
+
+.c-chunk-up {
+  z-index: 2;
+}
+
+.c-chunk-down {
+  z-index: 1;
 }
 </style>
