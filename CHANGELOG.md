@@ -4,6 +4,10 @@ New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v
 
 ## Unreleased
 
+- feat(ui): fade the posts when a control changes what they show
+- feat(i18n): show ไทย on the Thai language link
+- fix(ui): inset the select carets and keep the tool checks bright
+- feat(ui): use Phosphor icons
 - feat(i18n): add EN, DE, and TH links at the top right of the page
 - build(preview): upload the static app to Cloudflare Workers with Wrangler
 

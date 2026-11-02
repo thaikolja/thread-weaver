@@ -39,7 +39,7 @@ const weaver = useWeaver()
       @click="weaver.move(index, -1)"
     >
       <UIcon
-        name="i-lucide-chevron-up"
+        name="i-ph-caret-up"
         class="size-3.5"
       />
     </button>
@@ -53,7 +53,7 @@ const weaver = useWeaver()
       @click="weaver.move(index, 1)"
     >
       <UIcon
-        name="i-lucide-chevron-down"
+        name="i-ph-caret-down"
         class="size-3.5"
       />
     </button>

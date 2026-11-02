@@ -18,6 +18,24 @@
 /** Shared editor. The list just reads the compiled posts. */
 
 const weaver = useWeaver()
+
+/** Dip when a control changes the cards. Typing in the source does not. */
+const { dimmed, pulse } = useDisplayFade()
+
+watch(
+  () => [
+    weaver.platform,
+    weaver.marker,
+    weaver.placement,
+    weaver.bridge,
+    weaver.capitalize,
+    weaver.finishSentences,
+    weaver.keepBreaks
+  ],
+  () => {
+    pulse()
+  }
+)
 </script>
 
 <template>
@@ -42,7 +60,7 @@ const weaver = useWeaver()
         @click="weaver.copyAll()"
       >
         <UIcon
-          name="i-lucide-copy"
+          name="i-ph-copy"
           class="size-3.5"
         />
         <span>{{ weaver.allCopied ? $t('list.copied') : $t('list.copy') }}</span>
@@ -51,7 +69,8 @@ const weaver = useWeaver()
 
     <div
       v-if="weaver.shownPosts.length"
-      class="relative"
+      class="relative transition-opacity duration-200 ease-out motion-reduce:transition-none motion-reduce:opacity-100"
+      :class="{ 'opacity-50': dimmed }"
     >
       <div class="c-list-spine" />
       <TransitionGroup

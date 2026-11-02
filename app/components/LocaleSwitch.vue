@@ -15,11 +15,18 @@
   -->
 
 <script setup lang="ts">
-/** EN, DE, and TH. Each link opens that language's page. */
+/** EN, DE, and ไทย. Each link opens that language's page. */
 const { locale, locales } = useI18n()
 
 /** Path for one locale, such as `/de`. */
 const switchLocalePath = useSwitchLocalePath()
+
+/** Short labels. Thai stays in its own script. */
+const shortLabels: Record<string, string> = {
+  en: 'EN',
+  de: 'DE',
+  th: 'ไทย'
+}
 
 /** One link per configured locale. */
 const choices = computed(() => {
@@ -32,6 +39,7 @@ const choices = computed(() => {
       code,
       name,
       language,
+      label: shortLabels[code] || code.toUpperCase(),
       to: switchLocalePath(code) || '/'
     }
   })
@@ -54,7 +62,7 @@ const choices = computed(() => {
       :hreflang="choice.language"
       :lang="choice.language"
     >
-      {{ choice.code.toUpperCase() }}
+      {{ choice.label }}
     </NuxtLink>
   </nav>
 </template>
@@ -68,6 +76,7 @@ const choices = computed(() => {
 
 .c-locale-link {
   @apply rounded-full border border-slate-200/90 bg-white px-2 py-1 font-mono text-xs font-semibold tracking-wide text-slate-500;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 .c-locale-off {
@@ -76,5 +85,11 @@ const choices = computed(() => {
 
 .c-locale-on {
   @apply border-slate-950 bg-slate-950 text-white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-locale-link {
+    transition: none;
+  }
 }
 </style>

@@ -19,7 +19,7 @@ The only remote call is the QR image. Send to Phone asks `api.qrserver.com` for 
 
 ## Languages
 
-The switcher at the top right opens English at `/`, German at `/de`, and Thai at `/th`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
+The switcher at the top right is labeled EN, DE, and ไทย. Those links open English at `/`, German at `/de`, and Thai at `/th`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
 
 ## Version
 

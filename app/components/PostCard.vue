@@ -60,12 +60,12 @@ const weaver = useWeaver()
         >
           <UIcon
             v-if="weaver.copiedPosts[post.id]"
-            name="i-lucide-check"
+            name="i-ph-check"
             class="size-3.5 text-emerald-600"
           />
           <UIcon
             v-else
-            name="i-lucide-copy"
+            name="i-ph-copy"
             class="size-3.5"
           />
           <span>{{ weaver.copiedPosts[post.id] ? $t('post.copied') : $t('post.copy') }}</span>

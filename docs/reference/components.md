@@ -43,9 +43,11 @@ Already on screen. Leaving it visible avoids a flash to nothing.
 
 ## `LocaleSwitch.vue`
 
-EN, DE, and TH. Each link opens that language's page.
+EN, DE, and ไทย. Each link opens that language's page.
 
 Path for one locale, such as `/de`.
+
+Short labels. Thai stays in its own script.
 
 One link per configured locale.
 
@@ -55,9 +57,9 @@ Shared editor. Marker, placement, and bridge update the posts as they change.
 
 ## `PlatformIcon.vue`
 
-Which corset this mark belongs to.
+Phosphor mark for one corset. Bluesky uses the butterfly.
 
-Class and size land on the one svg that is showing.
+Filled Phosphor names. The parent passes the size.
 
 ## `PlatformPicker.vue`
 
@@ -93,6 +95,8 @@ How much of the ring is still empty.
 
 Shared editor. The list just reads the compiled posts.
 
+Dip when a control changes the cards. Typing in the source does not.
+
 ## `PostMoveButtons.vue`
 
 Which card this is, so the first and last arrows can disable themselves.
@@ -106,6 +110,8 @@ Shared editor. The modal opens when a post asks for a QR.
 ## `ShipStation.vue`
 
 Shared editor. Totals and the download live on it.
+
+Same dip as the cards, so the totals fade with them.
 
 ## `SourceField.vue`
 
