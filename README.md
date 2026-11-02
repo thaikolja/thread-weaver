@@ -43,7 +43,7 @@ The browser will start the development server and display the page. The home pag
 
 ## Documentation
 
-For the curious ones, there is an automatically-generated documentation site build off [Nuxt's Docus](https://content.nuxt.com/templates/docus).
+For the curious ones, there is an automatically-generated documentation site at the path [/docs](/docs) build off [Nuxt's Docus](https://content.nuxt.com/templates/docus).
 
 On GitLab, where the project's primary repository is hosted, uses CI/CD via `gitlab-ci.yaml`. On GitHub, where the project is mirrored to, it uses GitHub Actions to achieve the same result.
 
