@@ -41,6 +41,14 @@ A taller window can cover the block without a scroll. Show it in place.
 
 Already on screen. Leaving it visible avoids a flash to nothing.
 
+## `LocaleSwitch.vue`
+
+EN, DE, and TH. Each link opens that language's page.
+
+Path for one locale, such as `/de`.
+
+One link per configured locale.
+
 ## `MarkerFields.vue`
 
 Shared editor. Marker, placement, and bridge update the posts as they change.
@@ -109,7 +117,7 @@ Offline footnote from the template. The QR action still calls a remote image ser
 
 ## `WeaverHeader.vue`
 
-Thread Weaver masthead: kicker, wordmark, and the template tagline.
+Thread Weaver masthead: kicker, wordmark, tagline, and the language switcher.
 
 ## `WeaverWorkbench.vue`
 

@@ -6,7 +6,9 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "deploy:preview": "bun scripts/deploy-cloudflare.mjs",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "test": "bun test",
@@ -41,7 +43,8 @@
     "latest": "^0.2.0",
     "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
-    "vue-tsc": "3.3.13"
+    "vue-tsc": "3.3.13",
+    "wrangler": "^4.156.2"
   },
   "packageManager": "bun@latest",
   "overrides": {

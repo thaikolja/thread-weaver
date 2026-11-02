@@ -350,7 +350,7 @@ The only remote call is the QR image. Send to Phone asks \`api.qrserver.com\` fo
 
 ## Languages
 
-The buttons are English at \`/\`, German at \`/de\`, and Thai at \`/th\`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
+The switcher at the top right opens English at \`/\`, German at \`/de\`, and Thai at \`/th\`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
 
 ## Version
 
@@ -406,7 +406,7 @@ The page is one screen. The sections share a single editor through \`provideWeav
 
 | Section | Component | What you do there |
 | --- | --- | --- |
-| Masthead | \`WeaverHeader\` | Read the name. The mark is the site logo. |
+| Masthead | \`WeaverHeader\` | Read the name, or switch language. The mark is the site logo. |
 | Platform and source | \`WeaverWorkbench\` | Pick a platform, paste text, set the marker and the bridge. |
 | Text tools | \`DraftTools\` | Capitalize posts, finish sentences, or keep line breaks. |
 | Cards | \`PostList\` and \`PostCard\` | Read each post, reorder it, copy it, or drop it. |

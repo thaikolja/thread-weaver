@@ -527,6 +527,8 @@ test('the page imports this module and the starter shell is gone', () => {
   expect(draft).toContain('from \'~/utils/weaver/state\'')
   expect(draft).toContain('from \'~/utils/weaver/compile\'')
   expect(page).toContain('<WeaverHeader')
+  expect(source).toContain('<LocaleSwitch')
+  expect(source).toContain('locale.label')
   expect(page).toContain('<WeaverWorkbench')
   expect(page).toContain('<PostList')
   expect(page).not.toContain('components/thread')

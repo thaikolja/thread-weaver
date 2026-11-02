@@ -1,5 +1,12 @@
 # Changelog
 
+New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). The subject is `type(scope): imperative description`.
+
+## Unreleased
+
+- feat(i18n): add EN, DE, and TH links at the top right of the page
+- build(preview): upload the static app to Cloudflare Workers with Wrangler
+
 ## 1.0.0 — 2026-10-25
 
 First production release of Thread Weaver.

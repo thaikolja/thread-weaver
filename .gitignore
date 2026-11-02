@@ -34,3 +34,8 @@ coverage/
 # VitePress build
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# Wrangler local state for the static preview
+.wrangler
+.dev.vars
+.dev.vars.*
