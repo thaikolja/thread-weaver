@@ -42,7 +42,7 @@ const weaver = useWeaver()
         @click="weaver.send(post.compiled)"
       >
         <UIcon
-          name="i-lucide-external-link"
+          name="i-ph-arrow-square-out"
           class="c-action-icon"
         />
         <span>{{ $t('actions.send', { platform: weaver.platformName }) }}</span>
@@ -55,7 +55,7 @@ const weaver = useWeaver()
         @click="weaver.listen(post.spoken, post.id)"
       >
         <UIcon
-          name="i-lucide-volume-2"
+          name="i-ph-speaker-high"
           class="size-3.5"
         />
         <span>{{ weaver.speakingId === post.id ? $t('actions.speaking') : $t('actions.listen') }}</span>
@@ -67,7 +67,7 @@ const weaver = useWeaver()
         @click="weaver.openQr(post.compiled)"
       >
         <UIcon
-          name="i-lucide-qr-code"
+          name="i-ph-qr-code"
           class="c-action-icon"
         />
         <span>{{ $t('actions.qr') }}</span>
@@ -79,7 +79,7 @@ const weaver = useWeaver()
       @click="weaver.drop(index)"
     >
       <UIcon
-        name="i-lucide-trash-2"
+        name="i-ph-trash"
         class="size-3.5"
       />
       <span>{{ $t('actions.drop') }}</span>

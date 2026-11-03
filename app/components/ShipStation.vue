@@ -21,10 +21,16 @@
 /** Shared editor. Totals and the download live on it. */
 
 const weaver = useWeaver()
+
+/** Same dip as the cards, so the totals fade with them. */
+const { dimmed } = useDisplayFade()
 </script>
 
 <template>
-  <div class="c-ship">
+  <div
+    class="c-ship transition-opacity duration-200 ease-out motion-reduce:transition-none motion-reduce:opacity-100"
+    :class="{ 'opacity-50': dimmed }"
+  >
     <div class="c-ship-panel">
       <div
         class="c-ship-mark"
@@ -63,10 +69,15 @@ const weaver = useWeaver()
       <div class="c-ship-stats">
         <div class="c-ship-stat">
           <span class="c-ship-kicker">{{ $t('ship.length') }}</span>
-          <span class="c-ship-mono">{{ $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }) }}</span>
+          <span class="c-ship-mono">
+            {{ $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }) }}
+          </span>
         </div>
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">{{ $t('ship.words') }}</span> <span class="c-ship-mono">{{ weaver.wordCount }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.words') }}</span>
+          <span class="c-ship-mono">
+            {{ weaver.wordCount }}
+          </span>
         </div>
         <div class="c-ship-stat">
           <span class="c-ship-kicker">{{ $t('ship.target') }}</span> <span class="c-ship-target">
@@ -86,12 +97,12 @@ const weaver = useWeaver()
         >
           <UIcon
             v-if="!weaver.allCopied"
-            name="i-lucide-copy"
+            name="i-ph-copy"
             class="size-4"
           />
           <UIcon
             v-else
-            name="i-lucide-check"
+            name="i-ph-check"
             class="size-4 text-emerald-600"
           />
           <span>{{ weaver.allCopied ? $t('ship.copied') : $t('ship.copy') }}</span>
@@ -102,7 +113,7 @@ const weaver = useWeaver()
           @click="weaver.download()"
         >
           <UIcon
-            name="i-lucide-download"
+            name="i-ph-download-simple"
             class="size-4 text-zinc-400"
           />
           <span>{{ $t('ship.download') }}</span>
@@ -136,7 +147,7 @@ const weaver = useWeaver()
 }
 
 .c-mark-threads {
-  @apply bg-gradient-to-r from-pink-500 to-amber-500;
+  @apply bg-linear-to-r from-pink-500 to-amber-500;
 }
 
 .c-mark-masto {
@@ -156,7 +167,7 @@ const weaver = useWeaver()
 }
 
 .c-ship-stats {
-  @apply grid grid-cols-3 gap-2 border-y border-white/10 py-2 text-xs sm:gap-4;
+  @apply grid grid-cols-3 gap-2 border-y border-white/10 py-4 text-xs sm:gap-4;
 }
 
 .c-ship-stat {

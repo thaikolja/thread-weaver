@@ -16,6 +16,10 @@ import stylistic from '@stylistic/eslint-plugin'
 
 /** Project lint rules: Nuxt's, plus a check that Tailwind classes exist. */
 export default withNuxt(
+  {
+    /** The docs app is its own Nuxt project. Root lint stays on the editor. */
+    ignores: ['docs/**']
+  },
   betterTailwindcss.configs['correctness-error'],
   {
     plugins: {

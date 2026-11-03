@@ -21,6 +21,9 @@ jobs:
       - name: Test
         run: bun test
 
+      - name: Test with Vitest
+        run: bun run test:vitest
+
       - name: Lint
         run: bun run lint
 

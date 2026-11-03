@@ -16,7 +16,7 @@ logs
 # Misc
 .DS_Store
 .fleet
-.idea
+.idea/*
 !.idea/copyright
 
 # Local env files
@@ -31,6 +31,14 @@ AGENTS.md
 # Test coverage
 coverage/
 
-# VitePress build
-docs/.vitepress/dist
-docs/.vitepress/cache
+# Docus app build. The markdown under docs/content stays tracked.
+docs/node_modules
+docs/.nuxt
+docs/.output
+docs/.data
+docs/dist
+
+# Wrangler local state for the static preview
+.wrangler
+.dev.vars
+.dev.vars.*

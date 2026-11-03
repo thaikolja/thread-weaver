@@ -6,15 +6,34 @@ import { fileURLToPath } from 'node:url'
 /** Repository root, one level above this script. */
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** VitePress source at the repository root. */
-const contentDir = join(root, 'docs')
+/** Docus markdown. The app around it stays in `/docs`. */
+const contentDir = join(root, 'docs', 'content')
 
-/** Logo and other files VitePress copies through as-is. */
-const docsPublic = join(contentDir, 'public')
+/** Number prefixes set the sidebar order. Docus drops them from the URL. */
+const pagePaths = {
+  'index.md': 'index.md',
+  'getting-started/introduction.md': '1.getting-started/1.introduction.md',
+  'getting-started/installation.md': '1.getting-started/2.installation.md',
+  'using-the-tool/workbench.md': '2.using-the-tool/1.workbench.md',
+  'using-the-tool/platforms.md': '2.using-the-tool/2.platforms.md',
+  'using-the-tool/markers-and-bridges.md': '2.using-the-tool/3.markers-and-bridges.md',
+  'using-the-tool/text-tools.md': '2.using-the-tool/4.text-tools.md',
+  'using-the-tool/shipping.md': '2.using-the-tool/5.shipping.md',
+  'architecture/overview.md': '3.architecture/1.overview.md',
+  'architecture/page-and-state.md': '3.architecture/2.page-and-state.md',
+  'architecture/splitting.md': '3.architecture/3.splitting.md',
+  'reference/types-and-limits.md': '4.reference/1.types-and-limits.md',
+  'reference/splitting-and-compile.md': '4.reference/2.splitting-and-compile.md',
+  'reference/state-and-metrics.md': '4.reference/3.state-and-metrics.md',
+  'reference/composables.md': '4.reference/4.composables.md',
+  'reference/components.md': '4.reference/5.components.md'
+}
 
 /** Write one markdown page, creating parent folders as needed. */
 function writePage(relativePath, body) {
-  const target = join(contentDir, relativePath)
+  /** Ordered path under `docs/content`. */
+  const mapped = pagePaths[relativePath] || relativePath
+  const target = join(contentDir, mapped)
   mkdirSync(dirname(target), { recursive: true })
   writeFileSync(target, body.trimStart())
 }
@@ -272,58 +291,93 @@ ${blocks.join('\n')}
 /** Landing page. The four features are the sidebar categories. */
 function landing() {
   return `---
-layout: home
-title: Thread Weaver
-titleTemplate: Split a long post
-
-hero:
-  name: Thread Weaver
-  text: Split a long post into posts that fit the platform.
-  tagline: The work happens in the browser. The page does not store the text and it does not post for you.
-  image:
-    src: /logo.svg
-    alt: Thread Weaver
-  actions:
-    - theme: brand
-      text: Introduction
-      link: /getting-started/introduction
-    - theme: alt
-      text: Installation
-      link: /getting-started/installation
-
-features:
-  - title: Getting started
-    details: What the tool is for, and how to run it locally.
-    link: /getting-started/introduction
-  - title: Using the tool
-    details: Platforms, markers, bridges, text tools, and shipping.
-    link: /using-the-tool/workbench
-  - title: Architecture
-    details: Where the split rules live, and where the browser calls live.
-    link: /architecture/overview
-  - title: Reference
-    details: Every public function, taken from the comments in the source.
-    link: /reference/types-and-limits
+seo:
+  title: Thread Weaver
+  description: Split a long post into posts that fit X, Bluesky, Threads, and Mastodon.
 ---
 
-# Thread Weaver
+::u-page-hero
+#title
+Thread Weaver
 
-Thread Weaver is a one-page editor. You paste a long post. The page cuts it into shorter posts that stay on word boundaries and fit the platform you picked.
+#description
+Split a long post into posts that fit the platform. The work happens in the browser. The page does not store the text and it does not post for you.
 
-The work happens in the browser. The page does not store the text and it does not post for you.
+#links
+  :::u-button
+  ---
+  color: neutral
+  size: xl
+  to: /getting-started/introduction
+  trailing-icon: i-ph-arrow-right
+  ---
+  Introduction
+  :::
 
-| | |
-| --- | --- |
-| [Platforms](/using-the-tool/platforms) | X at 280, Bluesky at 300, Threads at 500, and Mastodon at 500. |
-| [Markers and bridges](/using-the-tool/markers-and-bridges) | Number each post, and insert your own bridge as you type. |
-| [Shipping](/using-the-tool/shipping) | Copy, download Markdown, open a compose tab, listen, or show a QR code. |
+  :::u-button
+  ---
+  color: neutral
+  size: xl
+  to: /getting-started/installation
+  variant: outline
+  ---
+  Installation
+  :::
+::
 
-## Start here
+::u-page-section
+#title
+Start here
 
-- [Introduction](/getting-started/introduction) explains what the tool is for.
-- [Installation](/getting-started/installation) shows how to run it locally.
-- [Architecture](/architecture/overview) is the map of the code.
-- [Reference](/reference/types-and-limits) lists every public function.
+#features
+  :::u-page-feature
+  ---
+  icon: i-ph-rocket
+  to: /getting-started/introduction
+  ---
+  #title
+  Getting started
+
+  #description
+  What the tool is for, and how to run it locally.
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-ph-sliders
+  to: /using-the-tool/workbench
+  ---
+  #title
+  Using the tool
+
+  #description
+  Platforms, markers, bridges, text tools, and shipping.
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-ph-tree-structure
+  to: /architecture/overview
+  ---
+  #title
+  Architecture
+
+  #description
+  Where the split rules live, and where the browser calls live.
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-ph-code
+  to: /reference/types-and-limits
+  ---
+  #title
+  Reference
+
+  #description
+  Every public function, taken from the comments in the source.
+  :::
+::
 `
 }
 
@@ -350,7 +404,7 @@ The only remote call is the QR image. Send to Phone asks \`api.qrserver.com\` fo
 
 ## Languages
 
-The buttons are English at \`/\`, German at \`/de\`, and Thai at \`/th\`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
+The switcher at the top right is labeled EN, DE, and ไทย. Those links open English at \`/\`, German at \`/de\`, and Thai at \`/th\`. The address picks that language. The browser language does not redirect. Listen still follows the card, so a German post on the English page is read in German.
 
 ## Version
 
@@ -383,11 +437,11 @@ Open the URL Bun prints. The home page is the editor.
 | \`bun run typecheck\` | Check TypeScript |
 | \`bun run lint\` | Run ESLint |
 | \`bun run docs:dev\` | Preview this documentation |
-| \`bun run docs:build\` | Regenerate the markdown and build the VitePress site |
+| \`bun run docs:build\` | Regenerate the markdown and build the Docus site |
 
 ## Documentation site
 
-The guides are a [VitePress](https://vitepress.dev) site in \`/docs\`. \`scripts/generate-docs.mjs\` writes the categories and the pages. A GitHub Action rebuilds the site on every push to \`main\`.
+The guides are a [Docus](https://docus.dev) app in \`/docs\`. \`scripts/generate-docs.mjs\` writes the categories and the pages. GitLab CI and GitHub Actions build the site on every push to \`main\`. The built pages are served at \`/docs\` on the website.
 `)
 }
 
@@ -406,7 +460,7 @@ The page is one screen. The sections share a single editor through \`provideWeav
 
 | Section | Component | What you do there |
 | --- | --- | --- |
-| Masthead | \`WeaverHeader\` | Read the name. The mark is the site logo. |
+| Masthead | \`WeaverHeader\` | Read the name, or switch language. The mark is the site logo. |
 | Platform and source | \`WeaverWorkbench\` | Pick a platform, paste text, set the marker and the bridge. |
 | Text tools | \`DraftTools\` | Capitalize posts, finish sentences, or keep line breaks. |
 | Cards | \`PostList\` and \`PostCard\` | Read each post, reorder it, copy it, or drop it. |
@@ -581,7 +635,7 @@ app/pages/index.vue
 | \`app/components/\` | The screen, one piece per file |
 | \`app/pages/index.vue\` | Layout only |
 | \`tests/thread.test.ts\` | The rules, imported from the real modules |
-| \`docs/\` | These VitePress guides. GitHub Actions rebuilds the site on every push. |
+| \`docs/\` | The Docus app and its markdown. A push to \`main\` rebuilds the site at \`/docs\`. |
 
 \`template.html\` at the repository root is the original page. The Nuxt app is the product. Do not load Vue or Tailwind from a CDN.
 `)
@@ -736,94 +790,49 @@ ${componentNotes}
 `)
 }
 
-/** Sidebar and nav. The same four categories as the home page. */
-function writeConfig() {
-  /** VitePress config next to the markdown. */
-  const configPath = join(contentDir, '.vitepress/config.ts')
+/** Sidebar titles. Docus reads one file per content folder. */
+function writeNavigation() {
+  /** Folder name, title, and Phosphor icon. */
+  const sections = [
+    ['1.getting-started', 'Getting started', 'i-ph-rocket'],
+    ['2.using-the-tool', 'Using the tool', 'i-ph-sliders'],
+    ['3.architecture', 'Architecture', 'i-ph-tree-structure'],
+    ['4.reference', 'Reference', 'i-ph-code']
+  ]
 
-  mkdirSync(dirname(configPath), { recursive: true })
+  for (const [folder, title, icon] of sections) {
+    /** One navigation file beside the pages in that folder. */
+    const target = join(contentDir, folder, '.navigation.yml')
 
-  writeFileSync(configPath, `import { defineConfig } from 'vitepress'
-
-/** Project Pages site: https://thaikolja.github.io/thread-weaver/ */
-const base = '/thread-weaver/'
-
-export default defineConfig({
-  title: 'Thread Weaver',
-  description: 'Split a long post into posts that fit X, Bluesky, Threads, and Mastodon.',
-  base,
-  lang: 'en-US',
-  cleanUrls: true,
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: \`\${base}logo.svg\` }]
-  ],
-  themeConfig: {
-    logo: '/logo.svg',
-    siteTitle: 'Thread Weaver',
-    nav: [
-      { text: 'Getting started', link: '/getting-started/introduction' },
-      { text: 'Using the tool', link: '/using-the-tool/workbench' },
-      { text: 'Architecture', link: '/architecture/overview' },
-      { text: 'Reference', link: '/reference/types-and-limits' }
-    ],
-    sidebar: [
-      {
-        text: 'Getting started',
-        items: [
-          { text: 'Introduction', link: '/getting-started/introduction' },
-          { text: 'Installation', link: '/getting-started/installation' }
-        ]
-      },
-      {
-        text: 'Using the tool',
-        items: [
-          { text: 'The workbench', link: '/using-the-tool/workbench' },
-          { text: 'Platforms', link: '/using-the-tool/platforms' },
-          { text: 'Markers and bridges', link: '/using-the-tool/markers-and-bridges' },
-          { text: 'Text tools', link: '/using-the-tool/text-tools' },
-          { text: 'Shipping', link: '/using-the-tool/shipping' }
-        ]
-      },
-      {
-        text: 'Architecture',
-        items: [
-          { text: 'Overview', link: '/architecture/overview' },
-          { text: 'Page and state', link: '/architecture/page-and-state' },
-          { text: 'Splitting', link: '/architecture/splitting' }
-        ]
-      },
-      {
-        text: 'Reference',
-        items: [
-          { text: 'Types and limits', link: '/reference/types-and-limits' },
-          { text: 'Splitting and compile', link: '/reference/splitting-and-compile' },
-          { text: 'State and metrics', link: '/reference/state-and-metrics' },
-          { text: 'Composables', link: '/reference/composables' },
-          { text: 'Components', link: '/reference/components' }
-        ]
-      }
-    ],
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/thaikolja/thread-weaver' }
-    ],
-    search: {
-      provider: 'local'
-    },
-    outline: [2, 3],
-    footer: {
-      message: 'MIT License'
-    }
+    mkdirSync(dirname(target), { recursive: true })
+    writeFileSync(target, `title: ${title}\nicon: ${icon}\n`)
   }
-})
-`)
 }
 
-/** Remove the previous site, then write the current pages and sidebar. */
+/** Replace the markdown. Leave the Docus app files in `/docs` alone. */
 function main() {
+  /** VitePress pages from the previous generator. */
+  const stale = [
+    'docs/index.md',
+    'docs/getting-started',
+    'docs/using-the-tool',
+    'docs/architecture',
+    'docs/reference',
+    'docs/.vitepress'
+  ]
+
+  for (const path of stale) {
+    rmSync(join(root, path), { recursive: true, force: true })
+  }
+
   rmSync(contentDir, { recursive: true, force: true })
+
+  /** Logo served from the docs app. baseURL mounts it at `/docs/logo.svg`. */
+  const docsPublic = join(root, 'docs', 'public')
+
   mkdirSync(docsPublic, { recursive: true })
   copyFileSync(join(root, 'public/logo.svg'), join(docsPublic, 'logo.svg'))
-  writeConfig()
+  writeNavigation()
   writePage('index.md', landing())
   gettingStarted()
   usingTheTool()
