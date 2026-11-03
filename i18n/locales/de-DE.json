@@ -13,6 +13,9 @@
     "line2":   "WEAVER.",
     "tagline": "Weil niemand auf der Timeline mehr als drei Sätze liest, ohne unter Dopaminentzug zu leiden."
   },
+  "locale":         {
+    "label": "Sprache"
+  },
   "source":         {
     "label":       "Entwurf",
     "placeholder": "Füg hier deinen entgleisten Monolog ein...",

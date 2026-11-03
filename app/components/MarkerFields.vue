@@ -28,7 +28,7 @@ const weaver = useWeaver()
         for="weaver-marker"
       >
         <UIcon
-          name="i-lucide-hash"
+          name="i-ph-hash"
           class="size-3.5"
         />
         {{ $t('marker.style') }}
@@ -61,7 +61,7 @@ const weaver = useWeaver()
         for="weaver-placement"
       >
         <UIcon
-          name="i-lucide-align-justify"
+          name="i-ph-text-align-justify"
           class="size-3.5"
         />
         {{ $t('marker.placement') }}
@@ -91,7 +91,7 @@ const weaver = useWeaver()
         for="weaver-bridge"
       >
         <UIcon
-          name="i-lucide-ellipsis"
+          name="i-ph-dots-three"
           class="size-3.5"
         />
         {{ $t('marker.bridge') }}
@@ -119,7 +119,11 @@ const weaver = useWeaver()
 }
 
 .c-field-select {
-  @apply w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700 outline-none hover:border-slate-300;
+  @apply w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2 pr-10 pl-3 text-slate-700 outline-none hover:border-slate-300;
+  background-image:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%2394a3b8' d='m213.66 101.66-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32'/%3E%3C/svg%3E");
+  background-repeat:     no-repeat;
+  background-position:   right 0.8rem center;
+  background-size:       1rem;
 }
 
 .c-field-input {

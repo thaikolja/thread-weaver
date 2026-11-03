@@ -4,13 +4,10 @@ on:
   push:
     branches:
       - main
-      - master
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: docs
@@ -29,37 +26,42 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install dependencies
+      - name: Install the app
         run: bun install
 
-      - name: Generate the markdown and build VitePress
-        run: bun run docs:build
+      - name: Install the docs app
+        run: bun install --cwd docs
+
+      - name: Build the site, including /docs
+        run: bun run build:site
+        env:
+          NUXT_SITE_URL: https://weaver.yanawa.io
 
       - name: Upload the site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: docs/.vitepress/dist
+          name: site
+          path: .output/public
 
-      - name: Commit generated markdown
+      - name: Commit regenerated markdown
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs
+          git add docs/content docs/public/logo.svg
           if git diff --staged --quiet; then
             echo "Documentation markdown is already up to date."
             exit 0
           fi
-          git commit -m "docs: regenerate VitePress pages [skip ci]"
+          git commit -m "docs: regenerate Docus pages [skip ci]"
           git push
 
-  deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip ci]') }}
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy the preview when Cloudflare credentials exist
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "No Cloudflare credentials. /docs is in the site artifact."
+            exit 0
+          fi
+          bun x wrangler deploy --no-autoconfig

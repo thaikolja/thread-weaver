@@ -13,6 +13,9 @@
     "line2":   "WEAVER.",
     "tagline": "Because nobody on the timeline reads more than three sentences without suffering dopamine withdrawal."
   },
+  "locale":         {
+    "label": "Language"
+  },
   "source":         {
     "label":       "Draft",
     "placeholder": "Paste your unhinged monologue here...",

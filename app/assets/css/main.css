@@ -35,7 +35,7 @@
 }
 
 :root {
-  --dimmed: #f0f;
+  --dimmed: #ff00ff;
 }
 
 html {
@@ -61,8 +61,55 @@ button {
 }
 
 .thread-chain-move {
-  transition:  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+.c-chunk-nudge-up {
+  animation: chunk-nudge-up 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.c-chunk-nudge-down {
+  animation: chunk-nudge-down 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes chunk-nudge-up {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  40% {
+    transform: translate3d(18px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes chunk-nudge-down {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  40% {
+    transform: translate3d(-18px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thread-chain-move,
+  .thread-chain-enter-active,
+  .thread-chain-leave-active,
+  .c-chunk-nudge-up,
+  .c-chunk-nudge-down {
+    animation:  none;
+    transition: none;
+  }
 }
 
 .thread-chain-enter-active {

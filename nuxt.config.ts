@@ -14,6 +14,17 @@
  * @package Thread Weaver
  */
 
+/** Read the static guides folder before deciding whether to publish it. */
+import { existsSync } from 'node:fs'
+
+/** Absolute path of that folder. */
+import { resolve }    from 'node:path'
+
+const THREAD_WEAVER_VERSION: string = '1.0.0'
+
+/** Docus `generate` output. Missing until `docs:build` has run. */
+const docsStaticDir = resolve(process.cwd(), 'docs/.output/public')
+
 /** Nuxt config for the one-page thread splitter. */
 export default defineNuxtConfig({
   /** Lint, UI (Tailwind, icons, fonts), SEO, and images. */
@@ -33,6 +44,14 @@ export default defineNuxtConfig({
   /** The in-app devtools panel stays off. */
   devtools: {
     enabled: false
+  },
+
+  /**
+   * The editor is the site root. German is `/de`, Thai is `/th`.
+   * The static guides are mounted beside those routes at `/docs`.
+   */
+  app: {
+    baseURL: '/'
   },
 
   /** `~/` keeps Vite on app/assets. A root path made the Tailwind imports 404. */
@@ -55,13 +74,45 @@ export default defineNuxtConfig({
     fallback:   'light'
   },
 
-  /** The home page is static. */
+  runtimeConfig: {
+    public: {
+      version: THREAD_WEAVER_VERSION ?? '1.0.0'
+    }
+  },
+
+  /** The home page is static. `/docs` is the copied Docus build, not a Vue route. */
   routeRules: {
-    '/': { prerender: true }
+    '/':        { prerender: true },
+    '/docs':    { prerender: false },
+    '/docs/**': { prerender: false }
+  },
+
+  /** Pin the host. An unset host is saved as `{}` and the next dev start crashes. */
+  devServer: {
+    host: 'localhost'
   },
 
   /** Keeps Nuxt on the current behavior for this date. */
   compatibilityDate: '2026-06-30',
+
+  /**
+   * Copy the static guides into the generated site at `/docs`.
+   * The dev server also streams that folder, so one origin serves both.
+   */
+  nitro: {
+    publicAssets: existsSync(docsStaticDir)
+                    ? [ {
+        baseURL: '/docs',
+        dir:     docsStaticDir,
+        maxAge:  60 * 60 * 24 * 7,
+        /** A missing clean URL must reach the docs middleware, not a placeholder 404. */
+        fallthrough: true
+      } ]
+                    : [],
+    prerender:    {
+      ignore: [ '/docs', '/docs/**' ]
+    }
+  },
 
   /** Advertise `/de` and `/th` as translations of this page. */
   aiReady: {
@@ -75,15 +126,6 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle:  '1tbs'
       }
-    }
-  },
-
-  qrcode: {
-    options: {
-      variant:    'rounded',
-      radius:     1,
-      blackColor: 'yellow',
-      whiteColor: 'blue'
     }
   },
 
@@ -107,7 +149,9 @@ export default defineNuxtConfig({
 
   i18n: {
     /** Same origin as `site.url`. A different base URL would replace the canonical host. */
-    baseUrl:       'https://weaver.yanawa.io',
+    baseUrl: 'https://weaver.yanawa.io',
+    /** Default locale keeps the bare path. `prefix` would put English on `/en`. */
+    strategy:      'prefix_except_default',
     defaultLocale: 'en',
     locales:       [
       {
@@ -150,6 +194,15 @@ export default defineNuxtConfig({
    */
   ogImage: {
     zeroRuntime: true
+  },
+
+  qrcode: {
+    options: {
+      variant:    'rounded',
+      radius:     1,
+      blackColor: 'yellow',
+      whiteColor: 'blue'
+    }
   },
 
   /** The author. WebSite.publisher points here. */

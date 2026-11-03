@@ -16,26 +16,29 @@
 
 <script setup lang="ts">
 /**
- * Thread Weaver masthead: kicker, wordmark, and the template tagline.
+ * Thread Weaver masthead: kicker, wordmark, tagline, and the language switcher.
  */
 </script>
 
 <template>
-  <header class="mb-8 space-y-3 sm:mb-10 sm:space-y-4">
-    <div class="c-kicker">
-      <img
-        src="/logo.svg"
-        alt=""
-        width="16"
-        height="16"
-        class="size-4 shrink-0"
-      >
-      <span>{{ $t('header.kicker') }}</span>
+  <header class="mb-8 sm:mb-10">
+    <div class="flex items-start justify-between gap-3">
+      <div class="c-kicker">
+        <img
+          src="/logo.svg"
+          alt=""
+          width="16"
+          height="16"
+          class="size-4 shrink-0"
+        >
+        <span>{{ $t('header.kicker') }}</span>
+      </div>
+      <LocaleSwitch />
     </div>
-    <h1 class="c-wordmark">
+    <h1 class="c-wordmark mt-3 sm:mt-4">
       {{ $t('header.line1') }}<br>{{ $t('header.line2') }}
     </h1>
-    <p class="c-tagline">
+    <p class="c-tagline mt-3 sm:mt-4">
       {{ $t('header.tagline') }}
     </p>
   </header>

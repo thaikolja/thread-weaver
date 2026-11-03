@@ -11,7 +11,7 @@ The page is one screen. The sections share a single editor through `provideWeave
 
 | Section | Component | What you do there |
 | --- | --- | --- |
-| Masthead | `WeaverHeader` | Read the name. The mark is the site logo. |
+| Masthead | `WeaverHeader` | Read the name, or switch language. The mark is the site logo. |
 | Platform and source | `WeaverWorkbench` | Pick a platform, paste text, set the marker and the bridge. |
 | Text tools | `DraftTools` | Capitalize posts, finish sentences, or keep line breaks. |
 | Cards | `PostList` and `PostCard` | Read each post, reorder it, copy it, or drop it. |

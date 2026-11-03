@@ -24,7 +24,7 @@ const weaver = useWeaver()
     <div class="c-tools-options">
       <label class="c-tool">
         <UIcon
-          name="i-lucide-case-sensitive"
+          name="i-ph-text-aa"
           class="c-tool-icon"
         />
         <input
@@ -36,7 +36,7 @@ const weaver = useWeaver()
       </label>
       <label class="c-tool">
         <UIcon
-          name="i-lucide-circle-ellipsis"
+          name="i-ph-dots-three-circle"
           class="c-tool-icon"
         />
         <input
@@ -48,7 +48,7 @@ const weaver = useWeaver()
       </label>
       <label class="c-tool">
         <UIcon
-          name="i-lucide-wrap-text"
+          name="i-ph-arrow-bend-down-left"
           class="c-tool-icon"
         />
         <input
@@ -68,7 +68,7 @@ const weaver = useWeaver()
         @click="weaver.source = ''"
       >
         <UIcon
-          name="i-lucide-trash"
+          name="i-ph-trash"
           class="size-3.5"
         />
         <span>{{ $t('tools.clear') }}</span>
@@ -97,7 +97,21 @@ const weaver = useWeaver()
 }
 
 .c-tool-check {
-  @apply size-4 rounded accent-slate-950;
+  @apply size-4 shrink-0 cursor-pointer appearance-none rounded border border-slate-300 bg-white;
+  background-repeat:   no-repeat;
+  background-position: center;
+  background-size:     0.85rem;
+}
+
+.c-tool-check:checked {
+  border-color:     #0ea5e9;
+  background-color: #38bdf8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%23ffffff' d='m229.66 77.66-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32'/%3E%3C/svg%3E");
+}
+
+.c-tool-check:focus-visible {
+  outline:        2px solid #38bdf8;
+  outline-offset: 2px;
 }
 
 .c-clear {

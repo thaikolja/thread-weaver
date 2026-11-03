@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Slug for the workers.dev preview. The page still calls itself Thread Weaver.
+  // weaver.yanawa.io stays unattached until the real host is ready.
+  "name": "thread-weaver",
+  "compatibility_date": "2026-11-03",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./.output/public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
