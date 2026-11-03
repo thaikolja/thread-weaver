@@ -34,10 +34,11 @@ The browser will start the development server and display the page. The home pag
 
 | Script | What it does |
 | --- | --- |
-| `bun run dev` | Start the dev server |
+| `bun run dev` | Start the dev server. The tool is at `/`, and the static guides are at `/docs` |
 | `bun run build` | Build for production |
 | `bun run preview` | Serve the build |
 | `bun test` | Run the splitter tests |
+| `bun run test:vitest` | Run those tests with Vitest |
 | `bun run typecheck` | Check TypeScript |
 | `bun run lint` | Run ESLint |
 
@@ -47,7 +48,7 @@ For the curious ones, there is an automatically-generated documentation site at 
 
 On GitLab, where the project's primary repository is hosted, CI/CD is `.gitlab-ci.yml`. On GitHub, where the project is mirrored, GitHub Actions does the same job.
 
-Both configuration files are told to create the documentation site when pushing or merging Thread Weaver to the `main` branch. `bun run docs:dev` previews them. `bun run docs:build` writes the markdown and builds the site.
+Both configuration files are told to create the documentation site when pushing or merging Thread Weaver to the `main` branch. `bun run dev` serves that static site at `/docs` on the same origin as the tool. `bun run docs:build` writes the markdown and builds it. `bun run build:site` puts the tool and the guides into one folder.
 
 ## Version
 

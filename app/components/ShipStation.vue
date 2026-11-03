@@ -68,14 +68,16 @@ const { dimmed } = useDisplayFade()
       </div>
       <div class="c-ship-stats">
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">{{ $t('ship.length') }}</span> <span class="c-ship-mono">{{
-          $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 })
-        }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.length') }}</span>
+          <span class="c-ship-mono">
+            {{ $t('ship.chars', { count: weaver.shownPosts.length ? weaver.totalCharacterCount : 0 }) }}
+          </span>
         </div>
         <div class="c-ship-stat">
-          <span class="c-ship-kicker">{{ $t('ship.words') }}</span> <span class="c-ship-mono">{{
-          weaver.wordCount
-        }}</span>
+          <span class="c-ship-kicker">{{ $t('ship.words') }}</span>
+          <span class="c-ship-mono">
+            {{ weaver.wordCount }}
+          </span>
         </div>
         <div class="c-ship-stat">
           <span class="c-ship-kicker">{{ $t('ship.target') }}</span> <span class="c-ship-target">

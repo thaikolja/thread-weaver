@@ -2,8 +2,12 @@
 
 New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). The subject is `type(scope): imperative description`.
 
-## Unreleased
+## v1.1.0 — 2026-11-03
 
+- fix(docs): serve the static guides at /docs on the editor site
+- fix(ui): show the phone qr for the current post
+- fix(build): match the fonts override to its direct range
+- fix(build): match the typescript override to its direct range so `npx` can start
 - fix(dev): pin the dev server host so `nuxt dev` can start
 - ci(docs): build the Docus site on main and serve it at /docs
 - feat(ui): slide a chunk when it moves up or down
@@ -14,43 +18,24 @@ New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v
 - feat(ui): use Phosphor icons
 - feat(i18n): add EN, DE, and TH links at the top right of the page
 - build(preview): upload the static app to Cloudflare Workers with Wrangler
-
-## 1.0.0 — 2026-10-25
-
-First production release of Thread Weaver.
-
-### Splitting
-
-- Cuts a long post on word boundaries for X (280), Bluesky (300), Threads (500), and Mastodon (500).
-- A single word longer than the budget stays whole.
-- Markers are `(i/n)`, `[i/n]`, `i/n`, `#i`, or none.
-- Placements are a new line under the text, a header above it, inline after, and inline before.
-- A custom bridge appears as you type.
-- Text tools capitalize each post, finish an open sentence with `…`, and keep line breaks.
-- Reorder or drop a segment without packing again. Changing the source, the platform, line breaks, or the bridge length packs again from the source.
-
-### Shipping
-
-- Copy one post, or the whole sequence joined by a blank line, `---`, and another blank line.
-- Download `thread-<platform>-<timestamp>.md`.
-- Send opens the platform compose page. The tool does not post for you.
-- The phone QR is an image from `api.qrserver.com`.
-
-### Listen
-
-- Reads the card without the chunk counter the page attached.
-- Keeps a bridge you typed, and keeps a counter you wrote inside the post.
-- Uses a clear voice already installed for English, German, or Thai.
-- Skips joke voices and compact voices. Nothing is downloaded.
-- Speaks at rate 1.05. Clicking the same card again stops it.
-
-### Documentation
-
-- The guides are a VitePress site in `/docs`, with Getting started, Using the tool, Architecture, and Reference.
-- GitHub Actions rebuilds that site on every push to `main`.
-
-### Page
-
-- English at `/`, German at `/de`, and Thai at `/th`.
-- Splitting, markers, copy text, and the download run in the browser.
-- No accounts, history, or server storage.
+- feat(split): cut a long post on word boundaries for x, bluesky, threads, and mastodon
+- feat(split): keep a single word longer than the budget whole
+- feat(markers): offer (i/n), [i/n], i/n, #i, and none
+- feat(markers): place the marker on a new line, as a header, or inline
+- feat(bridge): show a custom bridge as you type
+- feat(tools): capitalize each post, finish an open sentence, and keep line breaks
+- feat(editor): reorder or drop a segment without packing again
+- feat(copy): copy one post or the whole sequence joined by a rule
+- feat(download): save the thread as markdown
+- feat(publish): open the platform compose page without posting
+- feat(qr): show a phone qr from the compose link
+- feat(speech): read the card without the attached chunk counter
+- feat(speech): keep a typed bridge and a counter written in the post
+- feat(speech): use an installed voice for english, german, or thai
+- feat(speech): skip joke voices and compact voices
+- feat(speech): speak at rate 1.05 and stop on a second click
+- docs: add guides for getting started, using the tool, architecture, and reference
+- ci(docs): rebuild the guides on every push to main
+- feat(i18n): serve english at /, german at /de, and thai at /th
+- feat: run splitting, markers, copy text, and download in the browser
+- feat: keep accounts, history, and server storage out of the app

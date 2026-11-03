@@ -20,11 +20,7 @@
 >
 /** Shared editor. The modal opens when a post asks for a QR. */
 
-const weaver     = useWeaver()
-const fullCards  = computed(() => weaver.shownPosts.map(post => post.compiled).join('\n\n'))
-const qrCodeData = useQrcode('https://nuxt.com', {
-  toBase64: true,
-})
+const weaver = useWeaver()
 </script>
 
 <template>
@@ -41,10 +37,12 @@ const qrCodeData = useQrcode('https://nuxt.com', {
         {{ $t('qr.title') }}
       </h4>
       <div class="c-qr-frame">
-        <NuxtImg
-          :src="qrCodeData"
-          alt="Image"
-        />
+        <img
+          :src="weaver.activeQrUrl"
+          :alt="$t('qr.title')"
+          width="250"
+          height="250"
+        >
       </div>
       <p class="text-dimmed">
         {{ $t('qr.help') }}

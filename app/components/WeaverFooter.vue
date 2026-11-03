@@ -14,14 +14,13 @@
   - @package Thread Weaver
   -->
 
-<script setup lang="ts"
->
+<script setup lang="ts">
 /**
  * Offline footnote from the template. The QR action still calls a remote image service.
  */
 
 const runtimeConfig = useRuntimeConfig()
-const appVersion    = <String> runtimeConfig.public.version
+const appVersion = runtimeConfig.public.version as string
 </script>
 
 <template>
