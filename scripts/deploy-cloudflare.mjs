@@ -37,5 +37,5 @@ if (!existsSync(home)) {
   process.exit(1)
 }
 
-/** Assets-only Worker. The hostname is the thread-weaver workers.dev preview. */
+/** Assets-only Worker. The public host is thread-weaver.kolja.codes. */
 run('bun', ['x', 'wrangler', 'deploy', '--no-autoconfig'])

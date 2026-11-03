@@ -19,35 +19,85 @@
   lang="ts"
 >
 /** Shared editor. The modal opens when a post asks for a QR. */
-
 const weaver = useWeaver()
+
+/** Close control. Focus lands here while the dialog is open. */
+const closeButton = ref<HTMLButtonElement | null>(null)
+
+/** Element that opened the dialog. Focus returns there. */
+let returnFocus: HTMLElement | null = null
+
+/** Escape closes even when focus sits on the backdrop. */
+function onEscape(event: KeyboardEvent) {
+  if (event.key !== 'Escape') {
+    return
+  }
+
+  weaver.closeQr()
+}
+
+watch(() => weaver.activeQrText, async (text) => {
+  /** Closed. Hand focus back. */
+  if (!text) {
+    window.removeEventListener('keydown', onEscape)
+
+    returnFocus?.focus()
+
+    returnFocus = null
+
+    return
+  }
+
+  /** Remember the button that opened this layer. */
+  returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+
+  window.addEventListener('keydown', onEscape)
+
+  await nextTick()
+
+  closeButton.value?.focus()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onEscape)
+})
 </script>
 
 <template>
   <div
-    v-if="weaver.activeQrUrl"
+    v-if="weaver.activeQrText"
     class="c-qr-backdrop"
     @click="weaver.closeQr()"
   >
     <div
       class="c-qr-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="weaver-qr-title"
       @click.stop
+      @keydown.esc="weaver.closeQr()"
     >
-      <h4 class="text-xl font-bold">
+      <h4
+        id="weaver-qr-title"
+        class="text-xl font-bold"
+      >
         {{ $t('qr.title') }}
       </h4>
       <div class="c-qr-frame">
-        <img
-          :src="weaver.activeQrUrl"
-          :alt="$t('qr.title')"
-          width="250"
-          height="250"
-        >
+        <Qrcode
+          :value="weaver.activeQrText"
+          variant="pixelated"
+          black-color="#000000"
+          white-color="#ffffff"
+          :width="250"
+          :height="250"
+        />
       </div>
       <p class="text-dimmed">
         {{ $t('qr.help') }}
       </p>
       <button
+        ref="closeButton"
         type="button"
         class="c-qr-close"
         @click="weaver.closeQr()"

@@ -33,8 +33,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/seo',
     '@nuxt/image',
-    '@nuxt/scripts',
-    '@nuxt/hints',
     '@nuxt/a11y',
     '@nuxtjs/i18n',
     '@vueuse/nuxt/module',
@@ -200,8 +198,8 @@ export default defineNuxtConfig({
     options: {
       variant:    'rounded',
       radius:     1,
-      blackColor: 'yellow',
-      whiteColor: 'blue'
+      blackColor: '#000000',
+      whiteColor: '#ffffff'
     }
   },
 

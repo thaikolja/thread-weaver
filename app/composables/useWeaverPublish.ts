@@ -14,14 +14,14 @@
  * @package Thread Weaver
  */
 
-/** The open QR image, if any. */
+/** The compiled post shown as a QR, if any. */
 import { ref } from 'vue'
 
 /** Computed posts and platform passed in from the draft. */
 import type { ComputedRef } from 'vue'
 
-/** Links, markdown, and the QR image address. */
-import { intentUrl, markdownBody, markdownFilename, qrImageUrl } from '~/utils/weaver/publish'
+/** Links and the markdown download. The QR is drawn in the modal. */
+import { intentUrl, markdownBody, markdownFilename } from '~/utils/weaver/publish'
 
 /** Types for those arguments. */
 import type { CompiledPost, PlatformId } from '~/utils/weaver/types'
@@ -37,8 +37,8 @@ export function useWeaverPublish(options: {
   /** Headings in the downloaded file follow the active locale. */
   const { t } = useI18n()
 
-  /** Image URL for the modal. Null hides it. */
-  const activeQrUrl = ref<string | null>(null)
+  /** Compiled post in the modal. Null hides it. */
+  const activeQrText = ref<string | null>(null)
 
   /** Open the platform's compose page in a new tab. */
   function send(compiled: string): void {
@@ -52,12 +52,12 @@ export function useWeaverPublish(options: {
 
   /** Show a QR for this exact post. */
   function openQr(text: string): void {
-    activeQrUrl.value = qrImageUrl(text)
+    activeQrText.value = text
   }
 
   /** Hide the QR. Also used when the draft changes under an open modal. */
   function closeQr(): void {
-    activeQrUrl.value = null
+    activeQrText.value = null
   }
 
   /** Save the thread as a markdown file. */
@@ -90,7 +90,7 @@ export function useWeaverPublish(options: {
   }
 
   return {
-    activeQrUrl,
+    activeQrText,
     send,
     openQr,
     closeQr,

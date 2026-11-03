@@ -72,7 +72,7 @@ export function useThreadWeaver() {
     ...clipboard,
     speakingId: speech.speakingId,
     listen: speech.listen,
-    activeQrUrl: publish.activeQrUrl,
+    activeQrText: publish.activeQrText,
     send: publish.send,
     openQr: publish.openQr,
     closeQr: publish.closeQr,

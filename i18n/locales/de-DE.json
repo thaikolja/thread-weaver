@@ -53,7 +53,7 @@
     "capitalize": "Beiträge großschreiben",
     "finish":     "Sätze abschließen",
     "breaks":     "Zeilenumbrüche behalten",
-    "characters": "{count} Zeichen",
+    "characters": "{count} im Entwurf",
     "clear":      "Leeren"
   },
   "list":           {

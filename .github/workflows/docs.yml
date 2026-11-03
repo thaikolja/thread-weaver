@@ -32,6 +32,12 @@ jobs:
       - name: Install the docs app
         run: bun install --cwd docs
 
+      - name: Test
+        run: bun test
+
+      - name: Typecheck
+        run: bun run typecheck
+
       - name: Build the site, including /docs
         run: bun run build:site
         env:

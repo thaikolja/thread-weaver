@@ -53,7 +53,7 @@
     "capitalize": "ขึ้นต้นโพสต์ด้วยตัวพิมพ์ใหญ่",
     "finish":     "ปิดท้ายประโยค",
     "breaks":     "คงการขึ้นบรรทัดใหม่",
-    "characters": "{count} อักขระ",
+    "characters": "{count} ในฉบับร่าง",
     "clear":      "ล้าง"
   },
   "list":           {

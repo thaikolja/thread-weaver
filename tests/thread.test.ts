@@ -17,7 +17,7 @@ import { COPY_ALL_RESET_MS, SAMPLE_SOURCE, SPEECH_RATE } from '../app/utils/weav
 import { readTimeMinutes, ringColor, ringTextColor, totalChars, totalWords } from '../app/utils/weaver/metrics.ts'
 
 /** Copy-all, markdown, intents, and the QR address. */
-import { copyAllBody, intentUrl, markdownBody, markdownFilename, qrImageUrl } from '../app/utils/weaver/publish.ts'
+import { copyAllBody, intentUrl, markdownBody, markdownFilename } from '../app/utils/weaver/publish.ts'
 
 /** Speech decision, voice choice, and the copy-all timer. */
 import { armCopyAllReset, rankVoice, speechBcp, speechCommand, speechLang } from '../app/utils/weaver/speech.ts'
@@ -407,9 +407,6 @@ test('copy-all, markdown, filenames, intents, QR, ring color, read time, and spe
   expect(intentUrl('bsky', compiled)).toBe(`https://bsky.app/intent/compose?text=${encodeURIComponent(compiled)}`)
   expect(intentUrl('threads', compiled)).toBe(`https://www.threads.net/intent/post?text=${encodeURIComponent(compiled)}`)
   expect(intentUrl('masto', compiled)).toBe(`https://mastodon.social/share?text=${encodeURIComponent(compiled)}`)
-  expect(qrImageUrl(compiled)).toBe(
-    `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(compiled)}`
-  )
 
   expect(ringColor(281, 280)).toBe('hsl(0, 90%, 45%)')
   expect(ringColor(0, 280)).toBe('hsl(140, 80%, 42%)')
@@ -565,10 +562,16 @@ test('the page imports this module and the starter shell is gone', () => {
   expect(english).toContain('Show Chunk as QR Code')
   expect(english).toContain(SAMPLE_SOURCE)
 
-  /** The phone QR is the remote image. The placeholder component is gone. */
-  expect(source).toContain(':src="weaver.activeQrUrl"')
-  expect(source).not.toContain('httpsd;asdf')
-  expect(source).not.toContain('<Qrcode')
+  /** The phone QR is drawn here. The post is not sent to an image host. */
+  const modal = readFileSync(new URL('../app/components/QrModal.vue', import.meta.url), 'utf8')
+  const publish = readFileSync(new URL('../app/utils/weaver/publish.ts', import.meta.url), 'utf8')
+
+  expect(modal).toContain('<Qrcode')
+  expect(modal).toContain('role="dialog"')
+  expect(modal).toContain('aria-modal="true"')
+  expect(modal).not.toContain('api.qrserver.com')
+  expect(publish).not.toContain('api.qrserver.com')
+  expect(modal).not.toContain('httpsd;asdf')
 
   /** Plus Jakarta is loaded by Nuxt. The page font token is the system UI stack. */
   const css = readFileSync(new URL('../app/assets/css/main.css', import.meta.url), 'utf8')

@@ -45,8 +45,3 @@ export function markdownFilename(platform: PlatformId, timestamp: number): strin
 export function intentUrl(platform: PlatformId, compiled: string): string {
   return `${intentPrefix(platform)}${encodeURIComponent(compiled)}`
 }
-
-/** Image address for the phone QR. The image itself is still remote. */
-export function qrImageUrl(compiled: string): string {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(compiled)}`
-}

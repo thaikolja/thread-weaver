@@ -19,7 +19,7 @@
 - **Listen to a post**. The voice skips the chunk counter, keeps a bridge you typed, and follows English, German, or Thai with a voice already installed on the machine.
 - **Show a QR code** for your phone.
 
-The page is in English and translated to German at `/de`, and Thai at `/th`. The QR image is loaded from `api.qrserver.com`. The rest of the tool does not call a backend.
+The page is in English and translated to German at `/de`, and Thai at `/th`. The phone QR is drawn in the browser. The post is not sent out.
 
 ## Run it Locally
 

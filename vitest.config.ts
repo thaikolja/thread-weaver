@@ -11,8 +11,8 @@ export default defineConfig({
       'bun:test': fileURLToPath(new URL('./tests/support/bun-test.ts', import.meta.url))
     }
   },
-  test: {
+  test:    {
     environment: 'node',
-    include: ['tests/**/*.test.ts']
+    include:     ['tests/**/*.test.ts']
   }
 })

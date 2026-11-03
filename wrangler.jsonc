@@ -1,11 +1,18 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   // Slug for the workers.dev preview. The page still calls itself Thread Weaver.
-  // weaver.yanawa.io stays unattached until the real host is ready.
+  // This Worker is also the origin for thread-weaver.kolja.codes.
+  // weaver.yanawa.io stays unattached. That name is site.url.
   "name": "thread-weaver",
   "compatibility_date": "2026-11-03",
   "workers_dev": true,
   "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "thread-weaver.kolja.codes",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./.output/public",
     "html_handling": "auto-trailing-slash",

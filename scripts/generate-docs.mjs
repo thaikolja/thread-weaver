@@ -400,7 +400,7 @@ Use it when you already have the words and you need them to fit a character limi
 
 Splitting, markers, totals, and the download file are computed in the page. Copy uses the browser clipboard. Listen uses a voice already installed on the machine, and it follows the language written on the card: English, German, or Thai. Send opens the platform's compose page in a new tab and leaves the actual post to you.
 
-The only remote call is the QR image. Send to Phone asks \`api.qrserver.com\` for a picture of the current post. Everything else stays local.
+The phone QR is drawn in the page from the compiled post. Nothing about that post is sent out.
 
 ## Languages
 
@@ -600,7 +600,7 @@ Listen reads the card without the chunk counter the page attached, such as \`(1/
 
 The voice is one already installed. English text uses a clear English voice, German text a German voice, and Thai text a Thai voice. Joke voices and compact voices are skipped. Nothing is downloaded. The rate is 1.05. Clicking the same card again stops it.
 
-Send to Phone opens a QR for that post. The picture comes from \`api.qrserver.com\`. Closing the draft, or editing it, closes the QR as well.
+Send to Phone draws a QR for that post in the page. Closing the draft, or editing it, closes the QR as well.
 `)
 }
 

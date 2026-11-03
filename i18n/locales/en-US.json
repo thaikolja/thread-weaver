@@ -53,7 +53,7 @@
     "capitalize": "Capitalize posts",
     "finish":     "Finish sentences",
     "breaks":     "Keep line breaks",
-    "characters": "{count} characters",
+    "characters": "{count} in the draft",
     "clear":      "Clear"
   },
   "list":           {

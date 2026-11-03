@@ -2,8 +2,20 @@
 # The pages land at /docs. A Cloudflare deploy runs only when the token variables exist.
 
 stages:
+  - test
   - build
   - publish
+
+test:
+  stage: test
+  image: oven/bun:1
+  script:
+    - bun install
+    - bun test
+    - bun run typecheck
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
 
 workflow:
   rules:
@@ -15,6 +27,8 @@ workflow:
 build-site:
   stage: build
   image: oven/bun:1
+  needs:
+    - test
   before_script:
     - apt-get update && apt-get install -y python3 make g++
   script:
