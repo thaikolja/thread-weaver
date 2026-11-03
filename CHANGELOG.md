@@ -2,7 +2,7 @@
 
 New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). The subject is `type(scope): imperative description`.
 
-## v1.1.0 — 2026-11-03
+## v1.0.0 — 2026-11-03
 
 - fix(docs): serve the static guides at /docs on the editor site
 - fix(ui): show the phone qr for the current post
