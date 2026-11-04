@@ -6,7 +6,7 @@ New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v
 ## Unreleased
 
 - fix(ci): polyfill findPackageJSON so bun can load the seo modules
-- fix(ci): run the GitHub artifact upload on Node 24
+- ci: drop the github actions workflows from the gitlab mirror
 - fix(dev): quiet the dev server seo warnings and failed first load
 - build(deps): drop unused install weight and test in ci
 - fix(qr): draw the phone code in the browser

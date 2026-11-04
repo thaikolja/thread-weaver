@@ -21,7 +21,7 @@ import { existsSync } from 'node:fs'
 import { resolve }    from 'node:path'
 
 // The release string shown in the footer and in the schema.
-const THREAD_WEAVER_VERSION: string = '1.1.0'
+const THREAD_WEAVER_VERSION: string = '1.0.0'
 
 /** Docus `generate` output. Missing until `docs:build` has run. */
 const docsStaticDir = resolve(process.cwd(), 'docs/.output/public')
