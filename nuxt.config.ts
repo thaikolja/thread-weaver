@@ -18,7 +18,7 @@
 import { existsSync } from 'node:fs'
 
 /** Absolute path of that folder. */
-import { resolve } from 'node:path'
+import { resolve }    from 'node:path'
 
 const THREAD_WEAVER_VERSION: string = '1.0.0'
 
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
   },
 
   /** `~/` keeps Vite on app/assets. A root path made the Tailwind imports 404. */
-  css: ['~/assets/css/main.css'],
+  css: [ '~/assets/css/main.css' ],
 
   /**
    * Public site name and the search description.
@@ -99,16 +99,16 @@ export default defineNuxtConfig({
    */
   nitro: {
     publicAssets: existsSync(docsStaticDir)
-      ? [{
-          baseURL: '/docs',
-          dir:     docsStaticDir,
-          maxAge:  60 * 60 * 24 * 7,
-          /** A missing clean URL must reach the docs middleware, not a placeholder 404. */
-          fallthrough: true
-        }]
-      : [],
+                    ? [ {
+        baseURL: '/docs',
+        dir:     docsStaticDir,
+        maxAge:  60 * 60 * 24 * 7,
+        /** A missing clean URL must reach the docs middleware, not a placeholder 404. */
+        fallthrough: true
+      } ]
+                    : [],
     prerender:    {
-      ignore: ['/docs', '/docs/**']
+      ignore: [ '/docs', '/docs/**' ]
     }
   },
 
@@ -133,13 +133,13 @@ export default defineNuxtConfig({
       {
         name:     'Plus Jakarta Sans',
         provider: 'google',
-        weights:  ['400', '500', '600', '700', '800'],
+        weights:  [ '400', '500', '600', '700', '800' ],
         global:   true
       },
       {
         name:     'JetBrains Mono',
         provider: 'google',
-        weights:  ['400', '500', '600'],
+        weights:  [ '400', '500', '600' ],
         global:   true
       }
     ]

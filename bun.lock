@@ -26,6 +26,7 @@
         "eslint": "10.14.0",
         "eslint-plugin-better-tailwindcss": "^4.10.0",
         "happy-dom": "^21.0.4",
+        "simple-analytics-vue": "^3.1.0",
         "typescript": "^5.9.3",
         "vitest": "^5.1.0",
         "vue-tsc": "3.3.13",
@@ -1861,6 +1862,8 @@
     "shell-quote": ["shell-quote@1.10.0", "", {}, "sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA=="],
 
     "signal-exit": ["signal-exit@4.1.0", "", {}, "sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw=="],
+
+    "simple-analytics-vue": ["simple-analytics-vue@3.1.0", "", { "dependencies": { "vue": "^3.0.0" } }, "sha512-8Pwjbh3e0UDKwhLgDOokGOWe3Ot7bZsTbNHMaQylqFebTxoWe80gH+h1jcNbWPCBQ+/nEWHdqbRLpc/4vg2gow=="],
 
     "sirv": ["sirv@3.0.2", "", { "dependencies": { "@polka/url": "1.0.0-next.29", "mrmime": "2.0.1", "totalist": "3.0.1" } }, "sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g=="],
 
