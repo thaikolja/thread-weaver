@@ -31,6 +31,7 @@ export function useWeaverSpeech() {
 
   /** Ask for the list now, so the first Listen click is not racing an empty array. */
   if (import.meta.client && 'speechSynthesis' in window) {
+    // Warm up the voice list before the user clicks.
     window.speechSynthesis.getVoices()
   }
 
@@ -38,9 +39,11 @@ export function useWeaverSpeech() {
   function stop(): void {
     /** Only the browser has this API. */
     if (import.meta.client && 'speechSynthesis' in window) {
+      // Cut off whatever is being read.
       window.speechSynthesis.cancel()
     }
 
+    // Clear the button label as well.
     speakingId.value = null
   }
 
@@ -49,21 +52,30 @@ export function useWeaverSpeech() {
     /** Already populated, so Listen can start now. */
     const current = synth.getVoices()
 
+    // The list is already there, so continue right away.
     if (current.length > 0) {
+      // No need to wait for the event.
       return Promise.resolve(current)
     }
 
+    // Wait for the voiceschanged event, with a short timeout as a fallback.
     return new Promise((resolve) => {
       /** Drop the listener if the browser never answers. */
       const finish = () => {
+        // Stop the fallback timer.
         window.clearTimeout(timer)
+
+        // Remove the event listener now that we are done.
         synth.removeEventListener('voiceschanged', finish)
+
+        // Return whatever the browser has at this point.
         resolve(synth.getVoices())
       }
 
       /** Some browsers never fire the event when the list stays empty. */
       const timer = window.setTimeout(finish, 400)
 
+      // Continue as soon as the browser fills the list.
       synth.addEventListener('voiceschanged', finish)
     })
   }
@@ -81,6 +93,7 @@ export function useWeaverSpeech() {
 
     /** A second click landed while the list was loading. */
     if (speakingId.value !== id) {
+      // Another card took over, so leave this one alone.
       return
     }
 
@@ -109,7 +122,9 @@ export function useWeaverSpeech() {
     /** Lang first. Chrome drops a German voice when the utterance lang stays English. */
     utterance.lang = voice?.lang || speechBcp(lang)
 
+    // Attach the real voice object when the list gave us one.
     if (voice) {
+      // Let this exact installed voice read the card.
       utterance.voice = voice
     }
 
@@ -118,16 +133,20 @@ export function useWeaverSpeech() {
 
     /** Clear the label when it finishes or fails. */
     utterance.onend = () => {
+      // The card is no longer speaking.
       speakingId.value = null
     }
 
+    // A failed read should not leave the button stuck.
     utterance.onerror = () => {
+      // Clear the label after an error.
       speakingId.value = null
     }
 
     /** Chrome sometimes leaves the synth paused after a cancel. */
     synth.resume()
 
+    // Start reading this card.
     synth.speak(utterance)
   }
 
@@ -150,19 +169,27 @@ export function useWeaverSpeech() {
 
     /** Nothing to do, or no voice to drive. */
     if (command.type === 'noop' || !synth) {
+      // The browser cannot talk, so ignore the click.
       return
     }
 
     /** Same card, already talking. */
     if (command.type === 'cancel') {
+      // Stop the current read and clear the label.
       synth.cancel()
+
+      // No card should look active after a cancel.
       speakingId.value = null
+
+      // Done with this click.
       return
     }
 
+    // Start the read without making the click handler wait.
     void speak(synth, command.text, command.rate, id)
   }
 
+  // Expose the active card and the two actions.
   return {
     speakingId,
     listen,

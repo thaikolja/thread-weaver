@@ -47,78 +47,117 @@ let scrolledDown = false
 function setRoot(el: Element | ComponentPublicInstance | null): void {
   /** No DOM on the server. Hydration assigns the node on the client. */
   if (!import.meta.client) {
+    // Nothing to store until the browser takes over.
     return
   }
 
+  // Keep the real element, not a component instance wrapper.
   root.value = el instanceof HTMLElement ? el : null
 }
 
 /** Some of the block is inside the viewport. */
 function inView(el: HTMLElement): boolean {
+  // Measure where the block sits right now.
   const rect = el.getBoundingClientRect()
 
+  // True when any part of the block is on screen.
   return rect.top < window.innerHeight && rect.bottom > 0
 }
 
 /** Drop the scroll watch. Called from setup so unmount always reaches it. */
 function stop(): void {
+  // Only the browser has listeners to remove.
   if (!import.meta.client) {
+    // Server render never attached them.
     return
   }
 
+  // Drop the scroll listener.
   window.removeEventListener('scroll', onScroll)
+
+  // Drop the resize listener too.
   window.removeEventListener('resize', onResize)
 }
 
 /** First downward scroll that brings the block on screen starts the fade. */
 function onScroll(): void {
+  // The block may not be mounted yet.
   const el = root.value
+
+  // Where the page is now.
   const y = window.scrollY
 
+  // The reader is moving down the page.
   if (y > lastScrollY) {
+    // Remember the direction for the reveal check.
     scrolledDown = true
   }
 
+  // Remember this position for the next scroll event.
   lastScrollY = y
 
+  // Keep waiting until the block enters the viewport.
   if (!el || !scrolledDown || shown.value || !inView(el)) {
+    // Nothing to reveal yet.
     return
   }
 
+  // Fade the block in.
   shown.value = true
+
+  // No more scrolling needed.
   stop()
 }
 
 /** A taller window can cover the block without a scroll. Show it in place. */
 function onResize(): void {
+  // The block may not be mounted yet.
   const el = root.value
 
+  // The resize did not bring the block on screen.
   if (!el || shown.value || !inView(el)) {
+    // Keep waiting for a scroll or a larger window.
     return
   }
 
+  // The taller window already covers it, so show it without a scroll.
   waiting.value = false
+
+  // Nothing left to watch.
   stop()
 }
 
+// Arm the fade after mount when the block starts below the fold.
 onMounted(() => {
+  // The element is ready on the client now.
   const el = root.value
 
+  // No element, or the reader asked for less motion.
   if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Leave the block visible without a fade.
     return
   }
 
   /** Already on screen. Leaving it visible avoids a flash to nothing. */
   if (el.getBoundingClientRect().top < window.innerHeight) {
+    // Nothing to reveal, so keep it visible.
     return
   }
 
+  // Remember where the page started.
   lastScrollY = window.scrollY
+
+  // Hide the block until the reader scrolls it into view.
   waiting.value = true
+
+  // Watch for that first downward scroll.
   window.addEventListener('scroll', onScroll, { passive: true })
+
+  // A resize can also bring the block into view.
   window.addEventListener('resize', onResize)
 })
 
+// Always clean up the listeners.
 onUnmounted(stop)
 </script>
 

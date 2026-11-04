@@ -20,6 +20,8 @@
  */
 
 const runtimeConfig = useRuntimeConfig()
+
+// Show the version that Nuxt exposes to the page.
 const appVersion = runtimeConfig.public.version as string
 </script>
 

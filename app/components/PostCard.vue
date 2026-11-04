@@ -22,6 +22,7 @@
 
 import type { CompiledPost } from '~/utils/weaver/types'
 
+// The card receives its post and its place in the list.
 defineProps<{
   post: CompiledPost
   index: number

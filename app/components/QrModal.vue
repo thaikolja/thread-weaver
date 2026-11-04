@@ -29,36 +29,49 @@ let returnFocus: HTMLElement | null = null
 
 /** Escape closes even when focus sits on the backdrop. */
 function onEscape(event: KeyboardEvent) {
+  // Ignore every key except Escape.
   if (event.key !== 'Escape') {
+    // Not the key we are waiting for.
     return
   }
 
+  // Escape means close the QR layer.
   weaver.closeQr()
 }
 
+// Move focus into the dialog on open and back to the trigger on close.
 watch(() => weaver.activeQrText, async (text) => {
   /** Closed. Hand focus back. */
   if (!text) {
+    // Escape no longer needs to be watched.
     window.removeEventListener('keydown', onEscape)
 
+    // Put focus back on the button that opened the modal.
     returnFocus?.focus()
 
+    // Forget the old trigger.
     returnFocus = null
 
+    // No dialog to focus.
     return
   }
 
   /** Remember the button that opened this layer. */
   returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
 
+  // Listen for Escape while the dialog is open.
   window.addEventListener('keydown', onEscape)
 
+  // Wait for the dialog to render before focusing it.
   await nextTick()
 
+  // Put the cursor on the close button.
   closeButton.value?.focus()
 })
 
+// Never leave the key listener behind.
 onBeforeUnmount(() => {
+  // Do not leave the key listener behind after unmount.
   window.removeEventListener('keydown', onEscape)
 })
 </script>

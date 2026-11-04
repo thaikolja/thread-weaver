@@ -16,6 +16,8 @@
 
 /** A ref, and the type of a computed the caller passes in. */
 import { ref } from 'vue'
+
+// Type of the computed posts list the caller passes in.
 import type { ComputedRef } from 'vue'
 
 /** Turns the copied flag off after 2.5 seconds. */
@@ -52,9 +54,11 @@ export function useWeaverClipboard(posts: ComputedRef<readonly CompiledPost[]>) 
   function writeClipboard(text: string): void {
     /** Server render, or a browser with no clipboard. */
     if (!import.meta.client || !navigator.clipboard) {
+      // There is no clipboard here, so quietly do nothing.
       return
     }
 
+    // Write the text and ignore the promise; the UI already flipped.
     void navigator.clipboard.writeText(text)
   }
 
@@ -74,12 +78,15 @@ export function useWeaverClipboard(posts: ComputedRef<readonly CompiledPost[]>) 
 
     /** Show the success label, then hide it. */
     armCopyAllReset((copied) => {
+      // Store the label state the helper asked for.
       allCopied.value = copied
     }, (fn, ms) => {
+      // Use the browser timer for the reset.
       setTimeout(fn, ms)
     })
   }
 
+  // Expose the flags and the three copy actions.
   return {
     copiedPosts,
     allCopied,

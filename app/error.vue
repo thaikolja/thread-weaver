@@ -15,6 +15,7 @@
   -->
 
 <script setup lang="ts">
+// Nuxt hands the error page the failure details.
 import type { NuxtError } from '#app'
 
 /**
@@ -27,8 +28,10 @@ defineProps<{
 /** Home link for the locale the reader was on. */
 const localePath = useLocalePath()
 
+/** Send the reader back to the home page in the current language. */
 function goHome(): void {
   /** `/de` and `/th` stay on that language. */
+  // Clear the error and redirect to that locale's home page.
   clearError({ redirect: localePath('/') })
 }
 </script>

@@ -20,6 +20,7 @@ import { existsSync } from 'node:fs'
 /** Absolute path of that folder. */
 import { resolve }    from 'node:path'
 
+// The release string shown in the footer and in the schema.
 const THREAD_WEAVER_VERSION: string = '1.0.0'
 
 /** Docus `generate` output. Missing until `docs:build` has run. */

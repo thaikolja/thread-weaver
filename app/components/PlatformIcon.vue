@@ -19,6 +19,7 @@
 
 import type { PlatformId } from '~/utils/weaver/types'
 
+// The icon follows whichever platform is active.
 const props = defineProps<{
   platform: PlatformId
 }>()

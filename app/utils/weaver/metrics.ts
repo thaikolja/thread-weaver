@@ -19,6 +19,7 @@ import type { CompiledPost } from './types'
 
 /** Add up the published length, markers and bridges included. */
 export function totalChars(posts: readonly CompiledPost[]): number {
+  // Add the published length of each post, markers included.
   return posts.reduce((sum, post) => sum + post.compiled.length, 0)
 }
 
@@ -29,14 +30,17 @@ export function totalWords(source: string): number {
 
   /** An empty box is zero words, not one empty word. */
   if (!trimmed) {
+    // Nothing typed, so there is nothing to count.
     return 0
   }
 
+  // Split on whitespace and count the pieces.
   return trimmed.split(/\s+/).length
 }
 
 /** Rough read time. At least a minute, otherwise about 200 words a minute. */
 export function readTimeMinutes(words: number): number {
+  // Never show less than a minute, even for a short post.
   return Math.max(1, Math.round(words / 200))
 }
 
@@ -50,12 +54,14 @@ export function ringColor(currentLen: number, maxLimit: number): string {
 
   /** Too long. Don't pretend it still fits. */
   if (currentLen > maxLimit) {
+    // Hard red for a post over the limit.
     return 'hsl(0, 90%, 45%)'
   }
 
   /** 140 is green. 0 is red. */
   const hue = (1 - ratio) * 140
 
+  // Turn the hue into a CSS color the ring can use.
   return `hsl(${hue}, 80%, 42%)`
 }
 
@@ -69,16 +75,19 @@ export function ringTextColor(currentLen: number, maxLimit: number): string {
 
   /** The over-limit red already clears. */
   if (currentLen > maxLimit) {
+    // Use the same hard red as the stroke.
     return 'hsl(0, 90%, 45%)'
   }
 
   /** 140 is green. 0 is red. */
   const hue = (1 - ratio) * 140
 
+  // Slightly darker so the digits stay readable on white.
   return `hsl(${hue}, 80%, 26%)`
 }
 
 /** How far around the ring the stroke should stop. 0 is a full circle. */
 export function ringDashOffset(length: number, limit: number): number {
+  // Clamp the filled part so the stroke never wraps past a full circle.
   return 100 - Math.min(100, (length / limit) * 100)
 }

@@ -1,7 +1,23 @@
+/*
+ * Thread Weaver
+ *
+ * @description     Online tool to split long messages into parts for character-limited platforms
+ * @author          Kolja Nolte <kolja.nolte@gmail.com>
+ * @copyright       2026 (C) Kolja Nolte
+ * @see             https://www.kolja-nolte.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @package Thread Weaver
+ */
+
 /** Read and write the documentation pages. */
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync, copyFileSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { dirname, join, relative }                                                   from 'node:path'
+import { fileURLToPath }                                                             from 'node:url'
 
 /** Repository root, one level above this script. */
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -11,22 +27,22 @@ const contentDir = join(root, 'docs', 'content')
 
 /** Number prefixes set the sidebar order. Docus drops them from the URL. */
 const pagePaths = {
-  'index.md': 'index.md',
-  'getting-started/introduction.md': '1.getting-started/1.introduction.md',
-  'getting-started/installation.md': '1.getting-started/2.installation.md',
-  'using-the-tool/workbench.md': '2.using-the-tool/1.workbench.md',
-  'using-the-tool/platforms.md': '2.using-the-tool/2.platforms.md',
+  'index.md':                              'index.md',
+  'getting-started/introduction.md':       '1.getting-started/1.introduction.md',
+  'getting-started/installation.md':       '1.getting-started/2.installation.md',
+  'using-the-tool/workbench.md':           '2.using-the-tool/1.workbench.md',
+  'using-the-tool/platforms.md':           '2.using-the-tool/2.platforms.md',
   'using-the-tool/markers-and-bridges.md': '2.using-the-tool/3.markers-and-bridges.md',
-  'using-the-tool/text-tools.md': '2.using-the-tool/4.text-tools.md',
-  'using-the-tool/shipping.md': '2.using-the-tool/5.shipping.md',
-  'architecture/overview.md': '3.architecture/1.overview.md',
-  'architecture/page-and-state.md': '3.architecture/2.page-and-state.md',
-  'architecture/splitting.md': '3.architecture/3.splitting.md',
-  'reference/types-and-limits.md': '4.reference/1.types-and-limits.md',
-  'reference/splitting-and-compile.md': '4.reference/2.splitting-and-compile.md',
-  'reference/state-and-metrics.md': '4.reference/3.state-and-metrics.md',
-  'reference/composables.md': '4.reference/4.composables.md',
-  'reference/components.md': '4.reference/5.components.md'
+  'using-the-tool/text-tools.md':          '2.using-the-tool/4.text-tools.md',
+  'using-the-tool/shipping.md':            '2.using-the-tool/5.shipping.md',
+  'architecture/overview.md':              '3.architecture/1.overview.md',
+  'architecture/page-and-state.md':        '3.architecture/2.page-and-state.md',
+  'architecture/splitting.md':             '3.architecture/3.splitting.md',
+  'reference/types-and-limits.md':         '4.reference/1.types-and-limits.md',
+  'reference/splitting-and-compile.md':    '4.reference/2.splitting-and-compile.md',
+  'reference/state-and-metrics.md':        '4.reference/3.state-and-metrics.md',
+  'reference/composables.md':              '4.reference/4.composables.md',
+  'reference/components.md':               '4.reference/5.components.md'
 }
 
 /** Write one markdown page, creating parent folders as needed. */
@@ -42,10 +58,10 @@ function writePage(relativePath, body) {
 function formatDoc(raw) {
   /** Comment body with the star prefix removed. */
   const cleaned = raw
-    .replace(/^\/\*\*/, '')
-    .replace(/\*\/\s*$/, '')
-    .replace(/^\s*\*\s?/gm, '')
-    .trim()
+  .replace(/^\/\*\*/, '')
+  .replace(/\*\/\s*$/, '')
+  .replace(/^\s*\*\s?/gm, '')
+  .trim()
 
   /** Lines of the comment, with tags rewritten as short bullets. */
   const mapped = cleaned.split('\n').map((line) => {
@@ -70,7 +86,7 @@ function formatDoc(raw) {
   /** The paragraph currently being joined. */
   let current = ''
   for (const line of mapped) {
-    if (line === '') {
+    if (line==='') {
       if (current) {
         paragraphs.push(current)
       }
@@ -105,7 +121,7 @@ function formatDoc(raw) {
 function precedingDoc(lines, index) {
   /** Last non-blank line before the export. */
   let commentEnd = index - 1
-  while (commentEnd >= 0 && lines[commentEnd].trim() === '') {
+  while (commentEnd >= 0 && lines[commentEnd].trim()==='') {
     commentEnd -= 1
   }
   if (commentEnd < 0) {
@@ -124,7 +140,7 @@ function precedingDoc(lines, index) {
 
   /** Multi-line comment, walked back to the opening slash. */
   const chunk = []
-  let cursor = commentEnd
+  let cursor  = commentEnd
   while (cursor >= 0 && !lines[cursor].includes('/**')) {
     chunk.unshift(lines[cursor])
     cursor -= 1
@@ -141,9 +157,9 @@ function braceDelta(line) {
   /** Running difference for this line. */
   let delta = 0
   for (const character of line) {
-    if (character === '{') {
+    if (character==='{') {
       delta += 1
-    } else if (character === '}') {
+    } else if (character==='}') {
       delta -= 1
     }
   }
@@ -156,9 +172,9 @@ function functionSignatureClosed(text) {
   /** Parenthesis depth across the lines gathered so far. */
   let depth = 0
   for (const character of text) {
-    if (character === '(') {
+    if (character==='(') {
       depth += 1
-    } else if (character === ')') {
+    } else if (character===')') {
       depth -= 1
     }
   }
@@ -170,9 +186,9 @@ function functionSignatureClosed(text) {
 function captureDeclaration(lines, index) {
   /** Opening line decides whether this is a function or a type. */
   const first = lines[index]
-  const kind = first.match(/^export\s+(?:async\s+)?(function|const|let|type|interface|enum|class)\b/)
+  const kind  = first.match(/^export\s+(?:async\s+)?(function|const|let|type|interface|enum|class)\b/)
 
-  if (!kind || kind[1] === 'function' || kind[1] === 'class') {
+  if (!kind || kind[1]==='function' || kind[1]==='class') {
     /** Function lines through the opening brace of the body. */
     const parts = []
     for (let cursor = index; cursor < lines.length && cursor < index + 30; cursor += 1) {
@@ -186,11 +202,11 @@ function captureDeclaration(lines, index) {
     return parts.join('\n').trim()
   }
 
-  if (kind[1] === 'interface' || kind[1] === 'enum' || /=\s*\{/.test(first) || first.trimEnd().endsWith('{')) {
+  if (kind[1]==='interface' || kind[1]==='enum' || /=\s*\{/.test(first) || first.trimEnd().endsWith('{')) {
     /** Brace-balanced body, so interfaces and limit maps keep their fields. */
-    const parts = [first]
-    let depth = braceDelta(first)
-    let cursor = index + 1
+    const parts = [ first ]
+    let depth   = braceDelta(first)
+    let cursor  = index + 1
     while (cursor < lines.length && depth > 0 && cursor < index + 80) {
       parts.push(lines[cursor])
       depth += braceDelta(lines[cursor])
@@ -200,10 +216,10 @@ function captureDeclaration(lines, index) {
     return parts.join('\n').trim()
   }
 
-  if (kind[1] === 'type' && !first.includes('=')) {
+  if (kind[1]==='type' && !first.includes('=')) {
     /** A union that continues on the next indented lines. */
-    const parts = [first]
-    let cursor = index + 1
+    const parts = [ first ]
+    let cursor  = index + 1
     while (cursor < lines.length && cursor < index + 20 && /^\s*[|=]/.test(lines[cursor])) {
       parts.push(lines[cursor])
       cursor += 1
@@ -220,7 +236,7 @@ function exportName(signature) {
   /** `export function name` / `export type name` / `export const name`. */
   const match = signature.match(/^export\s+(?:async\s+)?(?:const|let|var|function|class|type|interface|enum)\s+([A-Za-z0-9_]+)/)
 
-  return match ? match[1] : signature.split('\n')[0]
+  return match ? match[1]: signature.split('\n')[0]
 }
 
 /** Pull the comment directly above each export. */
@@ -255,9 +271,9 @@ function extractExports(source) {
 /** Every TypeScript file directly inside a folder. */
 function typescriptFiles(directory) {
   return readdirSync(directory)
-    .filter(name => name.endsWith('.ts'))
-    .sort()
-    .map(name => join(directory, name))
+  .filter(name => name.endsWith('.ts'))
+  .sort()
+  .map(name => join(directory, name))
 }
 
 /** Markdown section for one source file and its exports. */
@@ -696,29 +712,29 @@ function reference() {
   /** Groups of source files. */
   const groups = [
     {
-      file: 'reference/types-and-limits.md',
-      title: 'Types and limits',
+      file:        'reference/types-and-limits.md',
+      title:       'Types and limits',
       description: 'Platform caps, shared types, and the constants the editor starts from.',
-      paths: [
+      paths:       [
         join(root, 'app/utils/weaver/types.ts'),
         join(root, 'app/utils/weaver/limits.ts'),
         join(root, 'app/utils/weaver/platformClass.ts')
       ]
     },
     {
-      file: 'reference/splitting-and-compile.md',
-      title: 'Splitting and compile',
+      file:        'reference/splitting-and-compile.md',
+      title:       'Splitting and compile',
       description: 'Packing, markers, bridges, and the text tools.',
-      paths: [
+      paths:       [
         join(root, 'app/utils/weaver/split.ts'),
         join(root, 'app/utils/weaver/compile.ts')
       ]
     },
     {
-      file: 'reference/state-and-metrics.md',
-      title: 'State and metrics',
+      file:        'reference/state-and-metrics.md',
+      title:       'State and metrics',
       description: 'Edits, totals, the ring, and the files you copy or send.',
-      paths: [
+      paths:       [
         join(root, 'app/utils/weaver/state.ts'),
         join(root, 'app/utils/weaver/metrics.ts'),
         join(root, 'app/utils/weaver/publish.ts'),
@@ -726,10 +742,10 @@ function reference() {
       ]
     },
     {
-      file: 'reference/composables.md',
-      title: 'Composables',
+      file:        'reference/composables.md',
+      title:       'Composables',
       description: 'The Vue layer that holds the editor and talks to the browser.',
-      paths: typescriptFiles(join(root, 'app/composables'))
+      paths:       typescriptFiles(join(root, 'app/composables'))
     }
   ]
 
@@ -751,31 +767,31 @@ ${sections}
   }
 
   /** Vue components, listed with the comment at the top of each script. */
-  const componentDir = join(root, 'app/components')
+  const componentDir   = join(root, 'app/components')
   const componentNotes = readdirSync(componentDir)
-    .filter(name => name.endsWith('.vue'))
-    .sort()
-    .map((name) => {
-      const source = readFileSync(join(componentDir, name), 'utf8')
-      const script = source.match(/<script[^>]*>([\s\S]*?)<\/script>/)
-      const body = script ? script[1] : ''
-      const notes = []
-      const pattern = /\/\*\*([\s\S]*?)\*\//g
-      let match = pattern.exec(body)
-      while (match) {
-        const text = formatDoc(`/**${match[1]}*/`)
-        if (text) {
-          notes.push(text)
-        }
-        match = pattern.exec(body)
+  .filter(name => name.endsWith('.vue'))
+  .sort()
+  .map((name) => {
+    const source  = readFileSync(join(componentDir, name), 'utf8')
+    const script  = source.match(/<script[^>]*>([\s\S]*?)<\/script>/)
+    const body    = script ? script[1]: ''
+    const notes   = []
+    const pattern = /\/\*\*([\s\S]*?)\*\//g
+    let match     = pattern.exec(body)
+    while (match) {
+      const text = formatDoc(`/**${match[1]}*/`)
+      if (text) {
+        notes.push(text)
       }
-      const doc = notes.length > 0 ? notes.join('\n\n') : 'Presentational section of the workbench.'
-      return `## \`${name}\`
+      match = pattern.exec(body)
+    }
+    const doc = notes.length > 0 ? notes.join('\n\n'): 'Presentational section of the workbench.'
+    return `## \`${name}\`
 
 ${doc}
 `
-    })
-    .join('\n')
+  })
+  .join('\n')
 
   writePage('reference/components.md', `---
 title: Components
@@ -794,13 +810,13 @@ ${componentNotes}
 function writeNavigation() {
   /** Folder name, title, and Phosphor icon. */
   const sections = [
-    ['1.getting-started', 'Getting started', 'i-ph-rocket'],
-    ['2.using-the-tool', 'Using the tool', 'i-ph-sliders'],
-    ['3.architecture', 'Architecture', 'i-ph-tree-structure'],
-    ['4.reference', 'Reference', 'i-ph-code']
+    [ '1.getting-started', 'Getting started', 'i-ph-rocket' ],
+    [ '2.using-the-tool', 'Using the tool', 'i-ph-sliders' ],
+    [ '3.architecture', 'Architecture', 'i-ph-tree-structure' ],
+    [ '4.reference', 'Reference', 'i-ph-code' ]
   ]
 
-  for (const [folder, title, icon] of sections) {
+  for (const [ folder, title, icon ] of sections) {
     /** One navigation file beside the pages in that folder. */
     const target = join(contentDir, folder, '.navigation.yml')
 

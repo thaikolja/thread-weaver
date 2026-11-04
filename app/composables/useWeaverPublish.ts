@@ -44,19 +44,23 @@ export function useWeaverPublish(options: {
   function send(compiled: string): void {
     /** No window on the server. */
     if (!import.meta.client) {
+      // Nothing to open during server render.
       return
     }
 
+    // Open the platform's compose page in a fresh tab.
     window.open(intentUrl(options.platform.value, compiled), '_blank', 'noopener,noreferrer')
   }
 
   /** Show a QR for this exact post. */
   function openQr(text: string): void {
+    // Remember the exact post the modal should draw.
     activeQrText.value = text
   }
 
   /** Hide the QR. Also used when the draft changes under an open modal. */
   function closeQr(): void {
+    // Null hides the modal.
     activeQrText.value = null
   }
 
@@ -64,6 +68,7 @@ export function useWeaverPublish(options: {
   function download(): void {
     /** Downloads need a document. */
     if (!import.meta.client) {
+      // No browser, so there is no file to save.
       return
     }
 
@@ -79,16 +84,20 @@ export function useWeaverPublish(options: {
     /** A hidden link with the file name. */
     const link = document.createElement('a')
 
+    // Point the link at the temporary blob address.
     link.href = url
 
+    // Use the thread name and the current timestamp.
     link.download = markdownFilename(options.platform.value, Date.now())
 
+    // A programmatic click starts the download.
     link.click()
 
     /** Drop the temporary address. */
     URL.revokeObjectURL(url)
   }
 
+  // Expose the modal state and the three publish actions.
   return {
     activeQrText,
     send,

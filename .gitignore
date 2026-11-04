@@ -12,6 +12,7 @@ node_modules
 # Logs
 logs
 *.log
+/plans
 
 # Misc
 .DS_Store
@@ -28,8 +29,9 @@ logs
 .serena
 AGENTS.md
 
-# Test coverage
+# Test coverage and Vitest UI output
 coverage/
+.vitest
 
 # Docus app build. The markdown under docs/content stays tracked.
 docs/node_modules

@@ -47,10 +47,12 @@ const INTENT_PREFIX: Record<PlatformId, string> = {
 
 /** The name people see for the active platform. */
 export function platformLabel(platform: PlatformId): string {
+  // Look up the short name people see on the page.
   return PLATFORM_NAMES[platform]
 }
 
 /** The start of the compose link for that platform. */
 export function intentPrefix(platform: PlatformId): string {
+  // Look up where that platform expects a new post.
   return INTENT_PREFIX[platform]
 }

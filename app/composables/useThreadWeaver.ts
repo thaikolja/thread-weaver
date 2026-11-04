@@ -46,8 +46,13 @@ export function useThreadWeaver() {
 
   /** Any real edit tells the other pieces to drop stale UI. */
   const draft = useWeaverDraft(() => {
+    // Drop the old copy ticks because the ids are about to be reused.
     resetCopied()
+
+    // Stop any card that was talking.
     speech.stop()
+
+    // Close a QR that shows text which may no longer exist.
     closeQr()
   })
 

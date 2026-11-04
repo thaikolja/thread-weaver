@@ -59,6 +59,7 @@ export function useWeaverDraft(onChange: () => void) {
 
   /** Other locales open on their own sentence. */
   if (sample !== weaver.value.source) {
+    // Swap the English sample for the translated one.
     weaver.value = setSource(weaver.value, sample)
   }
 
@@ -69,6 +70,7 @@ export function useWeaverDraft(onChange: () => void) {
   function commit(next: WeaverState): void {
     /** Nothing moved. */
     if (next === weaver.value) {
+      // No change, so skip the callback and the extra work.
       return
     }
 
@@ -83,6 +85,7 @@ export function useWeaverDraft(onChange: () => void) {
   const source = computed({
     get: () => weaver.value.source,
     set: (value: string) => {
+      // A source edit packs the text again.
       commit(setSource(weaver.value, value))
     }
   })
@@ -91,6 +94,7 @@ export function useWeaverDraft(onChange: () => void) {
   const marker = computed({
     get: () => weaver.value.marker,
     set: (value: MarkerFormat) => {
+      // Swap the counter style without repacking.
       commit(setMarker(weaver.value, value))
     }
   })
@@ -99,6 +103,7 @@ export function useWeaverDraft(onChange: () => void) {
   const placement = computed({
     get: () => weaver.value.placement,
     set: (value: MarkerPlacement) => {
+      // Move the counter without repacking.
       commit(setPlacement(weaver.value, value))
     }
   })
@@ -107,6 +112,7 @@ export function useWeaverDraft(onChange: () => void) {
   const bridge = computed({
     get: () => weaver.value.bridge,
     set: (value: string) => {
+      // Update the bridge; a length change repacks inside setBridge.
       commit(setBridge(weaver.value, value))
     }
   })
@@ -115,6 +121,7 @@ export function useWeaverDraft(onChange: () => void) {
   const capitalize = computed({
     get: () => weaver.value.capitalize,
     set: (value: boolean) => {
+      // Toggle capitalization without repacking.
       commit(setCapitalize(weaver.value, value))
     }
   })
@@ -123,6 +130,7 @@ export function useWeaverDraft(onChange: () => void) {
   const finishSentences = computed({
     get: () => weaver.value.finishSentences,
     set: (value: boolean) => {
+      // Toggle the closing ellipsis without repacking.
       commit(setFinishSentences(weaver.value, value))
     }
   })
@@ -131,6 +139,7 @@ export function useWeaverDraft(onChange: () => void) {
   const keepBreaks = computed({
     get: () => weaver.value.keepBreaks,
     set: (value: boolean) => {
+      // Line breaks change the packing, so this one repacks.
       commit(setKeepBreaks(weaver.value, value))
     }
   })
@@ -161,19 +170,23 @@ export function useWeaverDraft(onChange: () => void) {
 
   /** Pick a platform and pack to its limit. */
   function choosePlatform(next: PlatformId): void {
+    // Save the new platform and let it repack.
     commit(setPlatform(weaver.value, next))
   }
 
   /** Nudge one card up or down. */
   function move(index: number, delta: number): void {
+    // Reorder the chunks without touching their text.
     commit(moveSegment(weaver.value, index, delta))
   }
 
   /** Throw one card away. */
   function drop(index: number): void {
+    // Remove the chunk at this position.
     commit(dropSegment(weaver.value, index))
   }
 
+  // Everything the page and the sections read.
   return {
     source,
     marker,

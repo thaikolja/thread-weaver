@@ -39,8 +39,10 @@ export function useWeaver(): ReturnType<typeof useThreadWeaver> {
 
   /** Fail here so a missing provider is obvious. */
   if (!weaver) {
+    // No provider above this component, so the setup is wrong.
     throw new Error('useWeaver() must be used inside provideWeaver()')
   }
 
+  // Hand the shared editor to the component.
   return weaver
 }

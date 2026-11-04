@@ -22,6 +22,7 @@
 
 import type { CompiledPost } from '~/utils/weaver/types'
 
+// The actions belong to this post at this position.
 defineProps<{
   post: CompiledPost
   index: number

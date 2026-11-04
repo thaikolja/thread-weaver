@@ -34,8 +34,10 @@ const activePlatform: Record<PlatformId, string> = {
 export function platformButtonClass(platform: PlatformId, active: PlatformId): string {
   /** Highlight only the corset that is on. */
   if (platform === active) {
+    // The selected button gets its brand color.
     return activePlatform[platform]
   }
 
+  // Everyone else stays quiet.
   return idlePlatform
 }

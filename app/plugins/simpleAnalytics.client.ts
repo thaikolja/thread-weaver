@@ -14,10 +14,22 @@
  * @package Thread Weaver
  */
 
+// Check whether the app is running in development.
+import { defineNuxtPlugin, useuseEnvironment } from '#imports'
+
+// The analytics plugin itself.
 import SimpleAnalytics from 'simple-analytics-vue'
 
+// The current environment flag.
+const environment = useuseEnvironment()
+
+// Leave a trace while wiring the plugin.
+console.log(environment)
+
+// Register analytics on the client only.
 export default defineNuxtPlugin((nuxtApp) => {
+  // Analytics stays off outside production.
   nuxtApp.vueApp.use(SimpleAnalytics, {
-    skip: process.env.NODE_ENV !== 'production'
+    skip: environment
   })
 })

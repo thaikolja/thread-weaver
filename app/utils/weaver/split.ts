@@ -34,6 +34,7 @@ interface Piece {
 function piecesFromSource(text: string, keepBreaks: boolean): Piece[] {
   /** One stream of words. Line breaks are just more whitespace. */
   if (!keepBreaks) {
+    // Split on any whitespace and keep a space between the words.
     return text.split(/\s+/).filter(Boolean).map((word, index) => ({
       text: word,
       sepBefore: index === 0 ? '' : ' '
@@ -46,20 +47,29 @@ function piecesFromSource(text: string, keepBreaks: boolean): Piece[] {
   /** Gap waiting for the next word. A blank line adds another newline. */
   let sep = ''
 
+  // Walk the text one line at a time so the breaks can be preserved.
   for (const line of text.split('\n')) {
     /** Words on this line. Empty means the line was blank. */
     const words = line.trim().split(/\s+/).filter(Boolean)
 
+    // A blank line becomes an extra newline in front of the next word.
     if (words.length === 0) {
+      // Keep the previous gap and add another line break.
       sep = sep ? `${sep}\n` : '\n'
+
+      // Nothing to add for this line, so move on.
       continue
     }
 
+    // Add each word with the gap that belongs in front of it.
     for (const word of words) {
+      // The first word has no gap; the rest use the pending separator.
       pieces.push({
         text: word,
         sepBefore: pieces.length === 0 ? '' : (sep || ' ')
       })
+
+      // Later words on the same line are separated by a plain space.
       sep = ' '
     }
 
@@ -67,6 +77,7 @@ function piecesFromSource(text: string, keepBreaks: boolean): Piece[] {
     sep = '\n'
   }
 
+  // Hand back the words in reading order.
   return pieces
 }
 
@@ -81,26 +92,34 @@ function packPieces(pieces: readonly Piece[], budget: number): string[] {
   /** The chunk still being filled. */
   let current = ''
 
+  // Try each word against the chunk that is still being filled.
   for (const piece of pieces) {
     /** This word, with its gap, stuck onto the current chunk. */
     const candidate = current ? `${current}${piece.sepBefore}${piece.text}` : piece.text
 
     /** Too long: save the chunk we have, unless this word is the whole chunk. */
     if (candidate.length > budget) {
+      // Close the chunk before starting a new one with this word.
       if (current) {
+        // Save the chunk that still fits.
         blocks.push(current)
       }
+
+      // The over-long word becomes its own chunk.
       current = piece.text
     } else {
+      // It still fits, so keep building this chunk.
       current = candidate
     }
   }
 
   /** Don't forget the last chunk. */
   if (current) {
+    // The loop ended before this chunk was pushed.
     blocks.push(current)
   }
 
+  // Every finished chunk, in order.
   return blocks
 }
 
@@ -114,6 +133,7 @@ export function splitSource(source: string, limit: number, bridge: string, keepB
 
   /** No words, so show one empty card. */
   if (!text) {
+    // Empty input still needs one card to render.
     return [{ id: 'b-0', text: '' }]
   }
 

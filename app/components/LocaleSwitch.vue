@@ -25,22 +25,29 @@ const switchLocalePath = useSwitchLocalePath()
 const shortLabels: Record<string, string> = {
   en: 'EN',
   de: 'DE',
-  th: 'ไทย'
+  th: 'TH'
 }
 
 /** One link per configured locale. */
 const choices = computed(() => {
+  // Build one link for every locale the app knows about.
   return locales.value.map((item) => {
+    // A bare locale is just its code.
     const code = typeof item === 'string' ? item : item.code
+
+    // The display name falls back to the code.
     const name = typeof item === 'string' ? item : item.name || code
+
+    // The language tag falls back to the code too.
     const language = typeof item === 'string' ? item : item.language || code
 
+    // Everything one NuxtLink needs.
     return {
       code,
       name,
       language,
       label: shortLabels[code] || code.toUpperCase(),
-      to: switchLocalePath(code) || '/'
+      to:    switchLocalePath(code) || '/'
     }
   })
 })
@@ -58,7 +65,7 @@ const choices = computed(() => {
       class="c-locale-link"
       :class="locale === choice.code ? 'c-locale-on' : 'c-locale-off'"
       :aria-current="locale === choice.code ? 'page' : undefined"
-      :aria-label="choice.name"
+      :aria-label="choice.language"
       :hreflang="choice.language"
       :lang="choice.language"
     >

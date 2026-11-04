@@ -34,9 +34,14 @@ export function usePageMeta(): void {
     const links = locales.value.map((locale) => {
       /** Locale objects carry `code` and `language`. A bare code is only a string. */
       const code = typeof locale === 'string' ? locale : locale.code
+
+      // The language tag goes into hreflang.
       const language = typeof locale === 'string' ? locale : locale.language || code
+
+      // Fall back to the home path for the default locale.
       const path = switchLocalePath(code) || '/'
 
+      // One alternate link for this locale.
       return {
         rel:      'alternate' as const,
         hreflang: language,
@@ -44,6 +49,7 @@ export function usePageMeta(): void {
       }
     })
 
+    // Add an unprefixed default so search engines have a fallback.
     return [
       ...links,
       {

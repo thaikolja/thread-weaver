@@ -28,6 +28,7 @@ const nudges = ref<Record<string, 'up' | 'down'>>({})
 /** Clears the step once the slide has finished. */
 let nudgeTimer: ReturnType<typeof setTimeout> | undefined
 
+// Repack or marker changes dip the list briefly.
 watch(
   () => [
     weaver.platform,
@@ -39,41 +40,57 @@ watch(
     weaver.keepBreaks
   ],
   () => {
+    // Dip the list for a moment.
     pulse()
   }
 )
 
+// A straight swap means a move, so the cards slide past each other.
 watch(
   () => weaver.shownPosts.map(post => post.id),
   (next, prev) => {
     /** A move swaps two neighbors. A repack or a drop does not. */
     const swapped = prev.length === next.length && prev.filter((id, index) => id !== next[index]).length === 2
 
+    // A repack or a drop should not slide anything.
     if (!swapped) {
+      // Only straight swaps get the move animation.
       return
     }
 
+    // Skip the slide when motion is reduced.
     if (import.meta.client && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Leave the cards in place.
       return
     }
 
     /** Direction comes from the index change, not from which button was clicked. */
     const nextNudges: Record<string, 'up' | 'down'> = {}
 
+    // Compare the old and new positions of every card.
     for (const id of next) {
+      // Where this card used to sit.
       const before = prev.indexOf(id)
+
+      // Where it sits now.
       const after = next.indexOf(id)
 
+      // A smaller index means it moved up.
       if (before !== after) {
+        // Store the direction for this card.
         nextNudges[id] = after < before ? 'up' : 'down'
       }
     }
 
+    // Apply the direction flags for the slide.
     nudges.value = nextNudges
 
+    // A new move replaces the old cleanup timer.
     clearTimeout(nudgeTimer)
 
+    // Clear the flags once the slide is over.
     nudgeTimer = setTimeout(() => {
+      // Forget the directions once the animation is done.
       nudges.value = {}
     }, 520)
   }
@@ -81,27 +98,37 @@ watch(
 
 /** The slot paints above its neighbor while it slides up. */
 function slotClass(id: string): string {
+  // An upward move needs the higher stacking order.
   if (nudges.value[id] === 'up') {
+    // Paint this slot above its neighbor.
     return 'c-chunk-up'
   }
 
+  // A downward move stays below its neighbor.
   if (nudges.value[id] === 'down') {
+    // Keep this slot underneath.
     return 'c-chunk-down'
   }
 
+  // No move, so no special stacking class.
   return ''
 }
 
 /** Side step so the two chunks pass instead of stacking flat. */
 function nudgeClass(id: string): string {
+  // Step right while sliding up.
   if (nudges.value[id] === 'up') {
+    // Push the card to the side so the two pass.
     return 'c-chunk-nudge-up'
   }
 
+  // Step left while sliding down.
   if (nudges.value[id] === 'down') {
+    // Push the card the other way.
     return 'c-chunk-nudge-down'
   }
 
+  // No move, so no side step either.
   return ''
 }
 </script>
