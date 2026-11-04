@@ -71,14 +71,19 @@ function findPackageJSON(specifier, base) {
   if (bare) {
     const basePath = toPath(base);
     const filename = basePath.endsWith('package.json') ? basePath : __findJoin(basePath, 'package.json');
+    const name = spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0];
+    let dir = __findDirname(filename);
+    for (;;) {
+      const candidate = __findJoin(dir, 'node_modules', name, 'package.json');
+      if (__findExistsSync(candidate)) return candidate;
+      const parent = __findDirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
     try {
       return __findCreateRequire(__findPathToFileURL(filename)).resolve(spec + '/package.json');
     } catch {
-      try {
-        return walk(__findDirname(__findCreateRequire(__findPathToFileURL(filename)).resolve(spec)));
-      } catch {
-        return undefined;
-      }
+      return undefined;
     }
   }
   if (spec.startsWith('file:')) return walk(__findFileURLToPath(spec));

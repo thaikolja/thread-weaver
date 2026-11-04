@@ -25,7 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       /** The tests keep their Bun import. This runner supplies the same two names. */
-      // @ts-ignore
+      // @ts-expect-error Vitest's alias map is a string here. The Nuxt types widen it.
       'bun:test': fileURLToPath(new URL('./tests/support/bun-test.ts', import.meta.url))
     }
   },

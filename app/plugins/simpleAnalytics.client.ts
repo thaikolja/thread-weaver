@@ -14,22 +14,16 @@
  * @package Thread Weaver
  */
 
-// Check whether the app is running in development.
-import { defineNuxtPlugin, useuseEnvironment } from '#imports'
-
-// The analytics plugin itself.
+/** The analytics plugin. It warns when loaded with skip turned on. */
 import SimpleAnalytics from 'simple-analytics-vue'
 
-// The current environment flag.
-const environment = useuseEnvironment()
-
-// Leave a trace while wiring the plugin.
-console.log(environment)
-
-// Register analytics on the client only.
+/** Count production visits. Development does not load the script. */
 export default defineNuxtPlugin((nuxtApp) => {
-  // Analytics stays off outside production.
+  if (import.meta.dev) {
+    return
+  }
+
   nuxtApp.vueApp.use(SimpleAnalytics, {
-    skip: environment
+    skip: false
   })
 })

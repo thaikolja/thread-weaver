@@ -45,7 +45,13 @@ export default withNuxt(
         beforeColon: false,
         afterColon:  true,
         mode:        'minimum'
-      } ]
+      } ],
+
+      /** Aligned imports and object columns use extra spaces on purpose. */
+      '@stylistic/no-multi-spaces':          'off',
+      '@stylistic/array-bracket-spacing':    'off',
+      '@stylistic/indent':                   'off',
+      '@stylistic/space-infix-ops':          'off'
     }
   }
 )

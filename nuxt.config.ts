@@ -21,7 +21,7 @@ import { existsSync } from 'node:fs'
 import { resolve }    from 'node:path'
 
 // The release string shown in the footer and in the schema.
-const THREAD_WEAVER_VERSION: string = '1.0.0'
+const THREAD_WEAVER_VERSION: string = '1.1.0'
 
 /** Docus `generate` output. Missing until `docs:build` has run. */
 const docsStaticDir = resolve(process.cwd(), 'docs/.output/public')
@@ -113,6 +113,16 @@ export default defineNuxtConfig({
     }
   },
 
+  /** Pre-bundle these so the first page load does not restart Vite. */
+  vite: {
+    optimizeDeps: {
+      include: [
+        'simple-analytics-vue',
+        'vue-qrcode-reader'
+      ]
+    }
+  },
+
   /** Advertise `/de` and `/th` as translations of this page. */
   aiReady: {
     autoI18n: true
@@ -188,12 +198,10 @@ export default defineNuxtConfig({
   },
 
   /**
-   * Share image is `public/og-image.png`.
-   * No runtime renderer, so production does not need `NUXT_APP_SECRET`.
+   * Share image is the static file `public/og-image.png`.
+   * The generator stays off, so dev does not warn about a missing renderer.
    */
-  ogImage: {
-    zeroRuntime: true
-  },
+  ogImage: false,
 
   qrcode: {
     options: {

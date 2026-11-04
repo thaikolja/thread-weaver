@@ -62,6 +62,7 @@ commit-docs:
         exit 0
       fi
     - 'git commit -m "docs: regenerate Docus pages [skip ci]"'
+    # The project must allow CI_JOB_TOKEN to push (ci_push_repository_for_job_token_allowed).
     - 'git push "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" "HEAD:${CI_COMMIT_REF_NAME}"'
   rules:
     - if: $CI_COMMIT_BRANCH == "main"

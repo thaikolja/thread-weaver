@@ -23,8 +23,11 @@ import { mkdtempSync, rmSync, writeFileSync }            from 'node:fs'
 /** Temp directory for that module. */
 import { tmpdir }                                        from 'node:os'
 
-/** Paths inside the tree. */
-import { join }                                          from 'node:path'
+/** Paths inside the tree. `import.meta.dir` exists in Bun and not in Vitest. */
+import { dirname, join }                                 from 'node:path'
+
+/** This file's URL, so Vitest and Bun share one root. */
+import { fileURLToPath }                                 from 'node:url'
 
 /** The rewriter `postinstall` runs before `nuxt prepare`. */
 import { HELPER_MARKER, patchSource }                    from '../scripts/patch-nuxt-og-image.mjs'
@@ -124,8 +127,11 @@ test('the helper finds this package and a bare specifier', async () => {
     // Make sure self ends with package.json.
     expect(self).toMatch(/package\.json$/)
 
+    /** Repo root. Vitest does not set `import.meta.dir`. */
+    const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+
     /** Installed nuxt-og-image, the same bare lookup the SEO kit makes. */
-    const ogImage = locate('nuxt-og-image', join(import.meta.dir, '..', 'package.json'))
+    const ogImage = locate('nuxt-og-image', join(root, 'package.json'))
 
     // Make sure ogImage points at that package.
     expect(ogImage).toMatch(/nuxt-og-image[/\\]package\.json$/)
