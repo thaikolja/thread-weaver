@@ -5,7 +5,7 @@ New lines follow [Conventional Commits](https://www.conventionalcommits.org/en/v
 
 ## Unreleased
 
-- build(ci): patch nuxt-og-image for Bun's missing findPackageJSON
+- fix(ci): polyfill findPackageJSON so bun can load the seo modules
 - build(deps): drop unused install weight and test in ci
 - fix(qr): draw the phone code in the browser
 - fix(ui): close the qr layer from the keyboard
